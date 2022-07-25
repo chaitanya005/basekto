@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract Baskets is ERC721, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
-
+ 
     Counters.Counter private _tokenIdCounter;
 
     constructor() ERC721("Baskets", "BSKT") {}
