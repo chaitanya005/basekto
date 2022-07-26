@@ -7,7 +7,10 @@ import Button from "@mui/material/Button";
 import { IconButton, useMediaQuery } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 
-const pages = ["Explore", "Learn"];
+const pages = [
+  { title: 'Explore', path: '/explore' },
+  { title: 'Learn', path: '#' }
+];
 
 const Navbar = () => {
 
@@ -32,14 +35,18 @@ const Navbar = () => {
           </Box>
           <Box>
             {pages.map((page) => (
-              <Button
-                key={page}
-                sx={{fontSize:{xs:'10px',md:'14px'}}} 
-                // onClick={}
-                variant="text" color="primary"
-              >
-                {page}
-              </Button>
+
+              <Link href={ page.path } key={ page.title }>
+                <a>
+                  <Button
+                    sx={{fontSize:{xs:'10px',md:'14px'}}}
+                    // onClick={}
+                    variant="text" color="primary"
+                  >
+                    { page.title }
+                  </Button>
+                </a>
+              </Link>
             ))}
           </Box>
 

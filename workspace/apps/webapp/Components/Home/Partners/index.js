@@ -31,7 +31,7 @@ const partners = [
 
 const Partners = () => {
   return (
-    <Container sx={{ m: "4rem 0" }}>
+    <Container sx={{ mt: 8, mb: 8 }}>
       <Grid container sx={{ justifyContent: "space-between" }}>
         {partners.map((partner) => (
           <Grid

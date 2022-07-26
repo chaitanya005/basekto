@@ -11,180 +11,184 @@ import Divider from '@mui/material/Divider';
 import Navbar from '../../Components/Navbar';
 import Footer from '../../Components/Footer';
 import Graph from '../../Components/Common/Graph';
+import { coinsList } from '../../mocks/coins.js';
 import basketsData from '../../Components/Explore/basketsData';
 
 const Basket = () => {
-  const router = useRouter();
-  const { bid } = router.query;
-  const basket = basketsData.find((basket) => basket.symbol === bid);
-  const [graphData, setGraphData] = useState(null);
-  const [days, setDays] = useState(null);
 
-  useEffect(() => {
-    if (basket && days) {
-      const basketData = basket?.coins.map((coin) => ({
-        name: coin.name,
-        ratio: coin.weight,
-        noOfDays: days,
-      }));
+	const router = useRouter();
+	const { bid } = router.query;
+	const basket = basketsData.find((basket) => basket.symbol === bid);
+	const [graphData, setGraphData] = useState(null);
+	const [days, setDays] = useState(1);
 
-      fetch('https://basketo-api.herokuapp.com/api/graph_data', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'post',
-        body: JSON.stringify({ basketData }),
-      })
-        .then((res) => res.json())
-        .then((graphData) => setGraphData(graphData));
-    }
-  }, [basket, days]);
+	useEffect(() => {
 
-  return (
-    <>
-      <Navbar />
-      <div style={{ paddingTop: '70px' }}>
-        <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
-          <Link href="/explore">
-            <a>
-              <Typography
-                variant="subtitle2"
-                component="span"
-                fontWeight="bold"
-                sx={{ color: '#777' }}
-              >
-                &lt;&nbsp;&nbsp;Back to Explorer
-              </Typography>
-            </a>
-          </Link>
+		if (basket) {
 
-          {basket && (
-            <>
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ mt: 4, mb: 4 }}
-              >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  sx={{ '> *': { mr: 2 } }}
-                >
-                  <Avatar
-                    src={basket.image}
-                    alt={basket.symbol + ' logo'}
-                    sx={{ width: 48, height: 48 }}
-                  />
+			const basketData = basket?.coins.map((basketCoin) => ({
+				...coinsList.find(coin => coin.id === basketCoin.id),
+				ratio: basketCoin.weight
+			}));
 
-                  <Typography
-                    variant="h3"
-                    sx={{ fontSize: '2rem', fontWeight: 'bold' }}
-                  >
-                    {basket.name}
-                  </Typography>
-                </Box>
+			fetch('https://basketo-api.herokuapp.com/api/graph_data', {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: 'post',
+				body: JSON.stringify({ basketData, days }),
+			})
+				.then((res) => res.json())
+				.then((graphData) => setGraphData(graphData));
+		}
+	}, [basket, days]);
 
-                <Button variant="contained" size="large" disabled>
-                  Invest
-                </Button>
-              </Box>
+	return (
 
-              <Box sx={{ mb: 2 }}>
-                <Graph data={graphData} setDays={setDays} />
-              </Box>
+		<>
+			<Navbar />
+			<div style={{ paddingTop: '70px' }}>
+				<Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
+					<Link href="/explore">
+						<a>
+							<Typography
+								variant="subtitle2"
+								component="span"
+								fontWeight="bold"
+								sx={{ color: '#777' }}
+							>
+								&lt;&nbsp;&nbsp;Back to Explorer
+							</Typography>
+						</a>
+					</Link>
 
-              <Box sx={{ mb: 2 }}>
-                <Grid container justifyContent="space-between">
-                  <Grid item>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontSize: '0.9rem',
-                        fontWeight: 'bold',
-                        color: '#777',
-                      }}
-                    >
-                      Token
-                    </Typography>
-                  </Grid>
+					{ basket && (
+						<>
+							<Box
+								display="flex"
+								alignItems="center"
+								justifyContent="space-between"
+								sx={{ mt: 4, mb: 4 }}
+							>
+								<Box
+									display="flex"
+									alignItems="center"
+									sx={{ '> *': { mr: 2 } }}
+								>
+									<Avatar
+										src={basket.image}
+										alt={basket.symbol + ' logo'}
+										sx={{ width: 48, height: 48 }}
+									/>
 
-                  <Grid item>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontSize: '0.9rem',
-                        fontWeight: 'bold',
-                        color: '#777',
-                      }}
-                    >
-                      Weight {'(%)'}
-                    </Typography>
-                  </Grid>
-                </Grid>
+									<Typography
+										variant="h3"
+										sx={{ fontSize: '2rem', fontWeight: 'bold' }}
+									>
+										{basket.name}
+									</Typography>
+								</Box>
 
-                <Divider sx={{ mt: 1, mb: 1.5 }} />
+								<Button variant="contained" size="large" disabled>
+									Invest
+								</Button>
+							</Box>
 
-                {basket.coins.map((coin) => (
-                  <Grid
-                    container
-                    justifyContent="space-between"
-                    key={coin.name}
-                  >
-                    <Grid
-                      item
-                      display="flex"
-                      alignItems="center"
-                      sx={{ mb: 2 }}
-                    >
-                      <Avatar
-                        src={coin.image}
-                        alt={coin.name + ' logo'}
-                        sx={{ mr: 2.5, width: 28, height: 28 }}
-                      />
+							<Box sx={{ mb: 2 }}>
+								<Graph data={graphData} setDays={setDays} />
+							</Box>
 
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontSize: '1rem',
-                          fontWeight: 'bold',
-                          textTransform: 'capitalize',
-                        }}
-                      >
-                        {coin.name}
-                      </Typography>
-                    </Grid>
+							<Box sx={{ mb: 2 }}>
+								<Grid container justifyContent="space-between">
+									<Grid item>
+										<Typography
+											variant="h6"
+											sx={{
+												fontSize: '0.9rem',
+												fontWeight: 'bold',
+												color: '#777',
+											}}
+										>
+											Token
+										</Typography>
+									</Grid>
 
-                    <Grid item>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontSize: '1rem',
-                          fontWeight: 'bold',
-                          textTransform: 'capitalize',
-                        }}
-                      >
-                        {coin.weight}%
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                ))}
-              </Box>
+									<Grid item>
+										<Typography
+											variant="h6"
+											sx={{
+												fontSize: '0.9rem',
+												fontWeight: 'bold',
+												color: '#777',
+											}}
+										>
+											Weight {'(%)'}
+										</Typography>
+									</Grid>
+								</Grid>
 
-              <Box>
-                <Typography variant="h5">About</Typography>
+								<Divider sx={{ mt: 1, mb: 1.5 }} />
 
-                <Divider sx={{ mt: 1, mb: 1 }} />
+								{basket.coins.map((coin) => (
+									<Grid
+										container
+										justifyContent="space-between"
+										key={coin.name}
+									>
+										<Grid
+											item
+											display="flex"
+											alignItems="center"
+											sx={{ mb: 2 }}
+										>
+											<Avatar
+												src={coin.image}
+												alt={coin.name + ' logo'}
+												sx={{ mr: 2.5, width: 28, height: 28 }}
+											/>
 
-                <Typography>{basket.description}</Typography>
-              </Box>
-            </>
-          )}
-        </Container>
-        <Footer />
-      </div>
-    </>
-  );
+											<Typography
+												variant="h6"
+												sx={{
+													fontSize: '1rem',
+													fontWeight: 'bold',
+													textTransform: 'capitalize',
+												}}
+											>
+												{coin.name}
+											</Typography>
+										</Grid>
+
+										<Grid item>
+											<Typography
+												variant="h6"
+												sx={{
+													fontSize: '1rem',
+													fontWeight: 'bold',
+													textTransform: 'capitalize',
+												}}
+											>
+												{coin.weight}%
+											</Typography>
+										</Grid>
+									</Grid>
+								))}
+							</Box>
+
+							<Box>
+								<Typography variant="h5">About</Typography>
+
+								<Divider sx={{ mt: 1, mb: 1 }} />
+
+								<Typography>{basket.description}</Typography>
+							</Box>
+						</>
+					)}
+				</Container>
+				<Footer />
+			</div>
+		</>
+	);
 };
 
 export default Basket;
