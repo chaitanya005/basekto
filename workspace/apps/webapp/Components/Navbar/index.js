@@ -10,14 +10,20 @@ import {
   Typography,
   useMediaQuery,
   Divider,
+  TextField,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Paper,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/router';
-import { AccountBalanceWallet } from '@mui/icons-material';
+import { AccountBalanceWallet, Close } from '@mui/icons-material';
 
 const pages = ['Explore', 'Learn'];
 
 const clientSide = typeof window !== 'undefined';
+let userRegistered = false;
 
 const Navbar = () => {
   const router = useRouter();
@@ -72,7 +78,9 @@ const Navbar = () => {
               onClick={() =>
                 typeof window.ethereum === 'undefined'
                   ? router.push({ hash: '#connect' })
-                  : router.push('/explore')
+                  : !userRegistered
+                    ? router.push({ hash: '#register' })
+                    : router.push('/explore')
               }
             >
               App
@@ -90,7 +98,7 @@ const Navbar = () => {
                 <Typography variant="h5">Install MetaMask</Typography>
                 <Divider sx={{ m: '10px 0px' }} />
                 <Typography>
-                  You'll need a Web3 wallet to create and explore Baskets.
+                  You&apos;ll need a Web3 wallet to create and explore Baskets.
                 </Typography>
                 <br />
                 <Button
@@ -104,6 +112,83 @@ const Navbar = () => {
                   Install MetaMask
                 </Button>
               </Box>
+            </Dialog>
+
+            <Dialog
+              maxWidth="sm"
+              open={
+                !userRegistered &&
+                router.asPath.split('#')[1] === 'register'
+              }
+              onClose={ () => router.push({ hash: '' }) }
+            >
+              <form onSubmit={
+                (e) => {
+                  e.preventDefault();
+                  userRegistered = true;
+                  router.push('/explore');
+                }
+              }>
+                <DialogTitle>
+                  <Typography variant="h5" component="div">
+                    Create New Account
+
+                    <IconButton
+                      onClick={ () => router.push({ hash: '' }) }
+                      sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: (theme) => theme.palette.grey[500],
+                      }}
+                    >
+                      <Close />
+                    </IconButton>
+                  </Typography>
+                </DialogTitle>
+
+                <Divider />
+
+                <DialogContent sx={{ maxWidth: '420px' }}>
+                  <Paper elevation={ 0 }>
+                    <TextField
+                      fullWidth
+                      variant="standard"
+                      label="First Name"
+                      required
+                      sx={{ mb: 2 }}
+                    />
+
+                    <TextField
+                      fullWidth
+                      variant="standard"
+                      label="Last Name"
+                      required
+                      sx={{ mb: 2 }}
+                    />
+
+                    <TextField
+                      fullWidth
+                      variant="standard"
+                      label="Email"
+                      type="email"
+                      required
+                      sx={{ mb: 2 }}
+                    />
+                  </Paper>
+                </DialogContent>
+
+                <DialogActions sx={{ p: '0 1.5rem 2rem' }}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    type="submit"
+                    // onClick={ () => {} }
+                  >
+                    Create Account
+                  </Button>
+                </DialogActions>
+              </form>
             </Dialog>
           </div>
         </Toolbar>
