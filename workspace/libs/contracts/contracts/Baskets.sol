@@ -11,13 +11,16 @@ contract Baskets is ERC721, ERC721URIStorage, Ownable {
  
     Counters.Counter private _tokenIdCounter;
 
+    event BasketCreated(uint256 tokenId, string uri);
+
     constructor() ERC721("Baskets", "BSKT") {}
 
-    function createBasket( string memory uri) public returns (uint256) {
+    function createBasket( address creator , string memory uri) public returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-        _mint(msg.sender, tokenId);
+        _mint(creator, tokenId);
         _setTokenURI(tokenId, uri);
+        emit BasketCreated(tokenId, uri);
         return tokenId;
     }
 

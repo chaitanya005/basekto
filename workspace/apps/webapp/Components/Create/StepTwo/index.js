@@ -75,7 +75,7 @@ const StepTwo = ({ setActiveStep }) => {
 
         <Grid mt={3}>
           <MyTextField
-            type='textarea'
+            type="textarea"
             id="description"
             name="description"
             fullWidth

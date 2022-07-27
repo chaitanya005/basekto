@@ -68,36 +68,34 @@ const Create = () => {
   }, [days]);
 
   return (
-    <Paper variant="window">
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <Box sx={{ maxWidth: 'md', width: '100%', padding: '15px' }}>
-          <Typography variant="h3">Create a Basket</Typography>
-          <Box
-            sx={{
-              width: '100%',
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              padding: '15px',
-              margin: '15px 0px',
-            }}
-          >
-            <Stepper activeStep={activeStep} alternativeLabel>
-              {steps.map((step, i) => (
-                <Step key={i}>
-                  <StepLabel>{step}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-            {renderStep()}
-          </Box>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
+      <Box sx={{ maxWidth: 'md', width: '100%', padding: '15px' }}>
+        <Typography variant="h3">Create a Basket</Typography>
+        <Box
+          sx={{
+            width: '100%',
+            border: '1px solid #ddd',
+            borderRadius: '8px',
+            padding: '15px',
+            margin: '15px 0px',
+          }}
+        >
+          <Stepper activeStep={activeStep} alternativeLabel>
+            {steps.map((step, i) => (
+              <Step key={i}>
+                <StepLabel>{step}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          {renderStep()}
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 };
 
