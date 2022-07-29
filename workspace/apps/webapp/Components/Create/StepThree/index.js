@@ -6,6 +6,7 @@ import { getBasketDetails } from '../../../features/basketDetails';
 import { useEffect } from 'react';
 import { BasketsABI } from '@basketo/contracts';
 import { ethers } from 'ethers';
+import { useMutation } from 'react-query';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -15,9 +16,17 @@ const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
 let contract;
 let account;
 
+const createBasket = async (basket) =>
+  await fetch('https://basketo-api.herokuapp.com/api/basket/new', {
+    method: 'POST',
+    body: basket,
+  });
+
 const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const { selectedTokens } = useSelector(getTokens);
   const { basketDetails } = useSelector(getBasketDetails);
+  // console.log(basketDetails, selectedTokens);
+  // const {mutate:createBasket} = useMutation()
 
   useEffect(async () => {
     graphData === null && handleGraphdata();

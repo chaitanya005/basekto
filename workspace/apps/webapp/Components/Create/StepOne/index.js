@@ -50,7 +50,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
         id: symbol[0].id,
         name: val,
         symbol: symbol[0].symbol,
-        ratio: 0,
+        weight: 0,
         img: symbol[0].image_url,
       };
       dispatch(addToken({ token }));
