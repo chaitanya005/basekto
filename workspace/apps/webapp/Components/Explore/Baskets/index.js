@@ -63,9 +63,9 @@ const Baskets = ({ queryString }) => {
             </>
           ) : (
             <>
-              {basketsData?.map((basket) => (
-                <Grid item key={basket.symbol} xs={12} sm={6} md={4} lg={3}>
-                  <Link href={'/explore/' + basket.symbol}>
+              {basketsData?.map((basket, i) => (
+                <Grid item key={i} xs={12} sm={6} md={4} lg={3}>
+                  <Link href={'/explore/' + basket?._id}>
                     <BasketCard
                       data={{
                         title: basket?.name,
