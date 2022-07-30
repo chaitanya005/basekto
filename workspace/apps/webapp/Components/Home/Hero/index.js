@@ -14,30 +14,34 @@ const Hero = () => {
         mt:'60px'
       }}
     >
-      <Typography 
-      sx={{textAlign:'center', 
+      <Typography
+        sx={{
+          textAlign:'center',
           fontSize:{xs:'42px',md:'75px'},
           fontWeight:'400',
           lineHeight:'1.2em',
-          mb:'30px'}} >
-      Invest in diversified crypto portfolios with&nbsp;
-      <span style={{ borderBottom:'3px solid', borderColor:'secondary.main' }}>Basketo</span>
+          mb:'30px'
+        }}
+      >
+        Invest in diversified crypto portfolios with&nbsp;
+        <span style={{ borderBottom:'3px solid', borderColor:'secondary.main' }}>Basketo</span>
       </Typography>
-    
-      <Link href="/explore" >
-        <Button 
-          variant="contained"
-          sx={{fontSize:'18px'}}
-          startIcon={
-            <ArrowCircleUpIcon
-              style={{ transform: "rotate(90deg)", fontSize: "25px" }}
-            />
-          }
-        >
-          Explore Baskets
-        </Button>
+
+      <Link href="/explore">
+        <a>
+          <Button
+            variant="contained"
+            sx={{fontSize:'18px'}}
+            startIcon={
+              <ArrowCircleUpIcon
+                style={{ transform: "rotate(90deg)", fontSize: "25px" }}
+              />
+            }
+          >
+            Explore Baskets
+          </Button>
+        </a>
       </Link>
-              
     </Container>
   );
 };

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useState } from 'react';
 import {
     Button,
@@ -10,8 +11,11 @@ import {
     useTheme
 } from '@mui/material';
 import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import CampaignIcon from '@mui/icons-material/Campaign';
 
 const Subscription = () => {
+
     const theme = useTheme();
     const [email, setEmail] = useState('');
 
@@ -22,15 +26,22 @@ const Subscription = () => {
 
     return (
 
-        <Paper variant='section' color='primary' style={{
-        margin: '4rem 0', 
-        padding: '4rem 0', 
-        }} >
+        <Paper
+            variant="section"
+            color="primary"
+            style={{
+                margin: '4rem 0',
+                padding: '4rem 0',
+            }}
+        >
             <Container maxWidth="lg">
                 <Grid
                     container
-                    justifyContent="space-between"
-                    flexDirection="row"
+                    // justifyContent="space-between"
+                    // flexDirection="row"
+                    alignItems="center"
+                    flexDirection="column"
+                    sx={{ textAlign: 'center' }}
                 >
                     <Grid
                         item
@@ -42,6 +53,18 @@ const Subscription = () => {
                         <Typography
                             component="div"
                             fontSize="2rem"
+                            display="flex"
+                            alignItems="center"
+                            gap={ 1 }
+                            sx={{ mb: 2 }}
+                        >
+                            Get Latest Updates
+                            <CampaignIcon sx={{ fontSize: 'inherit' }} />
+                        </Typography>
+
+                        {/* <Typography
+                            component="div"
+                            fontSize="2rem"
                             sx={{ mb: 2 }}
                         >
                             Get early-access
@@ -49,7 +72,7 @@ const Subscription = () => {
 
                         <Typography>
                             Get a chance to create baskets before everyone else and stay up-to-date with latest updates and news.
-                        </Typography>
+                        </Typography> */}
                     </Grid>
 
                     <Grid
@@ -58,7 +81,7 @@ const Subscription = () => {
                         md={ 5 }
                         lg={ 4.5 }
                     >
-                        <form action="#" onSubmit={ handleSubmit }>
+                        {/* <form action="#" onSubmit={ handleSubmit }>
                             <TextField
                                 variant="outlined"
                                 color="primary"
@@ -88,7 +111,23 @@ const Subscription = () => {
                             >
                                 Signup
                             </Button>
-                        </form>
+                        </form> */}
+
+                        <a href="https://t.me/basketofinance" target="_blank" rel="noreferrer">
+                            <Button
+                                type="submit"
+                                size="large"
+                                variant="contained"
+                                sx={{
+                                    width: '420px',
+                                    maxWidth: '100%',
+                                    fontSize: '1rem'
+                                }}
+                                endIcon={ <TelegramIcon /> }
+                            >
+                                Join us on Telegram
+                            </Button>
+                        </a>
                     </Grid>
                 </Grid>
             </Container>
