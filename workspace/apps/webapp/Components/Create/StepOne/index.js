@@ -60,14 +60,14 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
   const handleRatio = (e, token) => {
     const val = 100 - ratioSum(selectedTokens);
 
-    if (Number(e.target.value) <= val + token.ratio) {
+    if (Number(e.target.value) <= val + token.weight) {
       const updateTokens = selectedTokens.map((item) =>
         item.name == token.name
-          ? { ...item, ratio: Number(e.target.value) }
+          ? { ...item, weight: Number(e.target.value) }
           : { ...item }
       );
       updateTokens.map((item) =>
-        item.ratio > 0 && ratioSum(updateTokens) == 100
+        item.weight > 0 && ratioSum(updateTokens) == 100
           ? dispatch(
               handleIsEnable({
                 value: true,
@@ -113,7 +113,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
   };
 
   const ratioSum = (tokens) =>
-    tokens.reduce((item, obj) => item + obj.ratio, 0);
+    tokens.reduce((item, obj) => item + obj.weight, 0);
 
   return (
     <>

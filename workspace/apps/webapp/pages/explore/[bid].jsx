@@ -13,20 +13,27 @@ import Graph from '../../Components/Common/Graph';
 import { Paper, Snackbar, Alert, Skeleton, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useQuery } from 'react-query';
+import InvestReturns from '../../Components/Explore/InvestmentReturns';
+
 
 const getBasketData = async (bid) =>
-  (await fetch('https://basketo-api.herokuapp.com/api/basket/' + bid)).json();
+  // (await fetch('https://basketo-api.herokuapp.com/api/basket/' + bid)).json();
+  (await fetch(process.env.NEXT_PUBLIC_BACKEND_API +'/basket/' +  bid)).json()
 
 const getGraphData = async (basketData, days) =>
-  (
-    await fetch('https://basketo-api.herokuapp.com/api/graph_data', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'post',
-      body: JSON.stringify({ basketData, days }),
-    })
-  ).json();
+  {
+    console.log(basketData)
+    return (
+      await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/graph_data', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'post',
+        body: JSON.stringify({ basketData, days }),
+      })
+    ).json();
+  };
+  
 
 const Basket = () => {
   const router = useRouter();
@@ -52,6 +59,7 @@ const Basket = () => {
     },
     enabled: !!bid,
   });
+  console.log(basket)
 
   const {
     data: graphData,
@@ -235,6 +243,10 @@ const Basket = () => {
               </Grid>
             ))}
           </Box>
+
+          <Box sx={{ mb: 4 }}>
+			  	<InvestReturns />
+			  </Box>
 
           <Box>
             <Typography variant="h5">About</Typography>

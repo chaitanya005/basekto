@@ -57,7 +57,7 @@ const Tokens = ({ selectedTokens, handleRatio, handleRemove }) => {
                 </Grid>
                 <Grid>
                   <MyTextField
-                    value={token.ratio}
+                    value={token.weight}
                     type={'number'}
                     label="Ratio"
                     InputProps={{

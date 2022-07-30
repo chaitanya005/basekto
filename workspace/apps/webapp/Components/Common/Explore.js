@@ -8,7 +8,6 @@ import Graph from './Graph';
 // ratio -> weight
 
 const Explore = ({ selectedTokens, graphData, setDays, basketDetails }) => {
-
   return (
     <>
       <Box
@@ -19,8 +18,8 @@ const Explore = ({ selectedTokens, graphData, setDays, basketDetails }) => {
       >
         <Box display="flex" alignItems="center" sx={{ '> *': { mr: 2 } }}>
           <Avatar
-            src={ basketDetails.image ?? 'default' }
-            alt={ basketDetails.symbol + ' logo' }
+            src={basketDetails.image ?? 'default'}
+            alt={basketDetails.symbol + ' logo'}
             sx={{ width: 48, height: 48 }}
           />
 
@@ -102,7 +101,7 @@ const Explore = ({ selectedTokens, graphData, setDays, basketDetails }) => {
                   textTransform: 'capitalize',
                 }}
               >
-                {coin.ratio}%
+                {coin.weight}%
               </Typography>
             </Grid>
           </Grid>

@@ -3,10 +3,11 @@ import { getTokens } from '../../../features/selectTokens';
 import { useSelector } from 'react-redux';
 import Explore from '../../Common/Explore';
 import { getBasketDetails } from '../../../features/basketDetails';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BasketsABI } from '@basketo/contracts';
 import { ethers } from 'ethers';
 import { useMutation } from 'react-query';
+import axios from 'axios';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -16,15 +17,19 @@ const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
 let contract;
 let account;
 
-const createBasket = async (basket) =>
-  await fetch('https://basketo-api.herokuapp.com/api/basket/new', {
+const createNewBasket = async (basket) =>
+  await axios(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`, {
     method: 'POST',
-    body: basket,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: basket,
   });
 
 const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const { selectedTokens } = useSelector(getTokens);
   const { basketDetails } = useSelector(getBasketDetails);
+  const [userAddress, setUserAddress] = useState(null);
   // console.log(basketDetails, selectedTokens);
   // const {mutate:createBasket} = useMutation()
 
@@ -36,6 +41,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
         method: 'eth_requestAccounts',
       });
       const signer = provider.getSigner();
+      setUserAddress(await signer.getAddress());
       contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
       contract?.on('BasketCreated', (tokenId, uri) =>
         console.log('Event emitted this:', parseInt(tokenId), uri)
@@ -45,8 +51,15 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   }, []);
 
   const handleCreate = async () => {
+    const basket = {
+      ...basketDetails,
+      coins: selectedTokens,
+      accountId: userAddress,
+    };
+    console.log(basket);
     const tokenId = await contract.createBasket(account, 'teststring');
     console.log(tokenId);
+    createNewBasket(basket);
   };
 
   return (
@@ -57,21 +70,23 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
         graphData={graphData}
         setDays={setDays}
       />
-      <Button
-        color="primary"
-        variant="contained"
-        sx={{ mr: '10px' }}
-        onClick={handleCreate}
-      >
-        Create
-      </Button>
-      <Button
-        color="primary"
-        variant="outlined"
-        onClick={() => setActiveStep(1)}
-      >
-        Back{' '}
-      </Button>
+      <Grid display={'flex'} justifyContent="space-between" sx={{ mt: '30px' }}>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={() => setActiveStep(1)}
+        >
+          Back{' '}
+        </Button>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={handleCreate}
+          sx={{ padding: '0 20px' }}
+        >
+          Create
+        </Button>
+      </Grid>
     </>
   );
 };
