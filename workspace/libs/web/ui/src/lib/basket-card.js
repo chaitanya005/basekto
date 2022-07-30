@@ -10,7 +10,6 @@ export function BasketCard({
   showGrowth, // Boolean
   showDescription, // Boolean
   showGraph, // Boolean
-  ref,
   ...props
 }) {
   return (
