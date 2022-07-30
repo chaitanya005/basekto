@@ -13,6 +13,7 @@ import Footer from '../../Components/Footer';
 import Graph from '../../Components/Common/Graph';
 import basketsData from '../../Components/Explore/basketsData';
 import { Paper } from '@mui/material';
+import InvestReturns from 'apps/webapp/Components/Explore/InvestmentReturns';
 
 const Basket = () => {
   const router = useRouter();
@@ -171,6 +172,10 @@ const Basket = () => {
                   </Grid>
                 ))}
               </Box>
+
+			  <Box sx={{ mb: 4 }}>
+			  	<InvestReturns />
+			  </Box>
 
               <Box>
                 <Typography variant="h5">About</Typography>
