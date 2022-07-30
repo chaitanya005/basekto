@@ -21,18 +21,15 @@ const getBasketData = async (bid) =>
   (await fetch(process.env.NEXT_PUBLIC_BACKEND_API +'/basket/' +  bid)).json()
 
 const getGraphData = async (basketData, days) =>
-  {
-    console.log(basketData)
-    return (
-      await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/graph_data', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'post',
-        body: JSON.stringify({ basketData, days }),
-      })
-    ).json();
-  };
+  (
+  await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/graph_data', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'post',
+    body: JSON.stringify({ basketData, days }),
+  })
+).json();
   
 
 const Basket = () => {
@@ -162,6 +159,45 @@ const Basket = () => {
                   }}
                 >
                   Token
+                </Typography>
+              </Grid>
+
+              <Grid item>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold',
+                    color: '#777',
+                  }}
+                >
+                  Price
+                </Typography>
+              </Grid>
+
+              <Grid item>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold',
+                    color: '#777',
+                  }}
+                >
+                  Growth Rate {'(100%)'}
+                </Typography>
+              </Grid>
+
+              <Grid item>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold',
+                    color: '#777',
+                  }}
+                >
+                  Growth Rate
                 </Typography>
               </Grid>
 

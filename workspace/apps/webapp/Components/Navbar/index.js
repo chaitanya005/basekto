@@ -1,33 +1,50 @@
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import {
-  Dialog,
-  Typography,
-  useMediaQuery,
-  Divider,
-} from '@mui/material';
+import { Dialog, Typography, useMediaQuery, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
-
+import { ethers } from 'ethers';
+import axios from 'axios';
 
 const pages = [
   { title: 'Explore', path: '/explore' },
-  { title: 'Learn', path: '#' }
+  { title: 'Learn', path: '#' },
 ];
 
 const clientSide = typeof window !== 'undefined';
-const userAddress = '0000xx3453543';
+let account;
 
 const Navbar = () => {
   const router = useRouter();
   const [userRegistered, setUserRegistered] = useState(false);
+  const [userAddress, setUserAddress] = useState(null);
+  const [userBal, setUserBal] = useState(null);
+  const [isUserExist, setIsUserExist] = useState(true);
+
+  const connectWallet = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    [account] = await window.ethereum.request({
+      method: 'eth_requestAccounts',
+    });
+    const signer = provider.getSigner();
+    setUserAddress(await signer.getAddress());
+    let balance = await provider.getBalance(account);
+    setUserBal(ethers.utils.formatEther(balance));
+    const response = await axios.get(
+      `${
+        process.env.NEXT_PUBLIC_BACKEND_API
+      }/user/exist?userAddress=${await signer.getAddress()}`
+    );
+    setIsUserExist(response.data.isExist);
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -60,14 +77,15 @@ const Navbar = () => {
           </Box>
           <Box>
             {pages.map((page) => (
-              <Link href={ page.path } key={ page.title }>
+              <Link href={page.path} key={page.title}>
                 <a>
                   <Button
-                    sx={{fontSize:{xs:'10px',md:'14px'}}}
+                    sx={{ fontSize: { xs: '10px', md: '14px' } }}
                     // onClick={}
-                    variant="text" color="primary"
+                    variant="text"
+                    color="primary"
                   >
-                    { page.title }
+                    {page.title}
                   </Button>
                 </a>
               </Link>
@@ -75,19 +93,27 @@ const Navbar = () => {
           </Box>
 
           <div style={{ display: 'flex' }}>
-            <Button
-              sx={{ fontSize: { xs: '10px', md: '14px' } }}
-              variant="outlined"
-              onClick={() =>
-                typeof window.ethereum === 'undefined'
-                  ? router.push({ hash: '#connect' })
-                  : !userRegistered
-                    ? router.push({ hash: '#register' })
-                    : router.push('/explore')
-              }
-            >
-              App
-            </Button>
+            {!userAddress ? (
+              <Button
+                sx={{ fontSize: { xs: '10px', md: '14px' } }}
+                variant="outlined"
+                // onClick={() =>
+                //   typeof window.ethereum === 'undefined'
+                //     ? router.push({ hash: '#connect' })
+                //     : !userRegistered
+                //     ? router.push({ hash: '#register' })
+                //     : router.push('/explore')
+                // }
+                onClick={() => connectWallet()}
+              >
+                Connect Wallet
+              </Button>
+            ) : (
+              <Typography>
+                {userAddress.slice(0, 4)}...
+                {userAddress.slice(34, 42)}
+              </Typography>
+            )}
 
             <Dialog
               open={
@@ -117,20 +143,17 @@ const Navbar = () => {
               </Box>
             </Dialog>
 
-            <CreateAccountDialog
-              isOpen={
-                !userRegistered &&
-                router.asPath.split('#')[1] === 'register'
-              }
-              onClose={ () => router.push({ hash: '' }) }
-              userAddress={ userAddress }
-              onAccountCreation={
-                () => {
+            {userAddress && (
+              <CreateAccountDialog
+                isOpen={!isUserExist}
+                onClose={() => router.push({ hash: '' })}
+                userAddress={userAddress}
+                onAccountCreation={() => {
                   setUserRegistered(true);
                   router.push('/explore');
-                }
-              }
-            />
+                }}
+              />
+            )}
           </div>
         </Toolbar>
       </Container>

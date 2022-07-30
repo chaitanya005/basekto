@@ -8,6 +8,7 @@ import { BasketsABI } from '@basketo/contracts';
 import { ethers } from 'ethers';
 import { useMutation } from 'react-query';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -30,6 +31,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const { selectedTokens } = useSelector(getTokens);
   const { basketDetails } = useSelector(getBasketDetails);
   const [userAddress, setUserAddress] = useState(null);
+  const router = useRouter();
   // console.log(basketDetails, selectedTokens);
   // const {mutate:createBasket} = useMutation()
 
@@ -56,10 +58,10 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
       coins: selectedTokens,
       accountId: userAddress,
     };
-    console.log(basket);
     const tokenId = await contract.createBasket(account, 'teststring');
     console.log(tokenId);
-    createNewBasket(basket);
+    const newBasket = await createNewBasket(basket);
+    newBasket ? router.push('/explore') : console.log('Not creating');
   };
 
   return (
