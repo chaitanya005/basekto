@@ -1,95 +1,89 @@
 import Link from 'next/link';
-// import { useState, useEffect } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import basketsData from '../basketsData';
+import { Snackbar, Alert, Skeleton } from '@mui/material';
+import { useQuery } from 'react-query';
+import { useState } from 'react';
+import { BasketCard } from '@basketo/web-ui';
+
+const getBasketData = async (queryString) =>
+  (
+    await fetch('https://basketo-api.herokuapp.com/api/baskets' + queryString)
+  ).json();
 
 const Baskets = ({ queryString }) => {
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: 'success',
+    message: '',
+  });
 
-    // const [baskets, setBaskets] = useState(null);
-    // const [isLoading, setLoading] = useState(false);
+  const {
+    data: basketsData,
+    isLoading,
+    isFetching,
+  } = useQuery('exploreBaskets', () => getBasketData(queryString), {
+    onError: () => {
+      setAlert({
+        open: true,
+        severity: 'error',
+        message: 'Something went wrong.',
+      });
+    },
+  });
 
-    // useEffect(() => {
-
-    //     setLoading(true);
-    //     fetch('/api/baskets' + queryString)
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             setBaskets(data);
-    //             setLoading(false);
-    //         });
-    // }, [queryString]);
-
-    return (
-
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
-            {/* { isLoading && 'Loading...' } */}
-            <Grid container spacing={ 2 }>
-                { basketsData.map(basket => (
-
-                    <Grid item
-                        key={ basket.symbol }
-                        xs={ 12 } sm={ 6 }
-                        md={ 4 } lg={ 3 }
-                    >
-                        <Link href={ '/explore/' + basket.symbol }>
-                            <a>
-                                <Card
-                                    // elevation={ 1 }
-                                    sx={{
-                                        minHeight: 250,
-                                        borderRadius: '30px'
-                                    }}
-                                >
-                                    <CardHeader
-                                        avatar={
-                                            <Avatar
-                                                src={ basket.image }
-                                                alt={ basket.symbol }
-                                                sx={{ width: 48, height: 48 }}
-                                            />
-                                        }
-                                        sx={{ pt: 3, pb: 0 }}
-                                    />
-
-                                    <CardContent>
-                                        <Typography variant="h5" component="div">
-                                            { basket.name }
-                                        </Typography>
-
-                                        <Typography variant="body2" color="text.secondary">
-                                            { basket.description }
-                                        </Typography>
-
-                                        <Chip
-                                            label={ (basket.growthRate >= 0 && '+') + basket.growthRate + '%' }
-                                            sx={{
-                                                mt: 2,
-                                                height: 'auto',
-                                                background: (basket.growthRate >= 0 ? '#32D583' : '#F04438'),
-                                                color: '#fff',
-                                                fontWeight: 600,
-                                                borderRadius: '0.4rem',
-                                                '& .MuiChip-label': {
-                                                    p: '0.25rem 0.5rem',
-                                                },
-                                            }}
-                                        />
-                                    </CardContent>
-                                </Card>
-                            </a>
-                        </Link>
-                    </Grid>
-                )) }
-            </Grid>
-        </Container>
-    );
+  return (
+    <>
+      <Snackbar
+        onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
+        open={alert.open}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity={alert?.severity} sx={{ width: '100%' }}>
+          {alert?.message}
+        </Alert>
+      </Snackbar>
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
+        <Grid container spacing={2}>
+          {isLoading || isFetching ? (
+            <>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Grid item key={i} xs={12} sm={6} md={4} lg={3}>
+                  <Skeleton
+                    sx={{
+                      borderRadius: '15px',
+                      width: '100%',
+                      height: '300px',
+                    }}
+                    animation="wave"
+                  />
+                </Grid>
+              ))}
+            </>
+          ) : (
+            <>
+              {basketsData?.map((basket) => (
+                <Grid item key={basket.symbol} xs={12} sm={6} md={4} lg={3}>
+                  <Link href={'/explore/' + basket.symbol}>
+                    <BasketCard
+                      data={{
+                        title: basket?.name,
+                        symbol: basket?.symbol,
+                        basketeer: basket?.accountId,
+                        description: basket?.description,
+                      }}
+                      showDescription
+                    />
+                  </Link>
+                </Grid>
+              ))}
+            </>
+          )}
+        </Grid>
+      </Container>
+    </>
+  );
 };
 
 export default Baskets;

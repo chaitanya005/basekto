@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Box, Step, StepLabel, Stepper, Typography } from '@mui/material';
+import {
+  Box,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+  Paper,
+} from '@mui/material';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';

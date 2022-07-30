@@ -6,8 +6,8 @@ import {
   Paper,
   TextField,
   Typography,
+  Card,
 } from '@mui/material';
-import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const MyTextField = styled(TextField)`
@@ -21,11 +21,12 @@ const Tokens = ({ selectedTokens, handleRatio, handleRemove }) => {
     <>
       {selectedTokens &&
         selectedTokens.map((token) => (
-          <Paper
+          <Card
+            // variant="section"
             style={{
-              background: '#f8f9fa',
               textAlign: 'center',
               marginBottom: '10px',
+              borderRadius: '15px',
             }}
             key={token.id}
           >
@@ -76,7 +77,7 @@ const Tokens = ({ selectedTokens, handleRatio, handleRemove }) => {
                 </Grid>
               </Grid>
             </Box>
-          </Paper>
+          </Card>
         ))}
     </>
   );

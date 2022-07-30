@@ -13,8 +13,11 @@ import Footer from '../../Components/Footer';
 import Graph from '../../Components/Common/Graph';
 import { coinsList } from '../../mocks/coins.js';
 import basketsData from '../../Components/Explore/basketsData';
+import { Paper } from '@mui/material';
+import InvestReturns from 'apps/webapp/Components/Explore/InvestmentReturns';
 
 const Basket = () => {
+
 
 	const router = useRouter();
 	const { bid } = router.query;

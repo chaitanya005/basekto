@@ -1,11 +1,26 @@
 import './styles.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { ThemeProvider } from '@basketo/web-ui';
 import { Provider } from 'react-redux';
 import { store } from '../app/store';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchInterval: Infinity,
+      cacheTime: Infinity,
+      retry: false,
+      retryOnMount: false,
+    },
+    mutations: {
+      retry: false,
+    },
+  },
+});
 
 function App({ Component, pageProps }) {
   return (
@@ -13,7 +28,6 @@ function App({ Component, pageProps }) {
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryClientProvider>
       </Provider>
     </ThemeProvider>

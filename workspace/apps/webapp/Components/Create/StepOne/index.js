@@ -24,12 +24,6 @@ import {
 } from '../../../features/selectTokens';
 import Tokens from './Tokens';
 
-const MyTextField = styled(TextField)`
-  & .MuiOutlinedInput-root {
-    border-radius: 10px;
-  }
-`;
-
 const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [alert, setAlert] = useState({
@@ -56,7 +50,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
         id: symbol[0].id,
         name: val,
         symbol: symbol[0].symbol,
-        ratio: 0,
+        weight: 0,
         img: symbol[0].image_url,
       };
       dispatch(addToken({ token }));
@@ -141,7 +135,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
           options={coinsList.map((option) => option.name)}
           sx={{ marginTop: '20px' }}
           renderInput={(params) => (
-            <MyTextField {...params} label="Select Tokens" />
+            <TextField {...params} label="Select Tokens" />
           )}
         />
 
