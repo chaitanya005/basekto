@@ -8,17 +8,16 @@ import {
   Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
 const Graph = ({ data, setDays, }) => {
+
   const theme = useTheme();
-  const aspect = useMediaQuery(theme.breakpoints.up('sm')) ? 2.25 : 1.25;
+  const sm = useMediaQuery(theme.breakpoints.down('sm'));
   const [timeFrame, setTimeFrame] = useState(Object.keys(timeFrames)[0]);
 
   const handleTimeFrame = (event, newTimeFrame) => {
@@ -62,13 +61,13 @@ const Graph = ({ data, setDays, }) => {
         {timeFrameBtns}
       </ToggleButtonGroup>
 
-      <ResponsiveContainer width="100%" height="auto" aspect={aspect}>
+      <ResponsiveContainer width="100%" height="auto" aspect={ sm ? 1.25 : 2.25 }>
         <LineChart
           width={500}
           height={300}
           data={data}
           margin={{
-            left: -36,
+            left:  sm ? -24 : -16,
           }}
           style={{
             fontSize: 'clamp(0.75rem, 0.6rem + 1vw, 1rem)',

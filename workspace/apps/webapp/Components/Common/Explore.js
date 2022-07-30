@@ -2,7 +2,13 @@ import { Avatar, Box, Button, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import Graph from './Graph';
 
+// coin property name changes:
+// (from -> to)
+// img -> image
+// ratio -> weight
+
 const Explore = ({ selectedTokens, graphData, setDays, basketDetails }) => {
+
   return (
     <>
       <Box
@@ -13,8 +19,8 @@ const Explore = ({ selectedTokens, graphData, setDays, basketDetails }) => {
       >
         <Box display="flex" alignItems="center" sx={{ '> *': { mr: 2 } }}>
           <Avatar
-            // src={basket.image}
-            // alt={basket.symbol + ' logo'}
+            src={ basketDetails.image ?? 'default' }
+            alt={ basketDetails.symbol + ' logo' }
             sx={{ width: 48, height: 48 }}
           />
 

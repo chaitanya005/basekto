@@ -1,3 +1,4 @@
+import NextLink from "next/link";
 import {
   Button,
   Container,
@@ -66,13 +67,17 @@ const CreateBasketsDescription = () => {
         for personal asset management.
       </p>
 
-      <Button
-        variant="contained"
-        sx={{ fontSize: "18px" }}
-        startIcon={<AddCircleOutlineIcon sx={{ fontSize: "25px" }} />}
-      >
-        Create Basket
-      </Button>
+      <NextLink href="/create">
+        <a>
+          <Button
+            variant="contained"
+            sx={{ fontSize: "18px" }}
+            startIcon={<AddCircleOutlineIcon sx={{ fontSize: "25px" }} />}
+          >
+            Create Basket
+          </Button>
+        </a>
+      </NextLink>
     </>
   );
 };

@@ -16,7 +16,11 @@ import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
 
-const pages = ['Explore', 'Learn'];
+
+const pages = [
+  { title: 'Explore', path: '/explore' },
+  { title: 'Learn', path: '#' }
+];
 
 const clientSide = typeof window !== 'undefined';
 const userAddress = '0000xx3453543';
@@ -56,15 +60,17 @@ const Navbar = () => {
           </Box>
           <Box>
             {pages.map((page) => (
-              <Button
-                key={page}
-                sx={{ fontSize: { xs: '10px', md: '14px' } }}
-                // onClick={}
-                variant="text"
-                color="primary"
-              >
-                {page}
-              </Button>
+              <Link href={ page.path } key={ page.title }>
+                <a>
+                  <Button
+                    sx={{fontSize:{xs:'10px',md:'14px'}}}
+                    // onClick={}
+                    variant="text" color="primary"
+                  >
+                    { page.title }
+                  </Button>
+                </a>
+              </Link>
             ))}
           </Box>
 
