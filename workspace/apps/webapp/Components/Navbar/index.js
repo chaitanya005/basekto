@@ -1,11 +1,11 @@
 import Link from 'next/link';
+import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import {
-  IconButton,
   Dialog,
   Typography,
   useMediaQuery,
@@ -14,13 +14,16 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
+import CreateAccountDialog from './CreateAccountDialog';
 
 const pages = ['Explore', 'Learn'];
 
 const clientSide = typeof window !== 'undefined';
+const userAddress = '0000xx3453543';
 
 const Navbar = () => {
   const router = useRouter();
+  const [userRegistered, setUserRegistered] = useState(false);
   return (
     <AppBar
       position="fixed"
@@ -72,7 +75,9 @@ const Navbar = () => {
               onClick={() =>
                 typeof window.ethereum === 'undefined'
                   ? router.push({ hash: '#connect' })
-                  : router.push('/explore')
+                  : !userRegistered
+                    ? router.push({ hash: '#register' })
+                    : router.push('/explore')
               }
             >
               App
@@ -90,7 +95,7 @@ const Navbar = () => {
                 <Typography variant="h5">Install MetaMask</Typography>
                 <Divider sx={{ m: '10px 0px' }} />
                 <Typography>
-                  You'll need a Web3 wallet to create and explore Baskets.
+                  You&apos;ll need a Web3 wallet to create and explore Baskets.
                 </Typography>
                 <br />
                 <Button
@@ -105,6 +110,21 @@ const Navbar = () => {
                 </Button>
               </Box>
             </Dialog>
+
+            <CreateAccountDialog
+              isOpen={
+                !userRegistered &&
+                router.asPath.split('#')[1] === 'register'
+              }
+              onClose={ () => router.push({ hash: '' }) }
+              userAddress={ userAddress }
+              onAccountCreation={
+                () => {
+                  setUserRegistered(true);
+                  router.push('/explore');
+                }
+              }
+            />
           </div>
         </Toolbar>
       </Container>
