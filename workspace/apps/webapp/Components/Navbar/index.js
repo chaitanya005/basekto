@@ -25,25 +25,42 @@ const Navbar = () => {
   const router = useRouter();
   const [userRegistered, setUserRegistered] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
-  const [userBal, setUserBal] = useState(null);
+  const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
 
+  useEffect(() => {
+    setUserAddress(localStorage.getItem('address'));
+  }, []);
+
   const connectWallet = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    [account] = await window.ethereum.request({
+    account = await window.ethereum.request({
       method: 'eth_requestAccounts',
     });
-    const signer = provider.getSigner();
-    setUserAddress(await signer.getAddress());
-    let balance = await provider.getBalance(account);
-    setUserBal(ethers.utils.formatEther(balance));
+    accountChangedHandler(account);
+  };
+
+  const accountChangedHandler = async (newAccount) => {
+    localStorage.setItem('address', newAccount[0]);
+    setUserAddress(localStorage.getItem('address'));
+    getAccountBalance(newAccount);
     const response = await axios.get(
-      `${
-        process.env.NEXT_PUBLIC_BACKEND_API
-      }/user/exist?userAddress=${await signer.getAddress()}`
+      `${process.env.NEXT_PUBLIC_BACKEND_API}/user/exist?userAddress=${newAccount}`
     );
     setIsUserExist(response.data.isExist);
   };
+
+  const getAccountBalance = async (account) => {
+    const balance = await window.ethereum.request({
+      method: 'eth_getBalance',
+      params: [account, 'latest'],
+    });
+    setUserBalance(ethers.utils.formatEther(balance));
+  };
+
+  typeof window !== 'undefined' &&
+    window.ethereum.on('accountsChanged', (account) =>
+      accountChangedHandler(account)
+    );
 
   return (
     <AppBar
@@ -81,7 +98,6 @@ const Navbar = () => {
                 <a>
                   <Button
                     sx={{ fontSize: { xs: '10px', md: '14px' } }}
-                    // onClick={}
                     variant="text"
                     color="primary"
                   >
@@ -93,23 +109,18 @@ const Navbar = () => {
           </Box>
 
           <div style={{ display: 'flex' }}>
-            {!userAddress ? (
+            {!userAddress || userAddress == 'undefined' ? (
               <Button
                 sx={{ fontSize: { xs: '10px', md: '14px' } }}
                 variant="outlined"
-                // onClick={() =>
-                //   typeof window.ethereum === 'undefined'
-                //     ? router.push({ hash: '#connect' })
-                //     : !userRegistered
-                //     ? router.push({ hash: '#register' })
-                //     : router.push('/explore')
-                // }
                 onClick={() => connectWallet()}
               >
                 Connect Wallet
               </Button>
             ) : (
               <Typography>
+                {userBalance}
+                {'     '}
                 {userAddress.slice(0, 4)}...
                 {userAddress.slice(34, 42)}
               </Typography>

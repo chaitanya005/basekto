@@ -8,7 +8,9 @@ import { BasketCard } from '@basketo/web-ui';
 
 const getBasketData = async (queryString) =>
   (
-    await fetch('https://basketo-api.herokuapp.com/api/baskets' + queryString)
+    await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_API}/api/baskets` + queryString
+    )
   ).json();
 
 const Baskets = ({ queryString }) => {
@@ -74,6 +76,7 @@ const Baskets = ({ queryString }) => {
                         description: basket?.description,
                       }}
                       showDescription
+                      showGrowth
                     />
                   </Link>
                 </Grid>

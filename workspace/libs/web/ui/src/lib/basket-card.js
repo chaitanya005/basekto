@@ -1,4 +1,11 @@
-import { Avatar, Card, CardHeader, Divider, Typography } from '@mui/material';
+import {
+  Avatar,
+  Card,
+  CardHeader,
+  Chip,
+  Divider,
+  Typography,
+} from '@mui/material';
 import { Box } from '@mui/system';
 
 //this is a presentational component for an individual basket card
@@ -20,10 +27,13 @@ export function BasketCard({
         borderRadius: '15px',
         cursor: 'pointer',
         transition: '200ms',
+        border: 'none',
         '&:hover': {
           borderColor: 'secondary.main',
           transform: 'translate(0px,-1.5px)',
         },
+        boxShadow:
+          'rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px',
         ...sx,
       }}
       variant="outlined"
@@ -54,19 +64,36 @@ export function BasketCard({
           </Typography>
         )}
       </Box>
-      <Divider sx={{ margin: '0px 20px' }} />
       {showDescription && (
         <>
           <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
             {data?.description}
           </Typography>
-          <Divider sx={{ margin: '0px 20px' }} />
         </>
       )}
       <Box sx={{ display: 'flex', alignItems: 'center', padding: '15px 20px' }}>
         <Avatar sx={{ width: '1.3em', height: '1.3em' }} />
-        &nbsp;&nbsp;<Typography>{data?.basketeer || 'Basketeer'}</Typography>
+        &nbsp;&nbsp;
+        <Typography>
+          {data?.basketeer.slice(0, 4) || 'Basketeer'}...
+          {data?.basketeer.slice(34, 42)}
+        </Typography>
       </Box>
+      <Chip
+        label={'2.34' + '%'}
+        sx={{
+          margin: '15px 20px',
+          mt: 2,
+          height: 'auto',
+          background: 24 >= 0 ? '#32D583' : '#F04438',
+          color: '#fff',
+          fontWeight: 600,
+          borderRadius: '0.4rem',
+          '& .MuiChip-label': {
+            p: '0.25rem 0.5rem',
+          },
+        }}
+      />
     </Card>
   );
 }

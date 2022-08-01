@@ -16,9 +16,7 @@ import { useQuery } from 'react-query';
 import InvestReturns from '../../Components/Explore/InvestmentReturns';
 
 
-const getBasketData = async (bid) =>
-  // (await fetch('https://basketo-api.herokuapp.com/api/basket/' + bid)).json();
-  (await fetch(process.env.NEXT_PUBLIC_BACKEND_API +'/basket/' +  bid)).json()
+const getBasketData = async (bid) => (await fetch(process.env.NEXT_PUBLIC_BACKEND_API +'/basket/' +  bid)).json()
 
 const getGraphData = async (basketData, days) =>
   (

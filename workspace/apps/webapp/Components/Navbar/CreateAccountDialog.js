@@ -21,7 +21,7 @@ const CreateAccountDialog = ({
   onAccountCreation,
 }) => {
   const mutation = useMutation((accountDetails) => {
-    return fetch('https://basketo-api.herokuapp.com/api/user/new', {
+    return fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/user/new`, {
       headers: {
         'Content-Type': 'application/json',
       },
