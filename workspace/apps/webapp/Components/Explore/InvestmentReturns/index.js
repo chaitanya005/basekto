@@ -11,10 +11,13 @@ import {
   Typography,
 } from '@mui/material';
 import EjectIcon from '@mui/icons-material/Eject';
+import { useRouter } from 'next/router';
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
 const InvestReturns = () => {
+  const router = useRouter();
+  const { bid } = router.query;
   const currency = '$';
   const minInvestAmount = 100,
     maxInvestAmount = 5000,
@@ -28,20 +31,25 @@ const InvestReturns = () => {
   const [timeFrame, setTimeFrame] = useState(Object.keys(timeFrames)[0]);
 
   useEffect(() => {
-    const id = '62e1638703f317bf1515abd4';
-    const days = timeFrames[timeFrame];
-    const amount = investAmount.main;
-    const queryParams = `id=${id}&days=${days}&amount=${amount}`;
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/calculate?${queryParams}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'get',
-    })
-      .then((res) => res.json())
-      .then((data) => setResult(data))
-      .catch(console.log);
-  }, [investAmount.main, timeFrame]);
+    getReturns();
+  }, [investAmount.main, timeFrame, bid]);
+
+  const getReturns = () => {
+    if (bid) {
+      const days = timeFrames[timeFrame];
+      const amount = investAmount.main;
+      const queryParams = `id=${bid}&days=${days}&amount=${amount}`;
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/calculate?${queryParams}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'get',
+      })
+        .then((res) => res.json())
+        .then((data) => setResult(data))
+        .catch(console.log);
+    }
+  };
 
   const handleInvestAmountChange = (value) => {
     setInvestAmount({ temp: value, main: value });
@@ -238,7 +246,7 @@ const InvestReturns = () => {
               {Math.round(result?.returns)}
             </Typography>
             <Typography fontSize="small">
-              Returns: {result?.growthPercentage.toFixed(2)}% p.a
+              Returns: {result?.growthPercentage?.toFixed(2)}% p.a
             </Typography>
           </Paper>
         </Grid>

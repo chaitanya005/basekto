@@ -74,7 +74,6 @@ const Baskets = ({ queryString }) => {
                         description: basket?.description,
                       }}
                       showDescription
-                      showGrowth
                     />
                   </Link>
                 </Grid>

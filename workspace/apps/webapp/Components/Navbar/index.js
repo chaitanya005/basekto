@@ -15,6 +15,7 @@ import axios from 'axios';
 
 const pages = [
   { title: 'Explore', path: '/explore' },
+  { title: 'Create', path: '/create' },
   { title: 'Learn', path: '#' },
 ];
 
