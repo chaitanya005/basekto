@@ -67,11 +67,16 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   return (
     <>
       <Explore
-        selectedTokens={selectedTokens}
-        basketDetails={basketDetails}
-        graphData={graphData}
-        setDays={setDays}
+        basket={{
+          ...basketDetails,
+          coins: selectedTokens,
+          accountId: userAddress,
+        }}
+        graphData={ graphData }
+        setDays={ setDays }
+        showDetails={ false }
       />
+
       <Grid display={'flex'} justifyContent="space-between" sx={{ mt: '30px' }}>
         <Button
           color="primary"
