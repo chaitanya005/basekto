@@ -8,9 +8,7 @@ import { BasketCard } from '@basketo/web-ui';
 
 const getBasketData = async (queryString) =>
   (
-    await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/api/baskets` + queryString
-    )
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/baskets` + queryString)
   ).json();
 
 const Baskets = ({ queryString }) => {
