@@ -5,13 +5,20 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Dialog, Typography, useMediaQuery, Divider } from '@mui/material';
+import {
+  Dialog,
+  Typography,
+  useMediaQuery,
+  Divider,
+  Grid,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
 import { ethers } from 'ethers';
 import axios from 'axios';
+import TelegramIcon from '@mui/icons-material/Telegram';
 
 const pages = [
   { title: 'Explore', path: '/explore' },
@@ -119,12 +126,27 @@ const Navbar = () => {
                 Connect Wallet
               </Button>
             ) : (
-              <Typography>
-                {userBalance}
-                {'     '}
-                {userAddress.slice(0, 4)}...
-                {userAddress.slice(34, 42)}
-              </Typography>
+              <Grid display={'flex'} gap={'1rem'} alignItems={'center'}>
+                <Typography>
+                  {userBalance}
+                  {'     '}
+                  {userAddress.slice(0, 4)}...
+                  {userAddress.slice(34, 42)}
+                </Typography>
+                <a
+                  href="https://t.me/basketofinance"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    endIcon={<TelegramIcon />}
+                  >
+                    Early Access
+                  </Button>
+                </a>
+              </Grid>
             )}
 
             <Dialog
