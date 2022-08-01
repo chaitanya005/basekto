@@ -14,8 +14,7 @@ import {
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
-const Graph = ({ data, setDays, }) => {
-
+const Graph = ({ data, setDays }) => {
   const theme = useTheme();
   const sm = useMediaQuery(theme.breakpoints.down('sm'));
   const [timeFrame, setTimeFrame] = useState(Object.keys(timeFrames)[0]);
@@ -44,7 +43,6 @@ const Graph = ({ data, setDays, }) => {
     setDays(timeFrames[timeFrame]);
   }, [setDays, timeFrame]);
 
-
   return (
     <>
       <ToggleButtonGroup
@@ -61,13 +59,13 @@ const Graph = ({ data, setDays, }) => {
         {timeFrameBtns}
       </ToggleButtonGroup>
 
-      <ResponsiveContainer width="100%" height="auto" aspect={ sm ? 1.25 : 2.25 }>
+      <ResponsiveContainer width="100%" height="auto" aspect={sm ? 1.25 : 2.25}>
         <LineChart
           width={500}
           height={300}
           data={data}
           margin={{
-            left:  sm ? -24 : -16,
+            left: sm ? -24 : -16,
           }}
           style={{
             fontSize: 'clamp(0.75rem, 0.6rem + 1vw, 1rem)',
@@ -77,6 +75,7 @@ const Graph = ({ data, setDays, }) => {
           <YAxis />
           <Tooltip />
           <Line
+            dot={false}
             type="monotone"
             dataKey="point"
             stroke="#8884d8"

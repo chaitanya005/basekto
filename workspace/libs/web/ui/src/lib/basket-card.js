@@ -17,6 +17,7 @@ export function BasketCard({
   showGrowth, // Boolean
   showDescription, // Boolean
   showGraph, // Boolean
+  hideChip,
   ...props
 }) {
   return (
@@ -79,21 +80,23 @@ export function BasketCard({
           {data?.basketeer.slice(34, 42)}
         </Typography>
       </Box>
-      <Chip
-        label={'2.34' + '%'}
-        sx={{
-          margin: '15px 20px',
-          mt: 2,
-          height: 'auto',
-          background: 24 >= 0 ? '#32D583' : '#F04438',
-          color: '#fff',
-          fontWeight: 600,
-          borderRadius: '0.4rem',
-          '& .MuiChip-label': {
-            p: '0.25rem 0.5rem',
-          },
-        }}
-      />
+      {!hideChip && (
+        <Chip
+          label={data?.basketGrowth?.toFixed(2) + '%'}
+          sx={{
+            margin: '15px 20px',
+            mt: 2,
+            height: 'auto',
+            background: `${data?.basketGrowth >= 0 ? '#32D583' : '#F04438'}`,
+            color: '#fff',
+            fontWeight: 600,
+            borderRadius: '0.4rem',
+            '& .MuiChip-label': {
+              p: '0.25rem 0.5rem',
+            },
+          }}
+        />
+      )}
     </Card>
   );
 }

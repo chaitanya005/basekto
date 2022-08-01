@@ -5,8 +5,16 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import Graph from './Graph';
-import { Skeleton, Tooltip } from '@mui/material';
+import {
+  Alert,
+  InputAdornment,
+  Skeleton,
+  Snackbar,
+  TextField,
+  Tooltip,
+} from '@mui/material';
 import InvestReturns from '../Explore/InvestmentReturns';
+import { useState } from 'react';
 
 const Explore = ({
   basket,
@@ -15,10 +23,25 @@ const Explore = ({
   isFetching,
   graphData,
   setDays,
-  coinGrowthRates,
+  coins,
 }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => setOpen(!open);
+
   return (
     <>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Your Input has been saved!
+        </Alert>
+      </Snackbar>
+
       <Box
         display="flex"
         alignItems="center"
@@ -55,13 +78,34 @@ const Explore = ({
             </Typography>
           )}
         </Box>
-
         {showDetails && (
-          <Tooltip title="Coming soon!">
-            <Button variant="contained" size="large">
-              Invest
-            </Button>
-          </Tooltip>
+          <Box display={'flex'} gap={'2rem'}>
+            <Box>
+              <TextField
+                variant="outlined"
+                color="primary"
+                placeholder="Enter limit"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <Button variant="contained" onClick={() => setOpen(true)}>
+                        Alert Me!
+                      </Button>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+
+            <Tooltip title="Coming soon!">
+              <Button
+                variant="contained"
+                sx={{ width: '8em', fontSize: '18px' }}
+              >
+                Invest
+              </Button>
+            </Tooltip>
+          </Box>
         )}
       </Box>
 
@@ -87,44 +131,48 @@ const Explore = ({
           </Grid>
 
           <Grid justifyContent={'space-between'} display="flex" gap="5rem">
-            <Grid item>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                  color: '#777',
-                }}
-              >
-                Price
-              </Typography>
-            </Grid>
+            {showDetails && (
+              <>
+                <Grid item>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontSize: '0.9rem',
+                      fontWeight: 'bold',
+                      color: '#777',
+                    }}
+                  >
+                    Price
+                  </Typography>
+                </Grid>
 
-            <Grid item>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                  color: '#777',
-                }}
-              >
-                Growth Rate {'(100%)'}
-              </Typography>
-            </Grid>
+                <Grid item>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontSize: '0.9rem',
+                      fontWeight: 'bold',
+                      color: '#777',
+                    }}
+                  >
+                    Growth Rate {'(100%)'}
+                  </Typography>
+                </Grid>
 
-            <Grid item>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                  color: '#777',
-                }}
-              >
-                Growth Rate
-              </Typography>
-            </Grid>
+                <Grid item>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontSize: '0.9rem',
+                      fontWeight: 'bold',
+                      color: '#777',
+                    }}
+                  >
+                    Growth Rate
+                  </Typography>
+                </Grid>
+              </>
+            )}
 
             <Grid item>
               <Typography
@@ -143,136 +191,146 @@ const Explore = ({
 
         <Divider sx={{ mt: 1, mb: 1.5 }} />
 
-        {(isLoading || isFetching
-          ? Array.from({ length: 3 })
-          : coinGrowthRates
-        )?.map((coin, i) => (
-          <Grid container key={i} justifyContent={'space-between'}>
-            <Grid>
+        {(isLoading || isFetching ? Array.from({ length: 3 }) : coins)?.map(
+          (coin, i) => (
+            <Grid container key={i} justifyContent={'space-between'}>
+              <Grid>
+                <Grid
+                  item
+                  display="flex"
+                  alignItems="center"
+                  sx={{ mb: 2, maxWidth: '500px' }}
+                >
+                  {isLoading || isFetching ? (
+                    <Skeleton
+                      variant="circular"
+                      sx={{ width: 28, height: 28 }}
+                      animation="wave"
+                    />
+                  ) : (
+                    <Avatar
+                      src={coin?.img}
+                      alt={coin?.name + ' logo'}
+                      sx={{ mr: 2.5, width: 28, height: 28 }}
+                    />
+                  )}
+
+                  {isLoading || isFetching ? (
+                    <Skeleton
+                      variant="text"
+                      sx={{ width: '60px', ml: '20px' }}
+                    />
+                  ) : (
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontSize: '1rem',
+                        fontWeight: 'bold',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {coin.name}
+                    </Typography>
+                  )}
+                </Grid>
+              </Grid>
+
               <Grid
-                item
+                justifyContent={'space-between'}
                 display="flex"
-                alignItems="center"
-                sx={{ mb: 2, maxWidth: '500px' }}
+                gap="8.5rem"
               >
-                {isLoading || isFetching ? (
-                  <Skeleton
-                    variant="circular"
-                    sx={{ width: 28, height: 28 }}
-                    animation="wave"
-                  />
-                ) : (
-                  <Avatar
-                    src={coin?.img}
-                    alt={coin?.name + ' logo'}
-                    sx={{ mr: 2.5, width: 28, height: 28 }}
-                  />
+                {showDetails && (
+                  <>
+                    <Grid item>
+                      {isLoading || isFetching ? (
+                        <Skeleton
+                          variant="text"
+                          sx={{ width: '30px' }}
+                          animation="wave"
+                        />
+                      ) : (
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontSize: '1rem',
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                          }}
+                        >
+                          $ {coin?.price}
+                        </Typography>
+                      )}
+                    </Grid>
+
+                    <Grid item>
+                      {isLoading || isFetching ? (
+                        <Skeleton
+                          variant="text"
+                          sx={{ width: '30px' }}
+                          animation="wave"
+                        />
+                      ) : (
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontSize: '1rem',
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                          }}
+                        >
+                          {coin?.growthRate?.toFixed(2)}%
+                        </Typography>
+                      )}
+                    </Grid>
+
+                    <Grid item>
+                      {isLoading || isFetching ? (
+                        <Skeleton
+                          variant="text"
+                          sx={{ width: '30px' }}
+                          animation="wave"
+                        />
+                      ) : (
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontSize: '1rem',
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                          }}
+                        >
+                          {coin?.withWeight?.toFixed(2)}%
+                        </Typography>
+                      )}
+                    </Grid>
+                  </>
                 )}
 
-                {isLoading || isFetching ? (
-                  <Skeleton variant="text" sx={{ width: '60px', ml: '20px' }} />
-                ) : (
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontSize: '1rem',
-                      fontWeight: 'bold',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {coin.name}
-                  </Typography>
-                )}
+                <Grid item>
+                  {isLoading || isFetching ? (
+                    <Skeleton
+                      variant="text"
+                      sx={{ width: '30px' }}
+                      animation="wave"
+                    />
+                  ) : (
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontSize: '1rem',
+                        fontWeight: 'bold',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {coin?.weight.toFixed(2)}%
+                    </Typography>
+                  )}
+                </Grid>
               </Grid>
             </Grid>
-
-            <Grid justifyContent={'space-between'} display="flex" gap="8.5rem">
-              <Grid item>
-                {isLoading || isFetching ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ width: '30px' }}
-                    animation="wave"
-                  />
-                ) : (
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontSize: '1rem',
-                      fontWeight: 'bold',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    $ {coin?.price}
-                  </Typography>
-                )}
-              </Grid>
-
-              <Grid item>
-                {isLoading || isFetching ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ width: '30px' }}
-                    animation="wave"
-                  />
-                ) : (
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontSize: '1rem',
-                      fontWeight: 'bold',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {coin?.growthRate.toFixed(2)}%
-                  </Typography>
-                )}
-              </Grid>
-
-              <Grid item>
-                {isLoading || isFetching ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ width: '30px' }}
-                    animation="wave"
-                  />
-                ) : (
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontSize: '1rem',
-                      fontWeight: 'bold',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {coin?.withWeight.toFixed(2)}%
-                  </Typography>
-                )}
-              </Grid>
-
-              <Grid item>
-                {isLoading || isFetching ? (
-                  <Skeleton
-                    variant="text"
-                    sx={{ width: '30px' }}
-                    animation="wave"
-                  />
-                ) : (
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontSize: '1rem',
-                      fontWeight: 'bold',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {coin?.weight}%
-                  </Typography>
-                )}
-              </Grid>
-            </Grid>
-          </Grid>
-        ))}
+          )
+        )}
       </Box>
 
       {showDetails && (

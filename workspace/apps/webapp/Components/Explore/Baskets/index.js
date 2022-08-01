@@ -63,7 +63,7 @@ const Baskets = ({ queryString }) => {
             </>
           ) : (
             <>
-              {basketsData?.map((basket, i) => (
+              {basketsData.baskets?.map((basket, i) => (
                 <Grid item key={i} xs={12} sm={6} md={4} lg={3}>
                   <Link href={'/explore/' + basket?._id}>
                     <BasketCard
@@ -72,6 +72,7 @@ const Baskets = ({ queryString }) => {
                         symbol: basket?.symbol,
                         basketeer: basket?.accountId,
                         description: basket?.description,
+                        basketGrowth: basket?.growthRate,
                       }}
                       showDescription
                     />

@@ -99,7 +99,7 @@ const InvestReturns = () => {
   return (
     <Box>
       <Typography variant="h5" sx={{ mb: 2 }}>
-        Return on Investment(ROI)
+        Return on Investment (ROI)
       </Typography>
 
       <Grid
@@ -246,7 +246,7 @@ const InvestReturns = () => {
               {Math.round(result?.returns)}
             </Typography>
             <Typography fontSize="small">
-              Returns: {result?.growthPercentage?.toFixed(2)}% p.a
+              Returns: {result?.growthPercentage?.toFixed(2)}%
             </Typography>
           </Paper>
         </Grid>

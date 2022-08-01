@@ -1,57 +1,49 @@
-import {
-  Container,
-  Grid,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { BasketCard } from "@basketo/web-ui";
+import { Container, Grid, Tooltip, Typography } from '@mui/material';
+import { BasketCard } from '@basketo/web-ui';
 
-const baskets =  [{
-  title: "Defi Basket",
-  symbol: "DEFB",
-  growth: {percent:"+2.03",period:"hour"},
-  basketeer: "Defi Dao",
-},
-{
-  title: "Hodl Basket",
-  symbol: "HODL",
-  growth: {percent:"+1.03",period:"hour"},
-  basketeer: "Defi Dao",
-},
-{
-  title: "Stable Basket",
-  symbol: "STBLB",
-  growth: {percent:"+0.43",period:"hour"},
-  basketeer: "Arch Dao",
-},
-]
-
+const baskets = [
+  {
+    title: 'Defi Basket',
+    symbol: 'DEFB',
+    growth: { percent: '+2.03', period: 'hour' },
+    basketeer: 'Defi Dao',
+  },
+  {
+    title: 'Hodl Basket',
+    symbol: 'HODL',
+    growth: { percent: '+1.03', period: 'hour' },
+    basketeer: 'Defi Dao',
+  },
+  {
+    title: 'Stable Basket',
+    symbol: 'STBLB',
+    growth: { percent: '+0.43', period: 'hour' },
+    basketeer: 'Arch Dao',
+  },
+];
 
 const TopBaskets = () => {
-   
   return (
     <Container maxWidth="lg" sx={{ mt: 5, mb: 2 }}>
       <Typography
-          variant='subtitle2'
-          sx={{
-            letterSpacing: "0.23em",
-            textAlign: "left",
-            margin:'1em 0em'
-          }}
-        >
-          TRENDING BASKETS
-      </Typography>
-      <Grid
-        container
-        columns={{ xs: 4, md: 12 }}
-        spacing={{ md: 4, xs: 2 }}
+        variant="subtitle2"
+        sx={{
+          letterSpacing: '0.23em',
+          textAlign: 'left',
+          margin: '1em 0em',
+        }}
       >
+        TRENDING BASKETS
+      </Typography>
+      <Grid container columns={{ xs: 4, md: 12 }} spacing={{ md: 4, xs: 2 }}>
         {baskets &&
           baskets.map((basket, i) => (
             <Grid item xs={4} key={i}>
-              <Tooltip title={<Typography variant='h6' >Coming soon!!</Typography>} >
+              <Tooltip
+                title={<Typography variant="h6">Coming soon!!</Typography>}
+              >
                 <div>
-                <BasketCard data={basket} showGrowth  />
+                  <BasketCard data={basket} showGrowth hideChip />
                 </div>
               </Tooltip>
             </Grid>

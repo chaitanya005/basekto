@@ -47,7 +47,7 @@ const Uitest = () => {
         <TextField variant='outlined' color='primary' label='textfield' placeholder='outlined primary !icon' /><br/><br/>
         <Paper variant='section' color="primary" sx={{width:'100%', height:'200px'}} >Paper | section primary</Paper>
         <Paper variant='section' color="secondary" sx={{width:'100%', height:'200px'}} >Paper | section secondary</Paper>
-        <BasketCard sx={{margin:'20px'}} />
+        {/* <BasketCard sx={{margin:'20px'}} /> */}
     </Paper>
 )
 }

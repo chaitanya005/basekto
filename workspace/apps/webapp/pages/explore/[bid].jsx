@@ -138,7 +138,7 @@ const Basket = () => {
             graphData={graphData}
             setDays={setDays}
             showDetails={true}
-            coinGrowthRates={coinGrowthRates}
+            coins={coinGrowthRates}
           />
         </Container>
 

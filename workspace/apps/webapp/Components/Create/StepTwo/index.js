@@ -17,7 +17,7 @@ const validationSchema = yup.object({
     .required('Basket Symbol is required'),
   description: yup
     .string('Enter your Description')
-    .max(50, 'Must be 50 characters or less')
+    .max(1000, 'Must be 1000 characters or less')
     .required('Description is required'),
 });
 
