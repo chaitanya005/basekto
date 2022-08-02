@@ -4,13 +4,10 @@ import {
   Button,
   Container,
   Grid,
-  InputAdornment,
-  TextField,
   Typography,
   Paper,
   useTheme,
 } from '@mui/material';
-import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import CampaignIcon from '@mui/icons-material/Campaign';
 
@@ -35,8 +32,6 @@ const Subscription = () => {
       <Container maxWidth="lg">
         <Grid
           container
-          // justifyContent="space-between"
-          // flexDirection="row"
           alignItems="center"
           flexDirection="column"
           sx={{ textAlign: 'center' }}

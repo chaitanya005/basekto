@@ -68,7 +68,7 @@ export function BasketCard({
       {showDescription && (
         <>
           <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
-            {data?.description}
+            {data?.description?.slice(0, 120)}...
           </Typography>
         </>
       )}
