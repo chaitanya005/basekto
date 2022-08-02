@@ -6,7 +6,6 @@ import { getBasketDetails } from '../../../features/basketDetails';
 import { useEffect, useState } from 'react';
 import { BasketsABI } from '@basketo/contracts';
 import { ethers } from 'ethers';
-import { useMutation } from 'react-query';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
