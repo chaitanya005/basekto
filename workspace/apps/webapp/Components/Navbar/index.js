@@ -34,7 +34,7 @@ const Navbar = () => {
   }, []);
 
   const connectWallet = async () => {
-    account = await window.ethereum.request({
+    account = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
     });
     accountChangedHandler(account);
@@ -51,7 +51,7 @@ const Navbar = () => {
   };
 
   const getAccountBalance = async (account) => {
-    const balance = await window.ethereum.request({
+    const balance = await window.ethereum?.request({
       method: 'eth_getBalance',
       params: [account, 'latest'],
     });

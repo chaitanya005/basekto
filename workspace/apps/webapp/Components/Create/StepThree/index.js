@@ -37,8 +37,10 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   useEffect(async () => {
     graphData === null && handleGraphdata();
     const walletSetup = async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      [account] = await window.ethereum.request({
+      const provider = new ethers.providers.Web3Provider(
+        window?.ethereum && window?.ethereum
+      );
+      [account] = await window?.ethereum?.request({
         method: 'eth_requestAccounts',
       });
       const signer = provider.getSigner();
