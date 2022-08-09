@@ -5,14 +5,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import {
-  Dialog,
-  Typography,
-  useMediaQuery,
-  Divider,
-  Grid,
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { Dialog, Typography, Divider, Grid } from '@mui/material';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
