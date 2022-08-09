@@ -66,7 +66,7 @@ const Navbar = () => {
   };
 
   typeof window !== 'undefined' &&
-    window.ethereum.on('accountsChanged', (account) =>
+    window.ethereum?.on('accountsChanged', (account) =>
       accountChangedHandler(account)
     );
 
