@@ -5,11 +5,15 @@ import { Snackbar, Alert, Skeleton } from '@mui/material';
 import { useQuery } from 'react-query';
 import { useState } from 'react';
 import { BasketCard } from '@basketo/web-ui';
+import axios from 'axios';
 
-const getBasketData = async (queryString) =>
-  (
-    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/baskets` + queryString)
-  ).json();
+const getBasketData = async (queryString) => (
+
+  await axios.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/baskets`
+    + queryString
+  )
+).data;
 
 const Baskets = ({ queryString }) => {
   const [alert, setAlert] = useState({
