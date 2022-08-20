@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import {
   LineChart,
   Line,
@@ -11,33 +9,15 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import TimeFrameBtns from './TimeFrameBtns';
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
 const Graph = ({ data, setDays }) => {
+
   const theme = useTheme();
   const sm = useMediaQuery(theme.breakpoints.down('sm'));
   const [timeFrame, setTimeFrame] = useState(Object.keys(timeFrames)[0]);
-
-  const handleTimeFrame = (event, newTimeFrame) => {
-    if (newTimeFrame) {
-      setTimeFrame(newTimeFrame);
-    }
-  };
-
-  const timeFrameBtns = Object.keys(timeFrames).map((timeFrame) => (
-    <ToggleButton
-      key={timeFrame}
-      value={timeFrame}
-      color="primary"
-      sx={{
-        p: '0.2rem 0.4rem',
-        fontWeight: 'bold',
-      }}
-    >
-      {timeFrame}
-    </ToggleButton>
-  ));
 
   useEffect(() => {
     setDays(timeFrames[timeFrame]);
@@ -45,19 +25,22 @@ const Graph = ({ data, setDays }) => {
 
   return (
     <>
-      <ToggleButtonGroup
+      <TimeFrameBtns
+        value={ timeFrame }
+        setValue={ setTimeFrame }
+        timeFrames={ timeFrames }
         size="small"
-        value={timeFrame}
-        exclusive
-        onChange={handleTimeFrame}
-        sx={{
+        color="primary"
+        btnStyles={{
+          p: '0.2rem 0.4rem',
+          fontWeight: 'bold',
+        }}
+        btnGroupStyles={{
           display: 'flex',
           mb: '1rem',
           justifyContent: 'end',
         }}
-      >
-        {timeFrameBtns}
-      </ToggleButtonGroup>
+      />
 
       <ResponsiveContainer width="100%" height="auto" aspect={sm ? 1.25 : 2.25}>
         <LineChart
