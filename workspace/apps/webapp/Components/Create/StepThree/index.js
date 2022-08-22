@@ -18,13 +18,10 @@ let contract;
 let account;
 
 const createNewBasket = async (basket) =>
-  await axios(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: basket,
-  });
+  await axios.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`,
+    basket
+  );
 
 const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const { selectedTokens } = useSelector(getTokens);

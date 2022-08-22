@@ -12,6 +12,7 @@ import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import { useSelector } from 'react-redux';
 import { getTokens } from 'apps/webapp/features/selectTokens';
+import axios from 'axios';
 
 const Create = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -50,17 +51,18 @@ const Create = () => {
     }
   };
 
-  const handleGraphdata = () => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'post',
-      body: JSON.stringify({ basketData: selectedTokens, days: days }),
-    })
-      .then((res) => res.json())
-      .then((res) => setGraphData(res))
-      .catch((err) => console.log(err));
+  const handleGraphdata = async () => {
+
+    try {
+
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`,
+        { basketData: selectedTokens, days: days }
+      );
+      setGraphData(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {

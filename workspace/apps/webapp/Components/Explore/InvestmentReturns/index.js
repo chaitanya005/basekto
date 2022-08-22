@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import EjectIcon from '@mui/icons-material/Eject';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
@@ -34,20 +35,24 @@ const InvestReturns = () => {
     getReturns();
   }, [investAmount.main, timeFrame, bid]);
 
-  const getReturns = () => {
+  const getReturns = async () => {
+
     if (bid) {
-      const days = timeFrames[timeFrame];
-      const amount = investAmount.main;
-      const queryParams = `id=${bid}&days=${days}&amount=${amount}`;
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/calculate?${queryParams}`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'get',
-      })
-        .then((res) => res.json())
-        .then((data) => setResult(data))
-        .catch(console.log);
+
+      try {
+
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_API}/calculate`, {
+          params: {
+            id: bid,
+            days: timeFrames[timeFrame],
+            amount: investAmount.main
+          }
+        });
+        setResult(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 

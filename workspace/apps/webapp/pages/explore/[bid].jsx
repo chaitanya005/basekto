@@ -10,19 +10,20 @@ import { useQuery } from 'react-query';
 import Explore from '../../Components/Common/Explore.js';
 import axios from 'axios';
 
-const getBasketData = async (bid) =>
-  (await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/basket/' + bid)).json();
+const getBasketData = async (bid) => (
 
-const getGraphData = async (basketData, days) =>
-  (
-    await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/graph_data', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'post',
-      body: JSON.stringify({ basketData, days }),
-    })
-  ).json();
+  await axios.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/basket/${bid}`
+  )
+).data;
+
+const getGraphData = async (basketData, days) => (
+
+  await axios.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`,
+    { basketData, days }
+  )
+).data;
 
 const Basket = () => {
   const router = useRouter();

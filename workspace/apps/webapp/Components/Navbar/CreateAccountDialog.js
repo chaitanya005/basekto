@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import axios from 'axios';
 
 const CreateAccountDialog = ({
   isOpen,
@@ -20,14 +21,13 @@ const CreateAccountDialog = ({
   userAddress,
   onAccountCreation,
 }) => {
+
   const mutation = useMutation((accountDetails) => {
-    return fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/user/new`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'post',
-      body: JSON.stringify(accountDetails),
-    });
+
+    return axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_API}/user/new`,
+      accountDetails
+    );
   });
 
   const [accountDetails, setAccountDetails] = useState({
@@ -50,7 +50,7 @@ const CreateAccountDialog = ({
   };
 
   useEffect(() => {
-    if (mutation.data?.ok) {
+    if (mutation.data?.status == 200) {
       onAccountCreation();
     }
   }, [mutation.data]);
@@ -78,7 +78,7 @@ const CreateAccountDialog = ({
         <Divider />
 
         <DialogContent sx={{ maxWidth: '420px' }}>
-          {(mutation.error || (mutation.data && !mutation.data.ok)) && (
+          {(mutation.error || (mutation.data && (mutation.data.status != 200))) && (
             <Typography
               variant="body2"
               align="center"
