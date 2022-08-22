@@ -14,7 +14,6 @@ import TimeFrameBtns from './TimeFrameBtns';
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
 const Graph = ({ data, setDays }) => {
-
   const theme = useTheme();
   const sm = useMediaQuery(theme.breakpoints.down('sm'));
   const [timeFrame, setTimeFrame] = useState(Object.keys(timeFrames)[0]);
@@ -26,9 +25,9 @@ const Graph = ({ data, setDays }) => {
   return (
     <>
       <TimeFrameBtns
-        value={ timeFrame }
-        setValue={ setTimeFrame }
-        timeFrames={ timeFrames }
+        value={timeFrame}
+        setValue={setTimeFrame}
+        timeFrames={timeFrames}
         size="small"
         color="primary"
         btnStyles={{

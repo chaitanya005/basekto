@@ -17,6 +17,7 @@ const pages = [
   { title: 'Explore', path: '/explore' },
   { title: 'Create', path: '/create' },
   { title: 'Learn', path: '#' },
+  { title: 'Early Access', path: 'https://t.me/basketofinance' },
 ];
 
 const clientSide = typeof window !== 'undefined';
@@ -101,6 +102,7 @@ const Navbar = () => {
                     sx={{ fontSize: { xs: '10px', md: '14px' } }}
                     variant="text"
                     color="primary"
+                    startIcon={page.title == 'Early Access' && <TelegramIcon />}
                   >
                     {page.title}
                   </Button>
@@ -126,21 +128,21 @@ const Navbar = () => {
                   {userAddress.slice(0, 4)}...
                   {userAddress.slice(34, 42)}
                 </Typography>
-                <a
-                  href="https://t.me/basketofinance"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    endIcon={<TelegramIcon />}
-                  >
-                    Early Access
-                  </Button>
-                </a>
               </Grid>
             )}
+            {/* <a
+              href="https://t.me/basketofinance"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                endIcon={<TelegramIcon />}
+              >
+                Early Access
+              </Button>
+            </a> */}
 
             <Dialog
               open={
