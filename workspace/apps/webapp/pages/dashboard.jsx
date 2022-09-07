@@ -1,5 +1,4 @@
 import {
-  Paper,
   Box,
   Typography,
   Card,
@@ -7,8 +6,7 @@ import {
   Button,
   Divider,
 } from '@mui/material';
-import { BasketCard, Navigation } from '@basketo/web-ui';
-import Navbar from '../Components/Navbar';
+import { Navigation } from '@basketo/web-ui';
 import Overview from '../Components/dashboard/Overview';
 import { AccountCircle, DashboardRounded, Explore, Notifications } from '@mui/icons-material';
 import YourPortfolio from '../Components/dashboard/YourPortfolio';
@@ -57,13 +55,12 @@ const Dashboard = () => {
   ];
 
   return (
-    <Paper variant="window" sx={{ display: 'flex', justifyContent: 'center' }}>
-      <Navbar />
+    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
       <Navigation navInfo={navigationInfo} showThemeToggle />
       {/* 2:1 grid layout  */}
       <Box
         sx={{
-          padding: '90px 20px',
+          padding: '20px',
           width: '100%',
           maxWidth: 'lg',
           display: 'grid',
@@ -121,7 +118,7 @@ const Dashboard = () => {
           </Card>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 };
 

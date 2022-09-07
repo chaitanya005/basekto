@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import Navbar from '../../Components/Navbar';
 import SearchBar from '../../Components/Explore/SearchBar';
 import Baskets from '../../Components/Explore/Baskets';
-import Footer from '../../Components/Footer';
-import { Paper } from '@mui/material';
 
 const filters = {
     growthRate: 'any',
@@ -63,19 +60,15 @@ const Explore = () => {
 
     return (
 
-        <Paper variant='window' >
-            <Navbar />
-            <div style={{ paddingTop: '70px' }}>
-                <SearchBar
-                    search={ query.search }
-                    setSearch={ (val) => setQuery({ ...query, search: val }) }
-                    filters={ query.filters }
-                    setFilters={ (val) => setQuery({ ...query, filters: val }) }
-                />
-                <Baskets queryString={ queryString } />
-                <Footer />
-            </div>
-        </Paper>
+        <>
+            <SearchBar
+                search={ query.search }
+                setSearch={ (val) => setQuery({ ...query, search: val }) }
+                filters={ query.filters }
+                setFilters={ (val) => setQuery({ ...query, filters: val }) }
+            />
+            <Baskets queryString={ queryString } />
+        </>
     );
 };
 
