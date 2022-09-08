@@ -2,9 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import Navbar from '../../Components/Navbar';
-import Footer from '../../Components/Footer';
-import { Paper, Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useQuery } from 'react-query';
 import Explore from '../../Components/Common/Explore.js';
@@ -108,7 +106,7 @@ const Basket = () => {
   };
 
   return (
-    <Paper variant="window">
+    <>
       <Snackbar
         onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
         open={alert.open}
@@ -120,32 +118,26 @@ const Basket = () => {
         </Alert>
       </Snackbar>
 
-      <Navbar />
+      <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => router.back()}
+        >
+          Back
+        </Button>
 
-      <div style={{ paddingTop: '70px' }}>
-        <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
-          <Button
-            variant="outlined"
-            startIcon={<ArrowBackIcon />}
-            onClick={() => router.back()}
-          >
-            Back
-          </Button>
-
-          <Explore
-            isLoading={isLoading}
-            isFetching={isFetching}
-            basket={basket}
-            graphData={graphData}
-            setDays={setDays}
-            showDetails={true}
-            coins={coinGrowthRates}
-          />
-        </Container>
-
-        <Footer />
-      </div>
-    </Paper>
+        <Explore
+          isLoading={isLoading}
+          isFetching={isFetching}
+          basket={basket}
+          graphData={graphData}
+          setDays={setDays}
+          showDetails={true}
+          coins={coinGrowthRates}
+        />
+      </Container>
+    </>
   );
 };
 
