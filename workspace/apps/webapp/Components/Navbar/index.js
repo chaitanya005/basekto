@@ -18,7 +18,7 @@ const pages = [
   { title: 'Explore', path: '/explore' },
   { title: 'Create', path: '/create' },
   { title: 'Learn', path: '#' },
-  { title: 'Early Access', path: 'https://t.me/basketofinance', Icon: <TelegramIcon /> },
+  { title: 'Early Access', path: 'https://t.me/basketofinance', icon: <TelegramIcon /> },
 ];
 
 const clientSide = typeof window !== 'undefined';
@@ -107,13 +107,13 @@ const Navbar = () => {
 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             { pages.map((page) => (
-              <Link href={page.path} key={ page.title }>
+              <Link href={ page.path } key={ page.title }>
                 <a>
                   <Button
                     sx={{ fontSize: { xs: '10px', md: '14px' } }}
                     variant="text"
                     color="primary"
-                    startIcon={ page.Icon }
+                    startIcon={ page.icon }
                   >
                     { page.title }
                   </Button>
@@ -216,9 +216,9 @@ const Navbar = () => {
                       onClick={ handleCloseNavMenu }
                       sx={{ justifyContent: 'center' }}
                     >
-                      { page.Icon && (
+                      { page.icon && (
                         <ListItemIcon>
-                          { page.Icon }
+                          { page.icon }
                         </ListItemIcon>
                       )}
 
