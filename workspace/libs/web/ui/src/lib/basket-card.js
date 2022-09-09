@@ -76,8 +76,9 @@ export function BasketCard({
         <Avatar sx={{ width: '1.3em', height: '1.3em' }} />
         &nbsp;&nbsp;
         <Typography>
-          {data?.basketeer.slice(0, 4) || 'Basketeer'}...
-          {data?.basketeer.slice(34, 42)}
+          {/* {data?.basketeer.slice(0, 4) || 'Basketeer'}...
+          {data?.basketeer.slice(34, 42)} */}
+          {data?.basketeer}
         </Typography>
       </Box>
       {!hideChip && (

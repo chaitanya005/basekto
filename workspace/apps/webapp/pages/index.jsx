@@ -14,7 +14,7 @@ const index = () => {
       <Partners />
       <Steps />
       <CreateBaskets />
-      <Subscription />
+      <Subscription title={'Get Latest Updates'} />
       <FAQ />
     </>
   );
