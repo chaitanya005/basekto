@@ -25,6 +25,7 @@ let account;
 
 const Navbar = () => {
   const router = useRouter();
+  const [earlyAccessDialogOpen, setEarlyAccessDialogOpen] = useState(false);
   const [userRegistered, setUserRegistered] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
@@ -102,6 +103,12 @@ const Navbar = () => {
                     sx={{ fontSize: { xs: '10px', md: '14px' } }}
                     variant="text"
                     color="primary"
+                    {...(page.title == 'Early Access' && {
+                      onClick: (e) => {
+                        e.preventDefault();
+                        setEarlyAccessDialogOpen(true)
+                      }
+                    })}
                     startIcon={page.title == 'Early Access' && <TelegramIcon />}
                   >
                     {page.title}
@@ -183,6 +190,23 @@ const Navbar = () => {
                 }}
               />
             )}
+
+            <Dialog
+              open={ earlyAccessDialogOpen }
+              onClose={ () => setEarlyAccessDialogOpen(false) }
+            >
+              <Box sx={{ padding: '20px', maxWidth: '300px' }}>
+                <Typography variant="h5" textAlign="center">
+                  Get Early Access
+                </Typography>
+                <Divider sx={{ m: '10px 0px' }} />
+                <img
+                  src="/images/telegram-qrcode.png"
+                  alt="telegram-qrcode.png"
+                  width="100%"
+                />
+              </Box>
+            </Dialog>
           </div>
         </Toolbar>
       </Container>

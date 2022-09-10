@@ -40,7 +40,7 @@ const Demo = () => {
             variant="h3"
             sx={{ fontSize: '2rem', fontWeight: 'bold' }}
           >
-            DEFI Basket
+            Web3
           </Typography>
         </Box>
         <Box display={'flex'} gap={'2rem'}>
@@ -239,16 +239,66 @@ const Demo = () => {
           </Grid>
         ))}
       </Box>
+
       <Box>
         <Typography variant="h5">About</Typography>
 
         <Divider sx={{ mt: 1, mb: 1 }} />
 
-        <Typography>
-          Web3 enables a new data economy. The Web3 data economy is an ecosystem
-          of data-centric protocols and applications disrupting the data
-          monopolies built in Big Tech. DATA provides exposure to the growth of
-          the Web3 data economy in a single token.
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            Token Inclusion Criteria
+          </Typography>
+
+          <Typography gutterBottom>
+            <Typography fontWeight="600">
+              Data-based Protocol:
+            </Typography>
+            The protocol provides data-based services or products.
+          </Typography>
+
+          <Typography gutterBottom>
+            <Typography fontWeight="600">
+              Ethereum Token:
+            </Typography>
+            The token must be available on the Ethereum blockchain. This will be revised if the Basketo Protocol infrastructure becomes multi-chain.
+          </Typography>
+
+          <Typography gutterBottom>
+            <Typography fontWeight="600">
+              Organic Network Activity or Usage:
+            </Typography>
+            Protocol must have organic network activity or usage. On-chain transaction volume, Total Value Locked (TVL), and/or revenue paid to service providers are all examples of metrics that can be used to demonstrate organic network activity.
+          </Typography>
+
+          <Typography gutterBottom>
+            <Typography fontWeight="600">
+              Market Capitalization:
+            </Typography>
+            Circulating market capitalization must be over $100m. Decentralized Exchange (DEX) Liquidity: Protocol token must have sufficient DEX liquidity to support inclusion. If a token has insufficient liquidity, it will be removed from the basket during the determination phase.
+          </Typography>
+
+          <Typography gutterBottom>
+            <Typography fontWeight="600">
+              History:
+            </Typography>
+            Protocol must have at least 3 months history of operation and its token must have at least 3 months of price and liquidity history.
+          </Typography>
+
+          <Typography gutterBottom>
+            <Typography fontWeight="600">
+              Security:
+            </Typography>
+            An independent security audit should have been performed on the protocol and results reviewed by the product methodologist. In the case that no audit has been performed, the methodologist applies subjective judgement of the protocol based on assessment of the criteria above and communications with the team.
+          </Typography>
+        </Box>
+
+        <Typography
+          marginTop={ 1 }
+          fontStyle="italic"
+          textAlign="right"
+        >
+          Created by Alice
         </Typography>
       </Box>
     </Container>
