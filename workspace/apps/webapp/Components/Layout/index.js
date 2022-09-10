@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
 
     return (
 
-        <Paper variant="window" sx={{ overflowX: 'hidden' }}>
+        <Paper variant="window" sx={{ overflowX: 'visible' }}>
             <Navbar />
             <Box style={{ paddingTop: '70px' }}>
                 { children }

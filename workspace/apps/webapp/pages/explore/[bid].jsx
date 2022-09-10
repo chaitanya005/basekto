@@ -2,11 +2,12 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert, Grid } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useQuery } from 'react-query';
 import Explore from '../../Components/Common/Explore.js';
 import axios from 'axios';
+import BasketInvest from 'apps/webapp/Components/Explore/BasketInvest/index.js';
 
 const getBasketData = async (bid) => (
 
@@ -127,15 +128,26 @@ const Basket = () => {
           Back
         </Button>
 
-        <Explore
-          isLoading={isLoading}
-          isFetching={isFetching}
-          basket={basket}
-          graphData={graphData}
-          setDays={setDays}
-          showDetails={true}
-          coins={coinGrowthRates}
-        />
+        <Grid
+          container
+          spacing={ 4 }
+        >
+          <Grid item xs={ 12 } md={ 8 }>
+            <Explore
+              isLoading={isLoading}
+              isFetching={isFetching}
+              basket={basket}
+              graphData={graphData}
+              setDays={setDays}
+              showDetails={true}
+              coins={coinGrowthRates}
+            />
+          </Grid>
+
+          <Grid item xs={ 12 } md={ 4 }>
+            <BasketInvest />
+          </Grid>
+        </Grid>
       </Container>
     </>
   );
