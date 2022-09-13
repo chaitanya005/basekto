@@ -10,7 +10,7 @@ import {
 import TelegramIcon from '@mui/icons-material/Telegram';
 import CampaignIcon from '@mui/icons-material/Campaign';
 
-const Subscription = ({ title }) => {
+const Subscription = () => {
   const theme = useTheme();
   const [email, setEmail] = useState('');
 
@@ -44,7 +44,7 @@ const Subscription = ({ title }) => {
               gap={1}
               sx={{ mb: 2 }}
             >
-              {title}
+              Get Latest Updates
               <CampaignIcon sx={{ fontSize: 'inherit' }} />
             </Typography>
           </Grid>

@@ -8,17 +8,20 @@ import { useQuery } from 'react-query';
 import Explore from '../../Components/Common/Explore.js';
 import axios from 'axios';
 
-const getBasketData = async (bid) =>
-  (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/${bid}`))
-    .data;
+const getBasketData = async (bid) => (
 
-const getGraphData = async (basketData, days) =>
-  (
-    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`, {
-      basketData,
-      days,
-    })
-  ).data;
+  await axios.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/basket/${bid}`
+  )
+).data;
+
+const getGraphData = async (basketData, days) => (
+
+  await axios.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`,
+    { basketData, days }
+  )
+).data;
 
 const Basket = () => {
   const router = useRouter();
@@ -30,7 +33,7 @@ const Basket = () => {
     message: '',
   });
   // const [basketCoins, setBasketCoins] = useState(null);
-  const [coinGrowthRates, setCoinGrowthRates] = useState(null);
+  const [coinGrowthRates, setCoinGrowthRates] = useState(null)
 
   const {
     data: basket,
@@ -98,7 +101,7 @@ const Basket = () => {
           growthRate: growthRates.data[i]['growthRate'],
         },
       ]);
-      setCoinGrowthRates(formattingGrowthRates.flat());
+      setCoinGrowthRates(formattingGrowthRates.flat())
     }
   };
 

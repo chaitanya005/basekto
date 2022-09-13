@@ -39,13 +39,13 @@ const TopBaskets = () => {
         {baskets &&
           baskets.map((basket, i) => (
             <Grid item xs={4} key={i}>
-              {/* <Tooltip
+              <Tooltip
                 title={<Typography variant="h6">Coming soon!!</Typography>}
-              > */}
-              <a href="/demo">
-                <BasketCard data={basket} showGrowth hideChip />
-              </a>
-              {/* </Tooltip> */}
+              >
+                <div>
+                  <BasketCard data={basket} showGrowth hideChip />
+                </div>
+              </Tooltip>
             </Grid>
           ))}
       </Grid>
