@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { demoData, basketData } from '../demoData';
+import { demoData, basketData } from '../mocks/demoData';
 import DemoModal from '../Components/DemoModal';
 import { useState } from 'react';
 
