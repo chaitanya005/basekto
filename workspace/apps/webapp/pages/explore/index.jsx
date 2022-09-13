@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import SearchBar from '../../Components/Explore/SearchBar';
 import Baskets from '../../Components/Explore/Baskets';
-import { Container, Grid } from '@mui/material';
-import Link from 'next/link';
-import { BasketCard } from '@basketo/web-ui';
-// import Subscription from '../../Components/Home/Subscription';
+import Subscription from '../../Components/Home/Subscription';
 
 const filters = {
   growthRate: 'any',
@@ -57,19 +54,6 @@ const filters = {
   },
 };
 
-const basketsData = {
-  baskets: [
-    {
-      _id: 'demo',
-      name: 'Web3',
-      symbol: 'WEB3',
-      accountId: '0x87227977f0ce8a35A2E43440AbA7ea186BF65E6f',
-      description: 'Through data and research, Alice reveals the depths of opportunities awaiting traditional finance, setting the stage for adventures that come with Web3.',
-      growthRate: 11.05,
-    }
-  ]
-};
-
 const Explore = () => {
   const [query, setQuery] = useState({ search: '', filters });
   const queryString = `?q=${query.search}&${query.filters.toString()}`;
@@ -82,31 +66,8 @@ const Explore = () => {
         filters={query.filters}
         setFilters={(val) => setQuery({ ...query, filters: val })}
       />
-      {/* <Subscription title={'Get Early Access'} /> */}
+      <Subscription title={'Get Early Access'} />
       {/* <Baskets queryString={queryString} /> */}
-
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
-        <Grid container spacing={ 2 }>
-          { basketsData?.baskets?.map((basket, i) => (
-            <Grid item key={i} xs={12} sm={6} md={4} lg={3}>
-              <Link href="/demo">
-                <a>
-                  <BasketCard
-                    data={{
-                      title: basket?.name,
-                      symbol: basket?.symbol,
-                      basketeer: basket?.accountId,
-                      description: basket?.description,
-                      basketGrowth: basket?.growthRate,
-                    }}
-                    showDescription
-                  />
-                </a>
-              </Link>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
     </>
   );
 };
