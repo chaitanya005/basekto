@@ -7,6 +7,16 @@ import {
   setBasketDetails,
 } from '../../../features/basketDetails';
 import { useDispatch, useSelector } from 'react-redux';
+import '@uiw/react-md-editor/markdown-editor.css';
+import '@uiw/react-markdown-preview/markdown.css';
+import dynamic from 'next/dynamic';
+import { useState } from 'react';
+
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
+const Markdown = dynamic(
+  () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
+  { ssr: false }
+);
 
 const validationSchema = yup.object({
   name: yup
@@ -28,6 +38,7 @@ const MyTextField = styled(TextField)`
 `;
 
 const StepTwo = ({ setActiveStep }) => {
+  const [value, setValue] = useState('**Hello world!!!**');
   const dispatch = useDispatch();
   const { basketDetails } = useSelector(getBasketDetails);
 
@@ -39,6 +50,7 @@ const StepTwo = ({ setActiveStep }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      console.log(Htmlvalue);
       dispatch(setBasketDetails({ basketData: values }));
       setActiveStep(2);
     },
@@ -74,20 +86,10 @@ const StepTwo = ({ setActiveStep }) => {
         </Grid>
 
         <Grid mt={3}>
-          <MyTextField
-            type="textarea"
-            id="description"
-            name="description"
-            fullWidth
-            multiline
-            minRows={2}
-            label="Description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
+          <MDEditor
+            value={value}
+            onChange={setValue}
+            style={{ minWidth: '10rem' }}
           />
         </Grid>
 
@@ -109,3 +111,21 @@ const StepTwo = ({ setActiveStep }) => {
 };
 
 export default StepTwo;
+
+/* <Grid mt={3}>
+          <MyTextField
+            type="textarea"
+            id="description"
+            name="description"
+            fullWidth
+            multiline
+            minRows={2}
+            label="Description"
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            error={
+              formik.touched.description && Boolean(formik.errors.description)
+            }
+            helperText={formik.touched.description && formik.errors.description}
+          />
+        </Grid> */
