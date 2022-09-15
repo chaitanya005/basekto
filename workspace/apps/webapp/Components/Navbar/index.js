@@ -28,7 +28,9 @@ const clientSide = typeof window !== 'undefined';
 let account;
 
 const Navbar = () => {
-  const {palette:{mode}} = useTheme();
+  const {
+    palette: { mode },
+  } = useTheme();
   const currentTheme = useTheme();
   const router = useRouter();
   const [userRegistered, setUserRegistered] = useState(false);
@@ -103,9 +105,11 @@ const Navbar = () => {
             }}
           >
             <Link href="/">
-            <img src={`/images${mode=='dark'?'D':''}/logo.png`} alt="Basketo" 
-                style={{maxWidth: "200px"}} 
-                /> 
+              <img
+                src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
+                alt="Basketo"
+                style={{ maxWidth: '200px' }}
+              />
             </Link>
           </Box>
           <Box>
@@ -125,20 +129,7 @@ const Navbar = () => {
             ))}
           </Box>
 
-          {!router.pathname.includes("dashboard") ? (
-             <Button
-              variant="outlined"
-              onClick={handleThemeToggle}
-              >
-                {currentTheme.palette.mode === 'dark' ? (
-                  <LightModeIcon />
-                  ) : ( 
-                  <DarkModeIcon /> 
-                )}
-          </Button>
-          ):null}
-            
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
             {!userAddress || userAddress == 'undefined' ? (
               <Button
                 sx={{ fontSize: { xs: '10px', md: '14px' } }}
@@ -210,6 +201,15 @@ const Navbar = () => {
                 }}
               />
             )}
+            {!router.pathname.includes('dashboard') ? (
+              <Button variant="outlined" onClick={handleThemeToggle}>
+                {currentTheme.palette.mode === 'dark' ? (
+                  <LightModeIcon />
+                ) : (
+                  <DarkModeIcon />
+                )}
+              </Button>
+            ) : null}
           </div>
         </Toolbar>
       </Container>
