@@ -1,6 +1,6 @@
 const { default: axios } = require('axios');
 const Basket = require('../models/basket');
-const { singleBasket } = require('../utils/db');
+const { singleBasket,userBaskets } = require('../utils/db');
 
 const createBasket = async (req, res) => {
   try {
@@ -23,6 +23,15 @@ const getBasket = async (req, res) => {
   try {
     const basket = await singleBasket(req.params.id);
     res.send(basket);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
+const getBasketsByUsers = async (req, res) => {
+  try {
+    const baskets = await userBaskets(req.params.userAddress);
+    res.send(baskets); 
   } catch (err) {
     res.status(400).json(err);
   }
@@ -77,4 +86,5 @@ module.exports = {
   createBasket,
   getBasket,
   getBaskets,
+  getBasketsByUsers,
 };
