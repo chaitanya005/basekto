@@ -108,7 +108,7 @@ const Navbar = () => {
               <img
                 src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
                 alt="Basketo"
-                style={{ maxWidth: '200px' }}
+                style={{ maxWidth: '150px' }}
               />
             </Link>
           </Box>
