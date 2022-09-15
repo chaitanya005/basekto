@@ -12,6 +12,10 @@ import CreateAccountDialog from './CreateAccountDialog';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import { useTheme } from '@mui/material';
+import { toggleTheme } from '@basketo/web-ui';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 const pages = [
   { title: 'Explore', path: '/explore' },
@@ -24,11 +28,17 @@ const clientSide = typeof window !== 'undefined';
 let account;
 
 const Navbar = () => {
+  const {palette:{mode}} = useTheme();
+  const currentTheme = useTheme();
   const router = useRouter();
   const [userRegistered, setUserRegistered] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
+
+  const handleThemeToggle = () => {
+    toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
+  };
 
   useEffect(() => {
     setUserAddress(localStorage.getItem('address'));
@@ -92,7 +102,11 @@ const Navbar = () => {
               alignItems: 'center',
             }}
           >
-            <Link href="/">Basketo</Link>
+            <Link href="/">
+            <img src={`/images${mode=='dark'?'D':''}/logo.png`} alt="Basketo" 
+                style={{maxWidth: "200px"}} 
+                /> 
+            </Link>
           </Box>
           <Box>
             {pages.map((page) => (
@@ -111,6 +125,19 @@ const Navbar = () => {
             ))}
           </Box>
 
+          {!router.pathname.includes("dashboard") ? (
+             <Button
+              variant="outlined"
+              onClick={handleThemeToggle}
+              >
+                {currentTheme.palette.mode === 'dark' ? (
+                  <LightModeIcon />
+                  ) : ( 
+                  <DarkModeIcon /> 
+                )}
+          </Button>
+          ):null}
+            
           <div style={{ display: 'flex' }}>
             {!userAddress || userAddress == 'undefined' ? (
               <Button
