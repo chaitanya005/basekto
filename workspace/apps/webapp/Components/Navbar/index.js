@@ -86,7 +86,7 @@ const Navbar = () => {
         backdropFilter: 'blur(10px)',
         display: 'flex',
         alignItems: 'center',
-        zIndex: '10',
+        zIndex: '20',
       }}
     >
       <Container sx={{ height: '100%', maxWidth: 'lg' }}>
