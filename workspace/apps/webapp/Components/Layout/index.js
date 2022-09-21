@@ -4,16 +4,16 @@ import Footer from '../Footer';
 
 const Layout = ({ children }) => {
 
-    return (
+	return (
 
-        <Paper variant="window" sx={{ overflowX: 'visible' }}>
-            <Navbar />
-            <Box style={{ paddingTop: '70px' }}>
-                { children }
-                <Footer />
-            </Box>
-        </Paper>
-    );
+		<Paper variant="window" sx={{ overflowX: 'visible' }}>
+			<Navbar />
+			<Box style={{ paddingTop: '70px' }}>
+				{ children }
+				<Footer />
+			</Box>
+		</Paper>
+	);
 };
 
 export default Layout;

@@ -25,6 +25,30 @@ const TableHeadRow = styled(TableRow)(({ theme }) => ({
     borderBottom: '1.1px solid #777',
 }));
 
+const LoadingAnimation = ({ isLoading, variant, size, children }) => {
+
+    const styles = {
+        'circular': {
+            width: size,
+            height: size,
+        },
+        'text': {
+            width: size
+        }
+    };
+
+    return isLoading ? (
+
+        <Skeleton
+            variant={ variant }
+            sx={ styles[variant] }
+            animation="wave"
+        />
+    ) : (
+        children
+    );
+};
+
 function getTokenRow({ name, price, growthRate, withWeight, weight, img }, showDetails) {
 
     let row = { name, weight, img };
@@ -39,6 +63,12 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
     const tokens = tokensData?.map(
         token => getTokenRow(token, showDetails)
     );
+
+    const getDetailedFormattedValues = (token) => [
+        '$' + token.price,
+        token.growthRate.toFixed(2) + '%',
+        token.withWeight.toFixed(2) + '%',
+    ];
 
     return (
 
@@ -66,89 +96,41 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <StyledTableCell component="th" scope="row">
-                                <Box display="flex" alignItems="center">
-                                    { isLoading ? (
-                                        <Skeleton
-                                            variant="circular"
-                                            sx={{ width: 28, height: 28 }}
-                                            animation="wave"
-                                        />
-                                    ) : (
+                                <Box display="flex" alignItems="center" gap={ 2.25 }>
+                                    <LoadingAnimation variant="circular" size="28px" isLoading={ isLoading }>
                                         <Avatar
-                                            src={ token.img }
-                                            alt={ token.name + ' logo' }
+                                            src={ token?.img }
+                                            alt={ token?.name + ' logo' }
                                             sx={{ mr: 2.5, width: 28, height: 28 }}
                                         />
-                                    )}
-                                    { isLoading ? (
-                                        <Skeleton
-                                            variant="text"
-                                            sx={{ width: '60px', ml: '20px' }}
-                                        />
-                                    ) : (
-                                        token.name
-                                    )}
+                                    </LoadingAnimation>
+
+                                    <LoadingAnimation variant="text" size="60px" isLoading={ isLoading }>
+                                        { token?.name }
+                                    </LoadingAnimation>
                                 </Box>
                             </StyledTableCell>
 
-                            { showDetails && (
-                                <>
-                                    <StyledTableCell align="right">
-                                        { isLoading ? (
-                                            <Box display="flex" justifyContent="right">
-                                                <Skeleton
-                                                    variant="text"
-                                                    sx={{ width: '30px' }}
-                                                    animation="wave"
-                                                />
-                                            </Box>
-                                        ) : (
-                                            '$' + token.price
-                                        )}
-                                    </StyledTableCell>
+                            { showDetails && (token
+                                ? getDetailedFormattedValues(token)
+                                : Array.from({ length: 3 })
+                            ).map((value, i) => (
 
-                                    <StyledTableCell align="right">
-                                        { isLoading ? (
-                                            <Box display="flex" justifyContent="right">
-                                                <Skeleton
-                                                    variant="text"
-                                                    sx={{ width: '30px' }}
-                                                    animation="wave"
-                                                />
-                                            </Box>
-                                        ) : (
-                                            token.growthRate.toFixed(2) + '%'
-                                        )}
-                                    </StyledTableCell>
-
-                                    <StyledTableCell align="right">
-                                        { isLoading ? (
-                                            <Box display="flex" justifyContent="right">
-                                                <Skeleton
-                                                    variant="text"
-                                                    sx={{ width: '30px' }}
-                                                    animation="wave"
-                                                />
-                                            </Box>
-                                        ) : (
-                                            token.withWeight.toFixed(2) + '%'
-                                        )}
-                                    </StyledTableCell>
-                                </>
-                            )}
-
-                            <StyledTableCell align="right">
-                                { isLoading ? (
+                                <StyledTableCell key={ i }>
                                     <Box display="flex" justifyContent="right">
-                                        <Skeleton
-                                            variant="text"
-                                            sx={{ width: '30px' }}
-                                            animation="wave"
-                                        />
+                                        <LoadingAnimation variant="text" size="30px" isLoading={ isLoading }>
+                                            { value }
+                                        </LoadingAnimation>
                                     </Box>
-                                ) : (
-                                    token.weight.toFixed(2) + '%'
-                                )}
+                                </StyledTableCell>
+                            ))}
+
+                            <StyledTableCell>
+                                <Box display="flex" justifyContent="right">
+                                    <LoadingAnimation variant="text" size="30px" isLoading={ isLoading }>
+                                        { token?.weight.toFixed(2) + '%' }
+                                    </LoadingAnimation>
+                                </Box>
                             </StyledTableCell>
                         </TableRow>
                     ))}
