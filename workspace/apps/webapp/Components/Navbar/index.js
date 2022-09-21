@@ -13,6 +13,10 @@ import { ethers } from 'ethers';
 import axios from 'axios';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useTheme } from '@mui/material';
+import { toggleTheme } from '@basketo/web-ui';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 const pages = [
   { title: 'Explore', path: '/explore' },
@@ -25,6 +29,10 @@ const clientSide = typeof window !== 'undefined';
 let account;
 
 const Navbar = () => {
+  const {
+    palette: { mode },
+  } = useTheme();
+  const currentTheme = useTheme();
   const router = useRouter();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -39,6 +47,10 @@ const Navbar = () => {
   const [userAddress, setUserAddress] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
+
+  const handleThemeToggle = () => {
+    toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
+  };
 
   useEffect(() => {
     setUserAddress(localStorage.getItem('address'));
@@ -84,7 +96,7 @@ const Navbar = () => {
         backdropFilter: 'blur(10px)',
         display: 'flex',
         alignItems: 'center',
-        zIndex: '10',
+        zIndex: '20',
       }}
     >
       <Container sx={{ height: '100%', maxWidth: 'lg' }}>
@@ -102,7 +114,13 @@ const Navbar = () => {
               alignItems: 'center',
             }}
           >
-            <Link href="/">Basketo</Link>
+            <Link href="/">
+              <img
+                src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
+                alt="Basketo"
+                style={{ maxWidth: '150px' }}
+              />
+            </Link>
           </Box>
 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -122,7 +140,7 @@ const Navbar = () => {
             ))}
           </Box>
 
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
             {!userAddress || userAddress == 'undefined' ? (
               <Button
                 sx={{ fontSize: { xs: '10px', md: '14px' } }}
@@ -194,6 +212,15 @@ const Navbar = () => {
                 }}
               />
             )}
+            {!router.pathname.includes('dashboard') ? (
+              <Button variant="outlined" onClick={handleThemeToggle}>
+                {currentTheme.palette.mode === 'dark' ? (
+                  <LightModeIcon />
+                ) : (
+                  <DarkModeIcon />
+                )}
+              </Button>
+            ) : null}
           </div>
 
           <IconButton
