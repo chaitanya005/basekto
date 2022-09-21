@@ -5,13 +5,14 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Dialog, Typography, Divider, Grid } from '@mui/material';
+import { Dialog, Typography, Divider, Grid, IconButton, Menu, MenuItem, ListItemIcon } from '@mui/material';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material';
 import { toggleTheme } from '@basketo/web-ui';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -21,7 +22,7 @@ const pages = [
   { title: 'Explore', path: '/explore' },
   { title: 'Create', path: '/create' },
   { title: 'Learn', path: '#' },
-  { title: 'Early Access', path: 'https://t.me/basketofinance' },
+  { title: 'Early Access', path: 'https://t.me/basketofinance', icon: <TelegramIcon /> },
 ];
 
 const clientSide = typeof window !== 'undefined';
@@ -33,6 +34,15 @@ const Navbar = () => {
   } = useTheme();
   const currentTheme = useTheme();
   const router = useRouter();
+
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
   const [userRegistered, setUserRegistered] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
@@ -112,17 +122,18 @@ const Navbar = () => {
               />
             </Link>
           </Box>
-          <Box>
-            {pages.map((page) => (
-              <Link href={page.path} key={page.title}>
+
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            { pages.map((page) => (
+              <Link href={ page.path } key={ page.title }>
                 <a>
                   <Button
                     sx={{ fontSize: { xs: '10px', md: '14px' } }}
                     variant="text"
                     color="primary"
-                    startIcon={page.title == 'Early Access' && <TelegramIcon />}
+                    startIcon={ page.icon }
                   >
-                    {page.title}
+                    { page.title }
                   </Button>
                 </a>
               </Link>
@@ -211,6 +222,41 @@ const Navbar = () => {
               </Button>
             ) : null}
           </div>
+
+          <IconButton
+            onClick={ handleOpenNavMenu }
+            sx={{ display: { md: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          <Menu
+            anchorEl={ anchorElNav }
+            open={ Boolean(anchorElNav) }
+            onClose={ handleCloseNavMenu }
+          >
+            { pages.map(page => (
+
+                <Link href={ page.path } key={ page.title }>
+                  <a>
+                    <MenuItem
+                      onClick={ handleCloseNavMenu }
+                      sx={{ justifyContent: 'center' }}
+                    >
+                      { page.icon && (
+                        <ListItemIcon>
+                          { page.icon }
+                        </ListItemIcon>
+                      )}
+
+                      <Typography>
+                        { page.title }
+                      </Typography>
+                    </MenuItem>
+                  </a>
+                </Link>
+            ))}
+          </Menu>
         </Toolbar>
       </Container>
     </AppBar>
