@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import dynamic from 'next/dynamic';
 import { useState } from 'react';
 
-const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
+// const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 // const Markdown = dynamic(
 //   () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
 //   { ssr: false }
