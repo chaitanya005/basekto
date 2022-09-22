@@ -5,30 +5,52 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Dialog, Typography, Divider, Grid } from '@mui/material';
+import { Dialog, Typography, Divider, Grid, IconButton, Menu, MenuItem, ListItemIcon } from '@mui/material';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useTheme } from '@mui/material';
+import { toggleTheme } from '@basketo/web-ui';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 const pages = [
   { title: 'Explore', path: '/explore' },
   { title: 'Create', path: '/create' },
   { title: 'Learn', path: '#' },
-  { title: 'Early Access', path: 'https://t.me/basketofinance' },
+  { title: 'Early Access', path: 'https://t.me/basketofinance', icon: <TelegramIcon /> },
 ];
 
 const clientSide = typeof window !== 'undefined';
 let account;
 
 const Navbar = () => {
+  const {
+    palette: { mode },
+  } = useTheme();
+  const currentTheme = useTheme();
   const router = useRouter();
+
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
   const [userRegistered, setUserRegistered] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
+
+  const handleThemeToggle = () => {
+    toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
+  };
 
   useEffect(() => {
     setUserAddress(localStorage.getItem('address'));
@@ -74,7 +96,7 @@ const Navbar = () => {
         backdropFilter: 'blur(10px)',
         display: 'flex',
         alignItems: 'center',
-        zIndex: '10',
+        zIndex: '20',
       }}
     >
       <Container sx={{ height: '100%', maxWidth: 'lg' }}>
@@ -92,26 +114,33 @@ const Navbar = () => {
               alignItems: 'center',
             }}
           >
-            <Link href="/">Basketo</Link>
+            <Link href="/">
+              <img
+                src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
+                alt="Basketo"
+                style={{ maxWidth: '150px' }}
+              />
+            </Link>
           </Box>
-          <Box>
-            {pages.map((page) => (
-              <Link href={page.path} key={page.title}>
+
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            { pages.map((page) => (
+              <Link href={ page.path } key={ page.title }>
                 <a>
                   <Button
                     sx={{ fontSize: { xs: '10px', md: '14px' } }}
                     variant="text"
                     color="primary"
-                    startIcon={page.title == 'Early Access' && <TelegramIcon />}
+                    startIcon={ page.icon }
                   >
-                    {page.title}
+                    { page.title }
                   </Button>
                 </a>
               </Link>
             ))}
           </Box>
 
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
             {!userAddress || userAddress == 'undefined' ? (
               <Button
                 sx={{ fontSize: { xs: '10px', md: '14px' } }}
@@ -183,7 +212,51 @@ const Navbar = () => {
                 }}
               />
             )}
+            {!router.pathname.includes('dashboard') ? (
+              <Button variant="outlined" onClick={handleThemeToggle}>
+                {currentTheme.palette.mode === 'dark' ? (
+                  <LightModeIcon />
+                ) : (
+                  <DarkModeIcon />
+                )}
+              </Button>
+            ) : null}
           </div>
+
+          <IconButton
+            onClick={ handleOpenNavMenu }
+            sx={{ display: { md: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          <Menu
+            anchorEl={ anchorElNav }
+            open={ Boolean(anchorElNav) }
+            onClose={ handleCloseNavMenu }
+          >
+            { pages.map(page => (
+
+                <Link href={ page.path } key={ page.title }>
+                  <a>
+                    <MenuItem
+                      onClick={ handleCloseNavMenu }
+                      sx={{ justifyContent: 'center' }}
+                    >
+                      { page.icon && (
+                        <ListItemIcon>
+                          { page.icon }
+                        </ListItemIcon>
+                      )}
+
+                      <Typography>
+                        { page.title }
+                      </Typography>
+                    </MenuItem>
+                  </a>
+                </Link>
+            ))}
+          </Menu>
         </Toolbar>
       </Container>
     </AppBar>

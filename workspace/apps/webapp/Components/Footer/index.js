@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -8,10 +9,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { Paper } from '@mui/material';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
 import { useTheme } from '@mui/material';
-import { toggleTheme } from '@basketo/web-ui';
 
 const socialLinks = [
   { title: 'telegram', url: 'https://t.me/basketofinance', icon: TelegramIcon },
@@ -36,11 +34,7 @@ const quickLinks = [
 ];
 
 const Footer = () => {
-  const currentTheme = useTheme();
-
-  const handleThemeToggle = () => {
-    toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
-  };
+  const {palette:{mode}} = useTheme();
 
   return (
     <Paper variant="section" color="secondary" sx={{ padding: '30px 20px' }}>
@@ -52,7 +46,12 @@ const Footer = () => {
               component="div"
               sx={{ fontFamily: 'Work Sans', mb: 2, fontSize: '2rem' }}
             >
-              Basketo <span style={{ fontWeight: '300' }}>finance</span> &#8482;
+              <div style={{display:"flex"}}>
+                <img src={`/images${mode=='dark'?'D':''}/logo.png`} alt="Basketo" 
+                style={{maxWidth: "200px"}} 
+                /> 
+              <span style={{ fontWeight: '300',paddingTop:"10px" }}>finance</span> &#8482;
+              </div>
             </Typography>
 
             <div className={styles.address}>
@@ -103,19 +102,6 @@ const Footer = () => {
             </div>
           </Grid>
         </Grid>
-        <Button
-          variant="outlined"
-          onClick={handleThemeToggle}
-          startIcon={
-            currentTheme.palette.mode === 'dark' ? (
-              <LightModeIcon />
-            ) : (
-              <DarkModeIcon />
-            )
-          }
-        >
-          {currentTheme.palette.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
-        </Button>
       </Container>
     </Paper>
   );
