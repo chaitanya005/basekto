@@ -5,6 +5,10 @@ import {
   Chip,
   Divider,
   Typography,
+  CardMedia,
+  Button,
+  CardContent,
+  AvatarGroup,
 } from '@mui/material';
 import { Box } from '@mui/system';
 
@@ -18,6 +22,7 @@ export function BasketCard({
   showDescription, // Boolean
   showGraph, // Boolean
   hideChip,
+  showFollow,
   ...props
 }) {
   return (
@@ -40,30 +45,82 @@ export function BasketCard({
       variant="outlined"
       {...props}
     >
-      <Box sx={{ padding: '15px 20px 10px 20px' }}>
-        <Typography variant="h6">{data?.title || 'No title'}</Typography>
-
-        {showGrowth && (
+      <Box
+        sx={{
+          padding: '15px 20px 10px 12px',
+        }}
+      >
+        <CardContent
+          sx={{
+            '&:last-child': {
+              padding: 0,
+            },
+          }}
+        >
           <Typography
-            variant="caption"
-            sx={{ color: 'secondary.main', fontWeight: '400' }}
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '3.1rem 1fr auto',
+              gridTemplateRows: 'auto auto',
+              columnGap: '5px',
+            }}
+            variant="h6"
           >
-            {data?.symbol || 'SYMBOL'}&nbsp;|&nbsp;
-            <Typography
-              component={'span'}
-              variant="caption"
+            <Avatar
               sx={{
-                color:
-                  data?.growth?.percent[0] === '+'
-                    ? 'success.main'
-                    : 'error.main',
+                width: '3rem',
+                height: '3rem',
+                gridColumn: '1/2',
+                gridRow: '1/3',
+                alignSelf: 'center',
+                justifySelf: 'center',
               }}
-            >
-              {data?.growth?.percent || '0'}%
-            </Typography>
-            &nbsp;in the past {data?.growth?.period || 'period'}
+              alt="web-3 Icon"
+              src="https://set-core.s3.amazonaws.com/img/coin-icons/usdc.svg"
+            />
+            {data?.title || 'No title'}
+            {showFollow && (
+              <Button
+                sx={{
+                  width: '27%',
+                  height: 27,
+                  marginLeft: 'auto',
+                  fontSize: '13px',
+                  alignSelf: 'self-end',
+                }}
+                variant="contained"
+              >
+                Follow
+              </Button>
+            )}
+            {showGrowth && (
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'secondary.main',
+                  fontWeight: '400',
+                  gridColumn: '2/4',
+                  gridRow: '2/3',
+                }}
+              >
+                {data?.symbol || 'SYMBOL'}&nbsp;|&nbsp;
+                <Typography
+                  component={'span'}
+                  variant="caption"
+                  sx={{
+                    color:
+                      data?.growth?.percent[0] === '+'
+                        ? 'success.main'
+                        : 'error.main',
+                  }}
+                >
+                  {data?.growth?.percent || '0'}%
+                </Typography>
+                &nbsp;in the past {data?.growth?.period || 'period'}
+              </Typography>
+            )}
           </Typography>
-        )}
+        </CardContent>
       </Box>
       {showDescription && (
         <>
@@ -72,6 +129,33 @@ export function BasketCard({
           </Typography>
         </>
       )}
+      <AvatarGroup sx={{ justifyContent: 'center' }}>
+        <Avatar
+          sx={{
+            width: 30,
+            height: 30,
+          }}
+          alt="Remy Sharp"
+          src="https://assets.coingecko.com/coins/images/15453/small/ujenny.png?1620870247"
+        />
+        <Avatar
+          sx={{
+            width: 30,
+            height: 30,
+          }}
+          alt="Travis Howard"
+          src="https://assets.coingecko.com/coins/images/15810/small/gitcoin.png?1621992929"
+        />
+        <Avatar
+          sx={{
+            width: 30,
+            height: 30,
+          }}
+          alt="Cindy Baker"
+          src="https://s3.amazonaws.com/set-core/img/coin-icons/dai.svg"
+        />
+      </AvatarGroup>
+
       <Box sx={{ display: 'flex', alignItems: 'center', padding: '15px 20px' }}>
         <Avatar sx={{ width: '1.3em', height: '1.3em' }} />
         &nbsp;&nbsp;
