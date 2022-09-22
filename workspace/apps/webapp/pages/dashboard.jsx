@@ -1,16 +1,16 @@
-import {
-  Box,
-  Typography,
-  Card,
-  Chip,
-  Button,
-  Divider,
-} from '@mui/material';
+import { Box, Typography, Card, Chip, Button, Divider } from '@mui/material';
 import { Navigation } from '@basketo/web-ui';
 import Overview from '../Components/dashboard/Overview';
-import { AccountCircle, DashboardRounded, Explore, Notifications } from '@mui/icons-material';
+import {
+  AccountCircle,
+  DashboardRounded,
+  Explore,
+  Notifications,
+} from '@mui/icons-material';
 import YourPortfolio from '../Components/dashboard/YourPortfolio';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const data = [
   { pv: 2400 },
@@ -22,37 +22,60 @@ const data = [
   { pv: 4300 },
 ];
 
-
-
 const Dashboard = () => {
   const router = useRouter();
 
   const navigationInfo = [
     {
-      route: "/dashboard",
-      onClick: ()=>router.push({hash:""}),
-      label:"Overview",
-      icon: <DashboardRounded/>
+      route: '/dashboard',
+      onClick: () => router.push({ hash: '' }),
+      label: 'Overview',
+      icon: <DashboardRounded />,
     },
     {
-      route: "/dashboard#notifications",
-      onClick: ()=>router.push({hash:"#notifications"}),
-      label:"Notifications",
-      icon: <Notifications/>
+      route: '/dashboard#notifications',
+      onClick: () => router.push({ hash: '#notifications' }),
+      label: 'Notifications',
+      icon: <Notifications />,
     },
     {
-      route: "/my-profile",
-      onClick: ()=>router.push({pathname:"/my-profile"}),
-      label: "Profile",
-      icon: <AccountCircle/>
+      route: '/my-profile',
+      onClick: () => router.push({ pathname: '/my-profile' }),
+      label: 'Profile',
+      icon: <AccountCircle />,
     },
     {
-      route: "/explore",
-      onClick: ()=>router.push({pathname:"/explore"}),
-      label: "Explore",
-      icon: <Explore/>
-    }
+      route: '/explore',
+      onClick: () => router.push({ pathname: '/explore' }),
+      label: 'Explore',
+      icon: <Explore />,
+    },
   ];
+
+  //'http://localhost:8000/api/baskets/0x5557661D73f5e8C11AfB926817a21d891A13188f'
+  //0x7409D6A7650D3C983ECCe712C0E214DEe4d64cfe
+
+  const [basket, setBasket] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [userAddress, setUserAddress] = useState(null);
+
+  useEffect(async () => {
+    //setUserAddress(localStorage.getItem('address'));
+    // setUserAddress('0x5557661d73f5e8c11afb926817a21d891a13188f');
+    setIsLoading(true);
+    await axios
+      .get(
+        `http://localhost:8000/api/baskets/0x5557661D73f5e8C11AfB926817a21d891A13188f`
+      )
+      .then((basketData) => {
+        setBasket(basketData.data[0]);
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setBasket(null);
+        console.log(e);
+      });
+  }, []);
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -68,7 +91,7 @@ const Dashboard = () => {
         }}
       >
         {/* left side part */}
-        <Box sx={{maxWidth:'100%', overflowX:'auto'}} >
+        <Box sx={{ maxWidth: '100%', overflowX: 'auto' }}>
           {/* wallet address and blockchain info */}
           <Box
             sx={{
@@ -86,7 +109,7 @@ const Dashboard = () => {
           </Box>
 
           <Overview />
-          <YourPortfolio/>
+          <YourPortfolio basketData={basket} showPortfolioBaskets={true} />
         </Box>
 
         {/* right side part  */}

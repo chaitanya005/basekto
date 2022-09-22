@@ -7,6 +7,16 @@ import {
   setBasketDetails,
 } from '../../../features/basketDetails';
 import { useDispatch, useSelector } from 'react-redux';
+// import '@uiw/react-md-editor/markdown-editor.css';
+// import '@uiw/react-markdown-preview/markdown.css';
+// import dynamic from 'next/dynamic';
+import { useState } from 'react';
+
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
+// const Markdown = dynamic(
+//   () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
+//   { ssr: false }
+// );
 
 const validationSchema = yup.object({
   name: yup
@@ -28,6 +38,7 @@ const MyTextField = styled(TextField)`
 `;
 
 const StepTwo = ({ setActiveStep }) => {
+  const [value, setValue] = useState('**Hello world!!!**');
   const dispatch = useDispatch();
   const { basketDetails } = useSelector(getBasketDetails);
 
@@ -39,6 +50,7 @@ const StepTwo = ({ setActiveStep }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      console.log(Htmlvalue);
       dispatch(setBasketDetails({ basketData: values }));
       setActiveStep(2);
     },
