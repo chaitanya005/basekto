@@ -22,7 +22,7 @@ const DialogTitle = (props) => {
 
     return (
 
-        <MuiDialogTitle sx={{ m: 0, p: 2 }} {...other}>
+        <MuiDialogTitle sx={{ m: 0, p: 2, pb: 0.5 }} {...other}>
             { children }
             { onClose ? (
                 <IconButton
@@ -42,7 +42,7 @@ const DialogTitle = (props) => {
     );
 };
 
-const DialogBox = ({ title, open, onClose, divider, maxWidth, children }) => {
+const DialogBox = ({ title, open, onClose, dividers, maxWidth, children, actions }) => {
 
     return (
 
@@ -58,12 +58,23 @@ const DialogBox = ({ title, open, onClose, divider, maxWidth, children }) => {
                 </DialogTitle>
             )}
 
-            <DialogContent sx={{ mb: 1.5, pt: 1 }}>
-                { divider && <Divider sx={{ mb: 3 }} /> }
+            <DialogContent sx={{ pt: 1 }}>
+                { dividers && <Divider sx={{ mt: 1.5, mb: 3 }} /> }
 
                 <Box sx={{ mt: 1 }}>
                     { children }
                 </Box>
+
+                { actions && (
+                    <>
+                        { dividers && <Divider sx={{ mb: 3 }} /> }
+
+                        <Box sx={{ mb: 1 }}>
+                            { actions }
+                        </Box>
+                    </>
+                )}
+
             </DialogContent>
         </Dialog>
     );

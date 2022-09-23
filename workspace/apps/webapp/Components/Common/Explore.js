@@ -118,8 +118,26 @@ const Explore = ({
                 </Button>
 
                 <DialogBox
+                  title={
+                    <Typography
+                        variant="h5"
+                        component="div"
+                        textAlign="center"
+                    >
+                        Invest in Basket
+                    </Typography>
+                  }
                   open={ investDialogOpen }
                   onClose={ () => setInvestDialogOpen(false) }
+                  actions={
+                    <Button
+                        variant="contained"
+                        // onClick={}
+                        fullWidth
+                    >
+                        Continue
+                    </Button>
+                  }
                 >
                   <BasketInvest />
                 </DialogBox>

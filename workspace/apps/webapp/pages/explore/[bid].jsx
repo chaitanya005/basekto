@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Snackbar, Alert, Grid, useMediaQuery, useTheme, Paper } from '@mui/material';
+import { Snackbar, Alert, Grid, useMediaQuery, useTheme, Paper, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useQuery } from 'react-query';
 import Explore from '../../Components/Common/Explore.js';
@@ -161,7 +161,23 @@ const Basket = () => {
                   borderRadius: 2,
                 }}
               >
+                <Typography
+                    variant="h5"
+                    textAlign="center"
+                    gutterBottom
+                >
+                    Invest in Basket
+                </Typography>
+
                 <BasketInvest />
+
+                <Button
+                    variant="contained"
+                    // onClick={}
+                    fullWidth
+                >
+                    Invest
+                </Button>
               </Paper>
             )}
           </Grid>
