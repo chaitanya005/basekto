@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -5,7 +6,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Avatar, Box, Skeleton, styled } from '@mui/material';
+import { Avatar, Box, Menu, MenuItem, Skeleton, styled, useMediaQuery, useTheme } from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -60,31 +62,105 @@ function getTokenRow({ name, price, growthRate, withWeight, weight, img }, showD
 
 const TokensTable = ({ tokensData, showDetails, isLoading }) => {
 
+    const smDown = useMediaQuery(useTheme().breakpoints.down('sm'));
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleClick = (event) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
+
+    const columns = {
+        weight: 'Weight (%)',
+        price: 'Price',
+        growthRate: 'Growth Rate (100%)',
+        withWeight: 'Growth Rate',
+    };
+
+    const [selectedColumn, setSelectedColumn] = useState('weight');
+
     const tokens = tokensData?.map(
         token => getTokenRow(token, showDetails)
     );
 
-    const getDetailedFormattedValues = (token) => [
-        '$' + token.price,
-        token.growthRate.toFixed(2) + '%',
-        token.withWeight.toFixed(2) + '%',
-    ];
+    const getFormattedValue = (column, value) => {
+
+        switch (column) {
+
+            case 'price': {
+                return '$' + value;
+            }
+            case 'growthRate':
+            case 'withWeight':
+            case 'weight': {
+                return value.toFixed(2) + '%';
+            }
+            default: {
+                return value;
+            }
+        }
+    };
+
+    const getDetailedFormattedValues = (token) => {
+
+        const detailedColumns = ['price', 'growthRate', 'withWeight'];
+        return detailedColumns.map(column =>
+            getFormattedValue(column, token[column])
+        );
+    };
 
     return (
 
         <TableContainer component={ Paper }>
-            <Table sx={{ minWidth: 650 }}>
+            <Table sx={{ minWidth: { sm: 650 } }}>
                 <TableHead>
                     <TableHeadRow>
                         <StyledTableCell>Token</StyledTableCell>
-                        { showDetails && (
+                        { showDetails && smDown ? (
+
+                            <StyledTableCell>
+                                <Box
+                                    display="flex"
+                                    justifyContent="flex-end"
+                                    alignItems="center"
+                                    onClick={ handleClick }
+                                    sx={{ cursor: 'pointer' }}
+                                >
+                                    { columns[selectedColumn] }
+                                    <KeyboardArrowDownIcon />
+                                </Box>
+
+                                <Menu
+                                    anchorEl={ anchorEl }
+                                    open={ Boolean(anchorEl) }
+                                    onClose={ handleClose }
+                                >
+                                    { Object.keys(columns).map((column) => (
+
+                                        <MenuItem
+                                            key={ column }
+                                            selected={ column === selectedColumn }
+                                            onClick={ () => {
+                                                setSelectedColumn(column);
+                                                handleClose();
+                                            }}
+                                        >
+                                            { columns[column] }
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </StyledTableCell>
+                        ) : (
+
                             <>
-                                <StyledTableCell align="right">Price</StyledTableCell>
-                                <StyledTableCell align="right">Growth Rate { '(100%)' }</StyledTableCell>
-                                <StyledTableCell align="right">Growth Rate</StyledTableCell>
+                                { showDetails && (
+                                    <>
+                                        <StyledTableCell align="right">Price</StyledTableCell>
+                                        <StyledTableCell align="right">Growth Rate { '(100%)' }</StyledTableCell>
+                                        <StyledTableCell align="right">Growth Rate</StyledTableCell>
+                                    </>
+                                )}
+                                <StyledTableCell align="right">Weight { '(%)' }</StyledTableCell>
                             </>
                         )}
-                        <StyledTableCell align="right">Weight { '(%)' }</StyledTableCell>
                     </TableHeadRow>
                 </TableHead>
 
@@ -101,7 +177,7 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
                                         <Avatar
                                             src={ token?.img }
                                             alt={ token?.name + ' logo' }
-                                            sx={{ mr: 2.5, width: 28, height: 28 }}
+                                            sx={{ width: 28, height: 28 }}
                                         />
                                     </LoadingAnimation>
 
@@ -111,27 +187,41 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
                                 </Box>
                             </StyledTableCell>
 
-                            { showDetails && (token
-                                ? getDetailedFormattedValues(token)
-                                : Array.from({ length: 3 })
-                            ).map((value, i) => (
+                            { showDetails && smDown ? (
 
-                                <StyledTableCell key={ i }>
+                                <StyledTableCell>
                                     <Box display="flex" justifyContent="right">
                                         <LoadingAnimation variant="text" size="30px" isLoading={ isLoading }>
-                                            { value }
+                                            { token && getFormattedValue(selectedColumn, token[selectedColumn]) }
                                         </LoadingAnimation>
                                     </Box>
                                 </StyledTableCell>
-                            ))}
+                            ) : (
 
-                            <StyledTableCell>
-                                <Box display="flex" justifyContent="right">
-                                    <LoadingAnimation variant="text" size="30px" isLoading={ isLoading }>
-                                        { token?.weight.toFixed(2) + '%' }
-                                    </LoadingAnimation>
-                                </Box>
-                            </StyledTableCell>
+                                <>
+                                    { showDetails && (token
+                                        ? getDetailedFormattedValues(token)
+                                        : Array.from({ length: 3 })
+                                    ).map((value, i) => (
+
+                                        <StyledTableCell key={ i }>
+                                            <Box display="flex" justifyContent="right">
+                                                <LoadingAnimation variant="text" size="30px" isLoading={ isLoading }>
+                                                    { value }
+                                                </LoadingAnimation>
+                                            </Box>
+                                        </StyledTableCell>
+                                    ))}
+
+                                    <StyledTableCell>
+                                        <Box display="flex" justifyContent="right">
+                                            <LoadingAnimation variant="text" size="30px" isLoading={ isLoading }>
+                                                { token && getFormattedValue('weight', token.weight) }
+                                            </LoadingAnimation>
+                                        </Box>
+                                    </StyledTableCell>
+                                </>
+                            )}
                         </TableRow>
                     ))}
                 </TableBody>
