@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Chip, InputAdornment, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, InputAdornment, TextField, Typography } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import BasketShareDialog from './BasketShareDialog';
 
@@ -13,15 +13,7 @@ const BasketInvest = () => {
 
     return (
 
-        <Paper
-            elevation={ 2 }
-            sx={{
-                position: 'sticky',
-                top: '90px',
-                width: '100%',
-                padding: '2rem 1rem 2.5rem',
-            }}
-        >
+        <>
             <Typography
                 variant="h5"
                 textAlign="center"
@@ -110,7 +102,7 @@ const BasketInvest = () => {
             >
                 Invest
             </Button>
-        </Paper>
+        </>
     );
 }
 

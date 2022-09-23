@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Snackbar, Alert, Grid } from '@mui/material';
+import { Snackbar, Alert, Grid, useMediaQuery, useTheme, Paper } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useQuery } from 'react-query';
 import Explore from '../../Components/Common/Explore.js';
@@ -25,6 +25,9 @@ const getGraphData = async (basketData, days) => (
 ).data;
 
 const Basket = () => {
+
+  const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
+
   const router = useRouter();
   const { bid } = router.query;
   const [days, setDays] = useState(1);
@@ -130,7 +133,7 @@ const Basket = () => {
 
         <Grid
           container
-          spacing={ 4 }
+          spacing={ 8 }
         >
           <Grid item xs={ 12 } md={ 8 }>
             <Explore
@@ -145,7 +148,22 @@ const Basket = () => {
           </Grid>
 
           <Grid item xs={ 12 } md={ 4 }>
-            <BasketInvest />
+            { !mdDown && (
+
+              <Paper
+                elevation={ 0 }
+                sx={{
+                  position: 'sticky',
+                  top: '90px',
+                  width: '100%',
+                  padding: '2rem 1rem 2.5rem',
+                  border: '1px solid #ddda',
+                  borderRadius: 2,
+                }}
+              >
+                <BasketInvest />
+              </Paper>
+            )}
           </Grid>
         </Grid>
       </Container>
