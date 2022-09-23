@@ -5,7 +5,16 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Dialog, Typography, Divider, Grid, IconButton, Menu, MenuItem, ListItemIcon } from '@mui/material';
+import {
+  Dialog,
+  Typography,
+  Divider,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
@@ -22,7 +31,11 @@ const pages = [
   { title: 'Explore', path: '/explore' },
   { title: 'Create', path: '/create' },
   { title: 'Learn', path: '#' },
-  { title: 'Early Access', path: 'https://t.me/basketofinance', icon: <TelegramIcon /> },
+  {
+    title: 'Early Access',
+    path: 'https://t.me/basketofinance',
+    icon: <TelegramIcon />,
+  },
 ];
 
 const clientSide = typeof window !== 'undefined';
@@ -124,16 +137,16 @@ const Navbar = () => {
           </Box>
 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            { pages.map((page) => (
-              <Link href={ page.path } key={ page.title }>
+            {pages.map((page) => (
+              <Link href={page.path} key={page.title}>
                 <a>
                   <Button
                     sx={{ fontSize: { xs: '10px', md: '14px' } }}
                     variant="text"
                     color="primary"
-                    startIcon={ page.icon }
+                    startIcon={page.icon}
                   >
-                    { page.title }
+                    {page.title}
                   </Button>
                 </a>
               </Link>
@@ -224,37 +237,30 @@ const Navbar = () => {
           </div>
 
           <IconButton
-            onClick={ handleOpenNavMenu }
+            onClick={handleOpenNavMenu}
             sx={{ display: { md: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
 
           <Menu
-            anchorEl={ anchorElNav }
-            open={ Boolean(anchorElNav) }
-            onClose={ handleCloseNavMenu }
+            anchorEl={anchorElNav}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseNavMenu}
           >
-            { pages.map(page => (
+            {pages.map((page) => (
+              <Link href={page.path} key={page.title}>
+                <a>
+                  <MenuItem
+                    onClick={handleCloseNavMenu}
+                    sx={{ justifyContent: 'center' }}
+                  >
+                    {page.icon && <ListItemIcon>{page.icon}</ListItemIcon>}
 
-                <Link href={ page.path } key={ page.title }>
-                  <a>
-                    <MenuItem
-                      onClick={ handleCloseNavMenu }
-                      sx={{ justifyContent: 'center' }}
-                    >
-                      { page.icon && (
-                        <ListItemIcon>
-                          { page.icon }
-                        </ListItemIcon>
-                      )}
-
-                      <Typography>
-                        { page.title }
-                      </Typography>
-                    </MenuItem>
-                  </a>
-                </Link>
+                    <Typography>{page.title}</Typography>
+                  </MenuItem>
+                </a>
+              </Link>
             ))}
           </Menu>
         </Toolbar>

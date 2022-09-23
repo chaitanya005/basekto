@@ -21,9 +21,7 @@ const CreateAccountDialog = ({
   userAddress,
   onAccountCreation,
 }) => {
-
   const mutation = useMutation((accountDetails) => {
-
     return axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_API}/user/new`,
       accountDetails
@@ -78,7 +76,8 @@ const CreateAccountDialog = ({
         <Divider />
 
         <DialogContent sx={{ maxWidth: '420px' }}>
-          {(mutation.error || (mutation.data && (mutation.data.status != 200))) && (
+          {(mutation.error ||
+            (mutation.data && mutation.data.status != 200)) && (
             <Typography
               variant="body2"
               align="center"
