@@ -29,6 +29,7 @@ const socialLinks = [
 const quickLinks = [
   // { title: "Careers", url: "/careers" },
   { title: 'About us', url: 'https://in.linkedin.com/company/basketo-finance' },
+  { title: 'Contact us', url: 'mailto:company@basketo.finance' },
   // { title: "Pricing", url: "/pricing" },
   // { title: "Help and Support", url: "/support" },
 ];
@@ -40,66 +41,72 @@ const Footer = () => {
     <Paper variant="section" color="secondary" sx={{ padding: '30px 20px' }}>
       <Container maxWidth="lg">
         <Grid container>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={5}>
             <Typography
               variant="h4"
               component="div"
               sx={{ fontFamily: 'Work Sans', mb: 2, fontSize: '2rem' }}
             >
-              <div style={{display:"flex"}}>
-                <img src={`/images${mode=='dark'?'D':''}/logo.png`} alt="Basketo" 
-                style={{maxWidth: "200px"}} 
-                /> 
-              <span style={{ fontWeight: '300',paddingTop:"10px" }}>finance</span> &#8482;
-              </div>
-            </Typography>
-
+            <div style={{display:"flex"}}>
+              <img src={`/images${mode=='dark'?'D':''}/logo.png`} alt="Basketo" 
+              style={{maxWidth: "200px"}} 
+              /> 
+            <span style={{ fontWeight: '300',paddingTop:"10px" }}>finance</span> &#8482;
+            </div>
+            </Typography> 
             <div className={styles.address}>
               T-Hub, Phase-2
               <br />
               Madhapur, Hyderabad - 500032
             </div>
-            <a href="mailto:company@basketo.finance">
-              <Button variant="contained" sx={{ mb: 2 }}>
-                Contact
-              </Button>
-            </a>
-
-            <div className={styles.social}>
-              {socialLinks.map(({ title, url, icon: Icon }) => (
-                <a
-                  key={title}
-                  href={url}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ marginRight: '1rem' }}
-                >
-                  <Icon sx={{ fontSize: '2rem' }} />
-                </a>
-              ))}
-            </div>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={3.5}>
             <div className={styles['quick-links']}>
-              <Typography
+            <Typography
                 variant="h6"
                 sx={{
                   color: '#949494',
-                  fontSize: '0.925rem',
+                  fontSize: '1rem',
                   letterSpacing: '0.2rem',
                 }}
               >
                 QUICK LINKS
               </Typography>
-              <ul>
-                {quickLinks.map((link) => (
-                  <li key={link.title}>
-                    <a href={link.url}>{link.title}</a>
-                  </li>
-                ))}
-              </ul>
+              <a href="https://in.linkedin.com/company/basketo-finance">
+                {quickLinks.map((link) => ( 
+                    <p key={link.title}>
+                      <a href={link.url}>{link.title}</a>
+                    </p>
+                  ))}
+              </a>
             </div>
+          </Grid>
+
+          <Grid item xs={12} md={3.5}>
+            <Typography
+                  variant="h6"
+                  sx={{
+                    color: '#949494',
+                    fontSize: '1rem',
+                    letterSpacing: '0.2rem',
+                  }}
+            >
+              Follow us on:
+            </Typography>
+              <div className={styles.social}>
+                {socialLinks.map(({ title, url, icon: Icon }) => (
+                  <a
+                    key={title}
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ marginRight: '1rem' }}
+                  >
+                    <Icon sx={{ fontSize: '2rem' }} />
+                  </a>
+                ))}
+              </div>
           </Grid>
         </Grid>
       </Container>
