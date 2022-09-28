@@ -29,7 +29,7 @@ const BasketShareDialog = ({ open, setOpen }) => {
 
         <DialogBox
             title="Share"
-            divider
+            dividers
             open={ open }
             onClose={ () => setOpen(false) }
         >

@@ -14,14 +14,6 @@ const BasketInvest = () => {
     return (
 
         <>
-            <Typography
-                variant="h5"
-                textAlign="center"
-                gutterBottom
-            >
-                Invest in Basket
-            </Typography>
-
             <Box
                 display="flex"
                 justifyContent="end"
@@ -93,15 +85,6 @@ const BasketInvest = () => {
                     ))}
                 </Box>
             </Box>
-
-            <Button
-                variant="contained"
-                type="submit"
-                // onClick={}
-                fullWidth
-            >
-                Invest
-            </Button>
         </>
     );
 }
