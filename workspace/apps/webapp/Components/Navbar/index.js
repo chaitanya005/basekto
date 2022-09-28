@@ -41,6 +41,10 @@ const pages = [
 const clientSide = typeof window !== 'undefined';
 let account;
 
+const checkIsUserExist = async (userAddress) => (await axios.get(
+  `${process.env.NEXT_PUBLIC_BACKEND_API}/user/exist?userAddress=${userAddress}`
+)).data.isExist;
+
 const Navbar = () => {
   const {
     palette: { mode },
@@ -56,7 +60,6 @@ const Navbar = () => {
     setAnchorElNav(null);
   };
 
-  const [userRegistered, setUserRegistered] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
@@ -69,6 +72,12 @@ const Navbar = () => {
     setUserAddress(localStorage.getItem('address'));
   }, []);
 
+  useEffect(() => {
+    userAddress && (async () =>
+      setIsUserExist(await checkIsUserExist(userAddress))
+    )();
+  }, [userAddress]);
+
   const connectWallet = async () => {
     account = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
@@ -77,13 +86,14 @@ const Navbar = () => {
   };
 
   const accountChangedHandler = async (newAccount) => {
-    localStorage.setItem('address', newAccount[0]);
-    setUserAddress(localStorage.getItem('address'));
+    if (newAccount[0]) {
+      localStorage.setItem('address', newAccount[0]);
+      setUserAddress(localStorage.getItem('address'));
+    } else {
+      localStorage.removeItem('address');
+      setUserAddress(null);
+    }
     getAccountBalance(newAccount);
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/user/exist?userAddress=${newAccount}`
-    );
-    setIsUserExist(response.data.isExist);
   };
 
   const getAccountBalance = async (account) => {
@@ -214,13 +224,12 @@ const Navbar = () => {
               </Box>
             </Dialog>
 
-            {userAddress && (
+            { userAddress && (
               <CreateAccountDialog
                 isOpen={!isUserExist}
-                onClose={() => router.push({ hash: '' })}
                 userAddress={userAddress}
                 onAccountCreation={() => {
-                  setUserRegistered(true);
+                  setIsUserExist(true);
                   router.push('/explore');
                 }}
               />
