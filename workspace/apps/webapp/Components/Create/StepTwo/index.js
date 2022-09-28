@@ -50,7 +50,6 @@ const StepTwo = ({ setActiveStep }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(Htmlvalue);
       dispatch(setBasketDetails({ basketData: values }));
       setActiveStep(2);
     },
