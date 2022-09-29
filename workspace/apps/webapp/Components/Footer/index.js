@@ -73,13 +73,13 @@ const Footer = () => {
               >
                 QUICK LINKS
               </Typography>
-              <a href="https://in.linkedin.com/company/basketo-finance">
-                {quickLinks.map((link) => ( 
-                    <p key={link.title}>
-                      <a href={link.url}>{link.title}</a>
-                    </p>
-                  ))}
-              </a>
+              <ul>
+                {quickLinks.map((link) => (
+                  <li key={link.title}>
+                    <a href={link.url}>{link.title}</a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </Grid>
 
@@ -94,7 +94,7 @@ const Footer = () => {
             >
               Follow us on:
             </Typography>
-              <div className={styles.social}>
+                  <div className={styles.social}>
                 {socialLinks.map(({ title, url, icon: Icon }) => (
                   <a
                     key={title}
