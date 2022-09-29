@@ -14,7 +14,7 @@ export const demoData = [
   { point: 0.87799, timeStamp: 'Sep 7th 22 10:00 pm' },
   { point: 0.42424, timeStamp: 'Sep 7th 22 10:30 pm' },
   { point: -0.52336, timeStamp: 'Sep 7th 22 11:00 pm' },
-  { point: -0.46071, timeStamp: 'Sep 7th 22 11:30 pm' },
+  { point: -0.46055, timeStamp: 'Sep 7th 22 11:30 pm' },
   { point: -0.00696, timeStamp: 'Sep 8th 22 12:00 am' },
   { point: -0.15928, timeStamp: 'Sep 8th 22 12:30 am' },
   { point: -0.29163, timeStamp: 'Sep 8th 22 01:00 am' },

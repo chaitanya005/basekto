@@ -7,23 +7,18 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  IconButton,
   Paper,
   TextField,
   Typography,
 } from '@mui/material';
-import { Close } from '@mui/icons-material';
 import axios from 'axios';
 
 const CreateAccountDialog = ({
   isOpen,
-  onClose,
   userAddress,
   onAccountCreation,
 }) => {
-
   const mutation = useMutation((accountDetails) => {
-
     return axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_API}/user/new`,
       accountDetails
@@ -56,29 +51,19 @@ const CreateAccountDialog = ({
   }, [mutation.data]);
 
   return (
-    <Dialog maxWidth="sm" open={isOpen} onClose={onClose}>
+    <Dialog maxWidth="sm" open={isOpen}>
       <form onSubmit={onSubmit}>
         <DialogTitle>
-          <Typography variant="h5" component="div">
+          <Typography variant="h5" component="div" textAlign="center">
             Create New Account
-            <IconButton
-              onClick={onClose}
-              sx={{
-                position: 'absolute',
-                right: 8,
-                top: 8,
-                color: (theme) => theme.palette.grey[500],
-              }}
-            >
-              <Close />
-            </IconButton>
           </Typography>
         </DialogTitle>
 
         <Divider />
 
         <DialogContent sx={{ maxWidth: '420px' }}>
-          {(mutation.error || (mutation.data && (mutation.data.status != 200))) && (
+          {(mutation.error ||
+            (mutation.data && mutation.data.status != 200)) && (
             <Typography
               variant="body2"
               align="center"

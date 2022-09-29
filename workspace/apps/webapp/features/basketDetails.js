@@ -15,6 +15,6 @@ const basketDetails = createSlice({
 });
 
 export const { setBasketDetails } = basketDetails.actions;
-export const getBasketDetails = (state) => state.basketDetails
+export const getBasketDetails = (state) => state.basketDetails;
 
 export default basketDetails.reducer;

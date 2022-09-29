@@ -5,7 +5,16 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Dialog, Typography, Divider, Grid, IconButton, Menu, MenuItem, ListItemIcon } from '@mui/material';
+import {
+  Dialog,
+  Typography,
+  Divider,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
@@ -22,11 +31,19 @@ const pages = [
   { title: 'Explore', path: '/explore' },
   { title: 'Create', path: '/create' },
   { title: 'Learn', path: '#' },
-  { title: 'Early Access', path: 'https://t.me/basketofinance', icon: <TelegramIcon /> },
+  {
+    title: 'Early Access',
+    path: 'https://t.me/basketofinance',
+    icon: <TelegramIcon />,
+  },
 ];
 
 const clientSide = typeof window !== 'undefined';
 let account;
+
+const checkIsUserExist = async (userAddress) => (await axios.get(
+  `${process.env.NEXT_PUBLIC_BACKEND_API}/user/exist?userAddress=${userAddress}`
+)).data.isExist;
 
 const Navbar = () => {
   const {
@@ -43,7 +60,6 @@ const Navbar = () => {
     setAnchorElNav(null);
   };
 
-  const [userRegistered, setUserRegistered] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
@@ -56,6 +72,12 @@ const Navbar = () => {
     setUserAddress(localStorage.getItem('address'));
   }, []);
 
+  useEffect(() => {
+    userAddress && (async () =>
+      setIsUserExist(await checkIsUserExist(userAddress))
+    )();
+  }, [userAddress]);
+
   const connectWallet = async () => {
     account = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
@@ -64,13 +86,14 @@ const Navbar = () => {
   };
 
   const accountChangedHandler = async (newAccount) => {
-    localStorage.setItem('address', newAccount[0]);
-    setUserAddress(localStorage.getItem('address'));
+    if (newAccount[0]) {
+      localStorage.setItem('address', newAccount[0]);
+      setUserAddress(localStorage.getItem('address'));
+    } else {
+      localStorage.removeItem('address');
+      setUserAddress(null);
+    }
     getAccountBalance(newAccount);
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/user/exist?userAddress=${newAccount}`
-    );
-    setIsUserExist(response.data.isExist);
   };
 
   const getAccountBalance = async (account) => {
@@ -124,16 +147,16 @@ const Navbar = () => {
           </Box>
 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            { pages.map((page) => (
-              <Link href={ page.path } key={ page.title }>
+            {pages.map((page) => (
+              <Link href={page.path} key={page.title}>
                 <a>
                   <Button
                     sx={{ fontSize: { xs: '10px', md: '14px' } }}
                     variant="text"
                     color="primary"
-                    startIcon={ page.icon }
+                    startIcon={page.icon}
                   >
-                    { page.title }
+                    {page.title}
                   </Button>
                 </a>
               </Link>
@@ -201,13 +224,12 @@ const Navbar = () => {
               </Box>
             </Dialog>
 
-            {userAddress && (
+            { userAddress && (
               <CreateAccountDialog
                 isOpen={!isUserExist}
-                onClose={() => router.push({ hash: '' })}
                 userAddress={userAddress}
                 onAccountCreation={() => {
-                  setUserRegistered(true);
+                  setIsUserExist(true);
                   router.push('/explore');
                 }}
               />
@@ -224,37 +246,30 @@ const Navbar = () => {
           </div>
 
           <IconButton
-            onClick={ handleOpenNavMenu }
+            onClick={handleOpenNavMenu}
             sx={{ display: { md: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
 
           <Menu
-            anchorEl={ anchorElNav }
-            open={ Boolean(anchorElNav) }
-            onClose={ handleCloseNavMenu }
+            anchorEl={anchorElNav}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseNavMenu}
           >
-            { pages.map(page => (
+            {pages.map((page) => (
+              <Link href={page.path} key={page.title}>
+                <a>
+                  <MenuItem
+                    onClick={handleCloseNavMenu}
+                    sx={{ justifyContent: 'center' }}
+                  >
+                    {page.icon && <ListItemIcon>{page.icon}</ListItemIcon>}
 
-                <Link href={ page.path } key={ page.title }>
-                  <a>
-                    <MenuItem
-                      onClick={ handleCloseNavMenu }
-                      sx={{ justifyContent: 'center' }}
-                    >
-                      { page.icon && (
-                        <ListItemIcon>
-                          { page.icon }
-                        </ListItemIcon>
-                      )}
-
-                      <Typography>
-                        { page.title }
-                      </Typography>
-                    </MenuItem>
-                  </a>
-                </Link>
+                    <Typography>{page.title}</Typography>
+                  </MenuItem>
+                </a>
+              </Link>
             ))}
           </Menu>
         </Toolbar>

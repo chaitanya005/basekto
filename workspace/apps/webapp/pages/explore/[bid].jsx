@@ -2,11 +2,12 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert, Grid, useMediaQuery, useTheme, Paper, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useQuery } from 'react-query';
 import Explore from '../../Components/Common/Explore.js';
 import axios from 'axios';
+import BasketInvest from 'apps/webapp/Components/Explore/BasketInvest/index.js';
 
 const getBasketData = async (bid) => (
 
@@ -24,6 +25,9 @@ const getGraphData = async (basketData, days) => (
 ).data;
 
 const Basket = () => {
+
+  const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
+
   const router = useRouter();
   const { bid } = router.query;
   const [days, setDays] = useState(1);
@@ -127,15 +131,57 @@ const Basket = () => {
           Back
         </Button>
 
-        <Explore
-          isLoading={isLoading}
-          isFetching={isFetching}
-          basket={basket}
-          graphData={graphData}
-          setDays={setDays}
-          showDetails={true}
-          coins={coinGrowthRates}
-        />
+        <Grid
+          container
+          spacing={ 8 }
+        >
+          <Grid item xs={ 12 } md={ 8 }>
+            <Explore
+              isLoading={isLoading}
+              isFetching={isFetching}
+              basket={basket}
+              graphData={graphData}
+              setDays={setDays}
+              showDetails={true}
+              coins={coinGrowthRates}
+            />
+          </Grid>
+
+          <Grid item xs={ 12 } md={ 4 }>
+            { !mdDown && (
+
+              <Paper
+                elevation={ 0 }
+                sx={{
+                  position: 'sticky',
+                  top: '90px',
+                  width: '100%',
+                  padding: '2rem 1rem 2.5rem',
+                  border: '1px solid #ddda',
+                  borderRadius: 2,
+                }}
+              >
+                <Typography
+                    variant="h5"
+                    textAlign="center"
+                    gutterBottom
+                >
+                    Invest in Basket
+                </Typography>
+
+                <BasketInvest />
+
+                <Button
+                    variant="contained"
+                    // onClick={}
+                    fullWidth
+                >
+                    Invest
+                </Button>
+              </Paper>
+            )}
+          </Grid>
+        </Grid>
       </Container>
     </>
   );

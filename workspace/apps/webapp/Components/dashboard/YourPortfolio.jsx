@@ -28,13 +28,13 @@ const YourPortfolio = ({ basketData, showPortfolioBaskets }) => {
       >
         {showPortfolioBaskets ? (
           <BasketCard
-            key={basketData._id}
+            key={basketData?._id}
             data={{
-              title: basketData.name,
-              symbol: basketData.symbol,
+              title: basketData?.name,
+              symbol: basketData?.symbol,
               growth: { percent: '+0.01', period: 'week' },
-              basketeer: basketData.accountId,
-              description: basketData.description,
+              basketeer: basketData?.accountId,
+              description: basketData?.description,
             }}
             showDescription
             hideChip

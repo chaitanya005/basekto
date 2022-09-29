@@ -1,21 +1,26 @@
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import Graph from './Graph';
 import {
   Alert,
+  IconButton,
   InputAdornment,
   Skeleton,
   Snackbar,
   TextField,
   Tooltip,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import InvestReturns from '../Explore/InvestmentReturns';
-import { useState } from 'react';
 import TokensTable from '../Explore/TokensTable';
+import DialogBox from './DialogBox';
+import BasketInvest from '../Explore/BasketInvest';
+import AddAlertIcon from '@mui/icons-material/AddAlert';
 
 const Explore = ({
   basket,
@@ -26,30 +31,37 @@ const Explore = ({
   setDays,
   coins,
 }) => {
-  const [open, setOpen] = useState(false);
 
-  const handleClose = () => setOpen(!open);
+  const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
+
+  const [alertSnackbarOpen, setAlertSnackbarOpen] = useState(false);
+  const handleAlertSnackbarClose = () => setAlertSnackbarOpen(false);
+
+  const [investDialogOpen, setInvestDialogOpen] = useState(false);
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
 
   return (
     <>
       <Snackbar
-        open={open}
+        open={alertSnackbarOpen}
         autoHideDuration={6000}
-        onClose={handleClose}
+        onClose={handleAlertSnackbarClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={handleAlertSnackbarClose} severity="success" sx={{ width: '100%' }}>
           Your Input has been saved!
         </Alert>
       </Snackbar>
 
       <Box
         display="flex"
-        alignItems="center"
         justifyContent="space-between"
-        flexWrap="wrap"
-        gap={ 3 }
-        sx={{ mt: 4, mb: 4 }}
+        gap={ 2 }
+        sx={{
+          mt: 4, mb: 4,
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { sm: 'flex-start' }
+        }}
       >
         <Box display="flex" alignItems="center" sx={{ '> *': { mr: 2 } }}>
           {isLoading || isFetching ? (
@@ -75,39 +87,98 @@ const Explore = ({
           ) : (
             <Typography
               variant="h3"
-              sx={{ fontSize: '2rem', fontWeight: 'bold' }}
+              sx={{
+                fontSize: 'clamp(1.25rem, 1.25rem + 0.75vw, 1.75rem)',
+                fontWeight: 'bold',
+                textTransform: 'capitalize',
+              }}
             >
               {basket?.name}
             </Typography>
           )}
         </Box>
-        {showDetails && (
-          <Box display={'flex'} gap={'2rem'}>
-            <Box>
+
+        { showDetails && (
+
+          <Box display="flex" alignItems="center" gap={ 1 }>
+            { mdDown && (
+
+              <>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={ () => setInvestDialogOpen(true) }
+                  disabled={ isLoading || isFetching }
+                  sx={{
+                    width: { sm: '8em' },
+                    fontSize: '1.125rem',
+                  }}
+                >
+                  Invest
+                </Button>
+
+                <DialogBox
+                  title={
+                    <Typography
+                        variant="h5"
+                        component="div"
+                        textAlign="center"
+                    >
+                        Invest in Basket
+                    </Typography>
+                  }
+                  open={ investDialogOpen }
+                  onClose={ () => setInvestDialogOpen(false) }
+                  actions={
+                    <Button
+                        variant="contained"
+                        // onClick={}
+                        fullWidth
+                    >
+                        Continue
+                    </Button>
+                  }
+                >
+                  <BasketInvest />
+                </DialogBox>
+              </>
+            )}
+
+            <Tooltip title="Alert Me">
+              <IconButton
+                color="primary"
+                onClick={ () => setAlertDialogOpen(true) }
+                disabled={ isLoading || isFetching }
+              >
+                <AddAlertIcon />
+              </IconButton>
+            </Tooltip>
+
+            <DialogBox
+              title="Alert Me"
+              open={ alertDialogOpen }
+              onClose={ () => setAlertDialogOpen(false) }
+            >
               <TextField
                 variant="outlined"
                 color="primary"
                 placeholder="Enter limit"
+                autoFocus
+                fullWidth
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="start">
-                      <Button variant="contained" onClick={() => setOpen(true)}>
+                    <InputAdornment position="end">
+                      <Button variant="contained" onClick={() => {
+                        setAlertSnackbarOpen(true);
+                        setAlertDialogOpen(false);
+                      }}>
                         Alert Me!
                       </Button>
                     </InputAdornment>
                   ),
                 }}
               />
-            </Box>
-
-            <Tooltip title="Coming soon!">
-              <Button
-                variant="contained"
-                sx={{ width: '8em', fontSize: '18px' }}
-              >
-                Invest
-              </Button>
-            </Tooltip>
+            </DialogBox>
           </Box>
         )}
       </Box>

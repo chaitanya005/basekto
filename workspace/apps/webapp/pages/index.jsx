@@ -1,5 +1,6 @@
 import Hero from '../Components/Home/Hero';
 import TopBaskets from '../Components/Home/TopBaskets';
+import TrendingManagers from '../Components/Home/TrendingManagers.js';
 import Partners from '../Components/Home/Partners';
 import CreateBaskets from '../Components/Home/CreateBaskets';
 import Steps from '../Components/Home/Steps';
@@ -11,6 +12,7 @@ const index = () => {
     <>
       <Hero />
       <TopBaskets />
+      <TrendingManagers />
       <Partners />
       <Steps />
       <CreateBaskets />
