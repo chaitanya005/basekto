@@ -7,13 +7,12 @@ import { useState } from 'react';
 import { BasketCard } from '@basketo/web-ui';
 import axios from 'axios';
 
-const getBasketData = async (queryString) => (
-
-  await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_API}/baskets`
-    + queryString
-  )
-).data;
+const getBasketData = async (queryString) =>
+  (
+    await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_API}/baskets` + queryString
+    )
+  ).data;
 
 const Baskets = ({ queryString }) => {
   const [alert, setAlert] = useState({
@@ -79,6 +78,7 @@ const Baskets = ({ queryString }) => {
                         basketGrowth: basket?.growthRate,
                       }}
                       showDescription
+                      showFollow
                     />
                   </Link>
                 </Grid>
