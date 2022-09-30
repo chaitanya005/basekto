@@ -28,4 +28,9 @@
   font-size: 0.875rem;
   line-height: 150%;
   list-style: none;
+  margin: 0px;
+}
+
+.quick-links p {
+  margin: 0%;
 }
