@@ -76,12 +76,34 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    userAddress && (async () =>
-      setIsUserExist(await checkIsUserExist(userAddress))
-    )();
+
+    userAddress ? (async () => {
+
+      setIsUserExist(await checkIsUserExist(userAddress));
+
+      window?.ethereum?.request({
+        method: "wallet_addEthereumChain",
+        params: [{
+            chainId: "0x89",
+            rpcUrls: ["https://polygon-rpc.com/"],
+            chainName: "Matic Mainnet",
+            nativeCurrency: {
+                name: "MATIC",
+                symbol: "MATIC",
+                decimals: 18
+            },
+            blockExplorerUrls: ["https://explorer.matic.network"]
+        }]
+      });
+    })() : setIsUserExist(true);
   }, [userAddress]);
 
   const connectWallet = async () => {
+
+    if (clientSide && typeof window?.ethereum === 'undefined') {
+      router.push({ hash: 'install-metamask' });
+      return;
+    }
     account = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
     });
@@ -204,6 +226,7 @@ const Navbar = () => {
                    `${userAddress.slice(0, 4)}...${userAddress.slice(34, 42)}`
                   }
                   disconnectWallet={ disconnectWallet }
+                  changeAccount={ connectWallet }
                 />
               </Grid>
             )}
@@ -223,9 +246,7 @@ const Navbar = () => {
 
             <Dialog
               open={
-                clientSide &&
-                typeof window?.ethereum === 'undefined' &&
-                router.asPath.split('#')[1] === 'connect'
+                router.asPath.split('#')[1] === 'install-metamask'
               }
               onClose={() => router.push({ hash: '' })}
             >
