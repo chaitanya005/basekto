@@ -26,6 +26,7 @@ import { useTheme } from '@mui/material';
 import { toggleTheme } from '@basketo/web-ui';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import UserAccountDialog from './UserAccountDialog';
 
 const pages = [
   { title: 'Explore', path: '/explore' },
@@ -64,6 +65,8 @@ const Navbar = () => {
   const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
 
+  const [userAccountDialogOpen, setUserAccountDialogOpen] = useState(false);
+
   const handleThemeToggle = () => {
     toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
   };
@@ -73,16 +76,43 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    userAddress && (async () =>
-      setIsUserExist(await checkIsUserExist(userAddress))
-    )();
+
+    userAddress ? (async () => {
+
+      setIsUserExist(await checkIsUserExist(userAddress));
+
+      window?.ethereum?.request({
+        method: "wallet_addEthereumChain",
+        params: [{
+            chainId: "0x89",
+            rpcUrls: ["https://polygon-rpc.com/"],
+            chainName: "Matic Mainnet",
+            nativeCurrency: {
+                name: "MATIC",
+                symbol: "MATIC",
+                decimals: 18
+            },
+            blockExplorerUrls: ["https://explorer.matic.network"]
+        }]
+      });
+    })() : setIsUserExist(true);
   }, [userAddress]);
 
   const connectWallet = async () => {
+
+    if (clientSide && typeof window?.ethereum === 'undefined') {
+      router.push({ hash: 'install-metamask' });
+      return;
+    }
     account = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
     });
     accountChangedHandler(account);
+  };
+
+  const disconnectWallet = () => {
+    accountChangedHandler([]);
+    setUserAccountDialogOpen(false);
   };
 
   const accountChangedHandler = async (newAccount) => {
@@ -174,12 +204,30 @@ const Navbar = () => {
               </Button>
             ) : (
               <Grid display={'flex'} gap={'1rem'} alignItems={'center'}>
-                <Typography>
-                  {userBalance}
-                  {'     '}
-                  {userAddress.slice(0, 4)}...
-                  {userAddress.slice(34, 42)}
-                </Typography>
+                <Button
+                  sx={{ fontSize: { xs: '10px', md: '14px' } }}
+                  variant="outlined"
+                  onClick={ () => setUserAccountDialogOpen(true) }
+                >
+                  <Typography>
+                    {userBalance}
+                    {'     '}
+                    {userAddress.slice(0, 4)}...
+                    {userAddress.slice(34, 42)}
+                  </Typography>
+                </Button>
+
+                <UserAccountDialog
+                  open={ userAccountDialogOpen }
+                  onClose={
+                    () => setUserAccountDialogOpen(false)
+                  }
+                  userAddress={
+                   `${userAddress.slice(0, 4)}...${userAddress.slice(34, 42)}`
+                  }
+                  disconnectWallet={ disconnectWallet }
+                  changeAccount={ connectWallet }
+                />
               </Grid>
             )}
             {/* <a
@@ -198,9 +246,7 @@ const Navbar = () => {
 
             <Dialog
               open={
-                clientSide &&
-                typeof window?.ethereum === 'undefined' &&
-                router.asPath.split('#')[1] === 'connect'
+                router.asPath.split('#')[1] === 'install-metamask'
               }
               onClose={() => router.push({ hash: '' })}
             >
