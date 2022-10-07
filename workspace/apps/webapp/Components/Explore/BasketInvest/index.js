@@ -1,11 +1,31 @@
 import { useState } from 'react';
-import { Box, Button, Chip, InputAdornment, TextField, Typography } from '@mui/material';
+import {
+    Avatar,
+    Box,
+    Button,
+    InputAdornment,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Typography
+} from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import BasketShareDialog from './BasketShareDialog';
 
-const BasketInvest = () => {
+const BasketInvest = ({ tokensData }) => {
 
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [amount, setAmount] = useState(100);
+
+    const tokens = tokensData?.map((token) => ({
+        ...token,
+        amount: amount * token.weight / 100
+    }));
 
     const handleClickOpen = () => {
         setDialogOpen(true);
@@ -52,8 +72,9 @@ const BasketInvest = () => {
                 </Box>
 
                 <TextField
-                    // variant="standard"
                     label="Amount to Invest"
+                    value={ amount }
+                    onChange={ (e) => setAmount(e.target.value) }
                     required
                     fullWidth
                     InputProps={{
@@ -61,29 +82,45 @@ const BasketInvest = () => {
                     }}
                 />
 
-                <TextField
-                    // variant="standard"
-                    label="Extra Text Field"
-                    // required
-                    fullWidth
-                />
+                { tokens && (
 
-                <TextField
-                    // variant="standard"
-                    label="Extra Text Field"
-                    // required
-                    fullWidth
-                />
+                    <TableContainer
+                        component={ Paper }
+                        sx={{ maxHeight: 200 }}
+                    >
+                        <Table stickyHeader>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Token</TableCell>
+                                    <TableCell align="right">Amount</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                { tokens?.map((token) => (
+                                    <TableRow
+                                        key={ token.name }
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            <Box display="flex" alignItems="center" gap={ 1.5 }>
+                                                <Avatar
+                                                    src={ token.img }
+                                                    alt={ token.name + ' logo' }
+                                                    sx={{ width: 28, height: 28 }}
+                                                />
+                                                { token.name }
+                                            </Box>
+                                        </TableCell>
 
-                <Box display="flex" justifyContent="center" gap={ 1 }>
-                    { ['25%', '50%', '75%', '100%'].map(label => (
-                        <Chip
-                            key={ label }
-                            label={ label }
-                            clickable
-                        />
-                    ))}
-                </Box>
+                                        <TableCell align="right">
+                                            ${ token.amount.toFixed(2) }
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
             </Box>
         </>
     );

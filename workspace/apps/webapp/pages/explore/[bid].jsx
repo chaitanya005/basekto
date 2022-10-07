@@ -169,7 +169,7 @@ const Basket = () => {
                     Invest in Basket
                 </Typography>
 
-                <BasketInvest />
+                <BasketInvest tokensData={ coinGrowthRates } />
 
                 <Button
                     variant="contained"
