@@ -218,7 +218,7 @@ const Explore = ({
 
           <div className="ql-snow">
             <div className="ql-editor" data-gramm="false">
-              {parse(basket?.description)}
+              {basket?.description && parse(basket?.description)}
             </div>
           </div>
         )}
