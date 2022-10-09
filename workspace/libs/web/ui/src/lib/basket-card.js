@@ -11,9 +11,27 @@ import {
   AvatarGroup,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import 'react-quill/dist/quill.snow.css';
+import dynamic from 'next/dynamic';
+const parse = require('html-react-parser');
+import styled from '@emotion/styled';
 //this is a presentational component for an individual basket card
 //TODO: implement graph component
 
+const QuillNoSSRWrapper = dynamic(import('react-quill'), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+const modules = {
+  toolbar: false,
+};
+
+const QuillNoSSRWrap = styled(QuillNoSSRWrapper)`
+  .ql-container {
+    font-family: inherit;
+    border: none !important;
+  }
+`;
 export function BasketCard({
   sx, // Styling
   data, // Object {title, symbol, growth:{percent, period}, basketeer, graphData, description}
@@ -130,7 +148,13 @@ export function BasketCard({
       {showDescription && (
         <>
           <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
-            {data?.description?.slice(0, 120)}...
+            <QuillNoSSRWrap
+              value={data?.description?.slice(0, 120).concat('...')}
+              modules={modules}
+              style={{ fontFamily: 'inherit' }}
+              readOnly={true}
+              theme={'bubble'}
+            />
           </Typography>
         </>
       )}
