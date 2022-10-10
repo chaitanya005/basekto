@@ -20,7 +20,7 @@ import BasketShareDialog from './BasketShareDialog';
 const BasketInvest = ({ tokensData }) => {
 
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [amount, setAmount] = useState(100);
+    const [amount, setAmount] = useState(null);
 
     const tokens = tokensData?.map((token) => ({
         ...token,
@@ -73,8 +73,14 @@ const BasketInvest = ({ tokensData }) => {
 
                 <TextField
                     label="Amount to Invest"
+                    type="number"
                     value={ amount }
-                    onChange={ (e) => setAmount(e.target.value) }
+                    onChange={ (e) => {
+                        const val = e.target.value;
+                        if (val == '' || val >= 0) {
+                            setAmount(val);
+                        }
+                    }}
                     required
                     fullWidth
                     InputProps={{
@@ -82,7 +88,7 @@ const BasketInvest = ({ tokensData }) => {
                     }}
                 />
 
-                { tokens && (
+                { amount && tokens && (
 
                     <TableContainer
                         component={ Paper }
