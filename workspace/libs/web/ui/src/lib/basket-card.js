@@ -11,10 +11,27 @@ import {
   AvatarGroup,
 } from '@mui/material';
 import { Box } from '@mui/system';
-
+import 'react-quill/dist/quill.snow.css';
+import dynamic from 'next/dynamic';
+const parse = require('html-react-parser');
+import styled from '@emotion/styled';
 //this is a presentational component for an individual basket card
 //TODO: implement graph component
 
+const QuillNoSSRWrapper = dynamic(import('react-quill'), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+const modules = {
+  toolbar: false,
+};
+
+const QuillNoSSRWrap = styled(QuillNoSSRWrapper)`
+  .ql-container {
+    font-family: inherit;
+    border: none !important;
+  }
+`;
 export function BasketCard({
   sx, // Styling
   data, // Object {title, symbol, growth:{percent, period}, basketeer, graphData, description}
@@ -40,6 +57,10 @@ export function BasketCard({
         },
         boxShadow:
           'rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-Between',
         ...sx,
       }}
       variant="outlined"
@@ -78,7 +99,9 @@ export function BasketCard({
               alt="web-3 Icon"
               src="https://set-core.s3.amazonaws.com/img/coin-icons/usdc.svg"
             />
-            {data?.title || 'No title'}
+            {(data?.title.length > 15
+              ? data.title.slice(0, 15).concat('...')
+              : data.title) || 'No title'}
             {showFollow && (
               <Button
                 sx={{
@@ -86,7 +109,7 @@ export function BasketCard({
                   height: 27,
                   marginLeft: 'auto',
                   fontSize: '13px',
-                  alignSelf: 'self-end',
+                  alignSelf: 'center', //self-end
                 }}
                 variant="contained"
               >
@@ -125,7 +148,13 @@ export function BasketCard({
       {showDescription && (
         <>
           <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
-            {data?.description?.slice(0, 120)}...
+            <QuillNoSSRWrap
+              value={data?.description?.slice(0, 120).concat('...')}
+              modules={modules}
+              style={{ fontFamily: 'inherit' }}
+              readOnly={true}
+              theme={'bubble'}
+            />
           </Typography>
         </>
       )}
@@ -178,6 +207,7 @@ export function BasketCard({
             '& .MuiChip-label': {
               p: '0.25rem 0.5rem',
             },
+            maxWidth: 'fit-content',
           }}
         />
       )}

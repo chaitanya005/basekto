@@ -39,7 +39,6 @@ const YourPortfolio = ({ basketData, showPortfolioBaskets }) => {
             showDescription
             hideChip
             //showGrowth
-            //showFollow
           />
         ) : (
           <p>No baskets yet!</p>

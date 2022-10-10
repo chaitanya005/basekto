@@ -21,6 +21,7 @@ import TokensTable from '../Explore/TokensTable';
 import DialogBox from './DialogBox';
 import BasketInvest from '../Explore/BasketInvest';
 import AddAlertIcon from '@mui/icons-material/AddAlert';
+import parse from 'html-react-parser';
 
 const Explore = ({
   basket,
@@ -31,7 +32,6 @@ const Explore = ({
   setDays,
   coins,
 }) => {
-
   const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
 
   const [alertSnackbarOpen, setAlertSnackbarOpen] = useState(false);
@@ -48,7 +48,11 @@ const Explore = ({
         onClose={handleAlertSnackbarClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleAlertSnackbarClose} severity="success" sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleAlertSnackbarClose}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
           Your Input has been saved!
         </Alert>
       </Snackbar>
@@ -56,11 +60,12 @@ const Explore = ({
       <Box
         display="flex"
         justifyContent="space-between"
-        gap={ 2 }
+        gap={2}
         sx={{
-          mt: 4, mb: 4,
+          mt: 4,
+          mb: 4,
           flexDirection: { xs: 'column', sm: 'row' },
-          alignItems: { sm: 'flex-start' }
+          alignItems: { sm: 'flex-start' },
         }}
       >
         <Box display="flex" alignItems="center" sx={{ '> *': { mr: 2 } }}>
@@ -98,17 +103,15 @@ const Explore = ({
           )}
         </Box>
 
-        { showDetails && (
-
-          <Box display="flex" alignItems="center" gap={ 1 }>
-            { mdDown && (
-
+        {showDetails && (
+          <Box display="flex" alignItems="center" gap={1}>
+            {mdDown && (
               <>
                 <Button
                   variant="contained"
                   fullWidth
-                  onClick={ () => setInvestDialogOpen(true) }
-                  disabled={ isLoading || isFetching }
+                  onClick={() => setInvestDialogOpen(true)}
+                  disabled={isLoading || isFetching}
                   sx={{
                     width: { sm: '8em' },
                     fontSize: '1.125rem',
@@ -119,23 +122,19 @@ const Explore = ({
 
                 <DialogBox
                   title={
-                    <Typography
-                        variant="h5"
-                        component="div"
-                        textAlign="center"
-                    >
-                        Invest in Basket
+                    <Typography variant="h5" component="div" textAlign="center">
+                      Invest in Basket
                     </Typography>
                   }
-                  open={ investDialogOpen }
-                  onClose={ () => setInvestDialogOpen(false) }
+                  open={investDialogOpen}
+                  onClose={() => setInvestDialogOpen(false)}
                   actions={
                     <Button
-                        variant="contained"
-                        // onClick={}
-                        fullWidth
+                      variant="contained"
+                      // onClick={}
+                      fullWidth
                     >
-                        Continue
+                      Continue
                     </Button>
                   }
                 >
@@ -147,8 +146,8 @@ const Explore = ({
             <Tooltip title="Alert Me">
               <IconButton
                 color="primary"
-                onClick={ () => setAlertDialogOpen(true) }
-                disabled={ isLoading || isFetching }
+                onClick={() => setAlertDialogOpen(true)}
+                disabled={isLoading || isFetching}
               >
                 <AddAlertIcon />
               </IconButton>
@@ -156,8 +155,8 @@ const Explore = ({
 
             <DialogBox
               title="Alert Me"
-              open={ alertDialogOpen }
-              onClose={ () => setAlertDialogOpen(false) }
+              open={alertDialogOpen}
+              onClose={() => setAlertDialogOpen(false)}
             >
               <TextField
                 variant="outlined"
@@ -168,10 +167,13 @@ const Explore = ({
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Button variant="contained" onClick={() => {
-                        setAlertSnackbarOpen(true);
-                        setAlertDialogOpen(false);
-                      }}>
+                      <Button
+                        variant="contained"
+                        onClick={() => {
+                          setAlertSnackbarOpen(true);
+                          setAlertDialogOpen(false);
+                        }}
+                      >
                         Alert Me!
                       </Button>
                     </InputAdornment>
@@ -189,9 +191,9 @@ const Explore = ({
 
       <Box sx={{ mb: 6, mt: 6 }}>
         <TokensTable
-          tokensData={ coins }
-          showDetails={ showDetails }
-          isLoading={ isLoading }
+          tokensData={coins}
+          showDetails={showDetails}
+          isLoading={isLoading}
         />
       </Box>
 
@@ -212,7 +214,13 @@ const Explore = ({
             <Skeleton animation="wave" variant="text" sx={{ width: '70%' }} />
           </>
         ) : (
-          <Typography>{basket?.description}</Typography>
+          // <Typography>{basket?.description}</Typography>
+
+          <div className="ql-snow">
+            <div className="ql-editor" data-gramm="false">
+              {basket?.description && parse(basket?.description)}
+            </div>
+          </div>
         )}
       </Box>
     </>
