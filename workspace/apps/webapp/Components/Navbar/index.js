@@ -11,15 +11,16 @@ import {
   Divider,
   Grid,
   IconButton,
-  Menu,
-  MenuItem,
-  ListItemIcon,
+  Drawer,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { AccountBalanceWallet } from '@mui/icons-material';
 import CreateAccountDialog from './CreateAccountDialog';
 import { ethers } from 'ethers';
 import axios from 'axios';
+import ExploreIcon from '@mui/icons-material/Explore';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material';
@@ -29,22 +30,29 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import UserAccountDialog from './UserAccountDialog';
 
 const pages = [
-  { title: 'Explore', path: '/explore' },
-  { title: 'Create', path: '/create' },
-  { title: 'Learn', path: '#' },
+  { title: 'Explore', path: '/explore', icon: <ExploreIcon /> },
+  { title: 'Create', path: '/create', icon: <AddCircleOutlineIcon /> },
+  { title: 'Learn', path: '#', icon: <LightbulbIcon /> },
   {
     title: 'Early Access',
     path: 'https://t.me/basketofinance',
     icon: <TelegramIcon />,
+  },
+  {
+    title: 'Theme',
+    path: '#',
   },
 ];
 
 const clientSide = typeof window !== 'undefined';
 let account;
 
-const checkIsUserExist = async (userAddress) => (await axios.get(
-  `${process.env.NEXT_PUBLIC_BACKEND_API}/user/exist?userAddress=${userAddress}`
-)).data.isExist;
+const checkIsUserExist = async (userAddress) =>
+  (
+    await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_API}/user/exist?userAddress=${userAddress}`
+    )
+  ).data.isExist;
 
 const Navbar = () => {
   const {
@@ -53,13 +61,7 @@ const Navbar = () => {
   const currentTheme = useTheme();
   const router = useRouter();
 
-  const [anchorElNav, setAnchorElNav] = useState(null);
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [userAddress, setUserAddress] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
@@ -76,30 +78,31 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
+    userAddress
+      ? (async () => {
+          setIsUserExist(await checkIsUserExist(userAddress));
 
-    userAddress ? (async () => {
-
-      setIsUserExist(await checkIsUserExist(userAddress));
-
-      window?.ethereum?.request({
-        method: "wallet_addEthereumChain",
-        params: [{
-            chainId: "0x89",
-            rpcUrls: ["https://polygon-rpc.com/"],
-            chainName: "Matic Mainnet",
-            nativeCurrency: {
-                name: "MATIC",
-                symbol: "MATIC",
-                decimals: 18
-            },
-            blockExplorerUrls: ["https://explorer.matic.network"]
-        }]
-      });
-    })() : setIsUserExist(true);
+          window?.ethereum?.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0x89',
+                rpcUrls: ['https://polygon-rpc.com/'],
+                chainName: 'Matic Mainnet',
+                nativeCurrency: {
+                  name: 'MATIC',
+                  symbol: 'MATIC',
+                  decimals: 18,
+                },
+                blockExplorerUrls: ['https://explorer.matic.network'],
+              },
+            ],
+          });
+        })()
+      : setIsUserExist(true);
   }, [userAddress]);
 
   const connectWallet = async () => {
-
     if (clientSide && typeof window?.ethereum === 'undefined') {
       router.push({ hash: 'install-metamask' });
       return;
@@ -160,6 +163,74 @@ const Navbar = () => {
             height: '100%',
           }}
         >
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="logo"
+            sx={{ display: { md: 'none' } }}
+            onClick={() => setIsDrawerOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Drawer
+            anchor="left"
+            variant="temporary"
+            open={isDrawerOpen}
+            sx={{
+              display: {
+                md: 'none',
+              },
+            }}
+            onClose={() => setIsDrawerOpen(false)}
+          >
+            {pages.map((page) =>
+              page.title != 'Theme' ? (
+                <Link href={page.path} key={page.title}>
+                  <a>
+                    <Button
+                      sx={{
+                        fontSize: { xs: '1rem', md: '1rem' },
+                        height: '4em',
+                        padding: '0.5em 2.2em',
+                        gap: '1rem',
+                      }}
+                      variant="text"
+                      color="primary"
+                      startIcon={page.icon}
+                    >
+                      {page.title}
+                    </Button>
+                  </a>
+                </Link>
+              ) : (
+                <a key={page.title}>
+                  <Button
+                    sx={{
+                      fontSize: { xs: '1rem', md: '1rem' },
+                      height: '4em',
+                      padding: '0.5em 2.2em',
+                      gap: '1rem',
+                    }}
+                    onClick={handleThemeToggle}
+                    startIcon={
+                      currentTheme.palette.mode === 'dark' ? (
+                        <LightModeIcon />
+                      ) : (
+                        <DarkModeIcon />
+                      )
+                    }
+                  >
+                    {currentTheme.palette.mode === 'dark'
+                      ? 'LightMode'
+                      : 'DarkMode'}
+                  </Button>
+                  <Divider />
+                </a>
+              )
+            )}
+          </Drawer>
+
           <Box
             sx={{
               fontSize: { xs: '14px', md: '20px' },
@@ -177,20 +248,22 @@ const Navbar = () => {
           </Box>
 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Link href={page.path} key={page.title}>
-                <a>
-                  <Button
-                    sx={{ fontSize: { xs: '10px', md: '14px' } }}
-                    variant="text"
-                    color="primary"
-                    startIcon={page.icon}
-                  >
-                    {page.title}
-                  </Button>
-                </a>
-              </Link>
-            ))}
+            {pages.map((page) =>
+              page.title != 'Theme' ? (
+                <Link href={page.path} key={page.title}>
+                  <a>
+                    <Button
+                      sx={{ fontSize: { xs: '10px', md: '14px' } }}
+                      variant="text"
+                      color="primary"
+                      startIcon={page.icon}
+                    >
+                      {page.title}
+                    </Button>
+                  </a>
+                </Link>
+              ) : null
+            )}
           </Box>
 
           <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -207,7 +280,7 @@ const Navbar = () => {
                 <Button
                   sx={{ fontSize: { xs: '10px', md: '14px' } }}
                   variant="outlined"
-                  onClick={ () => setUserAccountDialogOpen(true) }
+                  onClick={() => setUserAccountDialogOpen(true)}
                 >
                   <Typography>
                     {userBalance}
@@ -218,15 +291,14 @@ const Navbar = () => {
                 </Button>
 
                 <UserAccountDialog
-                  open={ userAccountDialogOpen }
-                  onClose={
-                    () => setUserAccountDialogOpen(false)
-                  }
-                  userAddress={
-                   `${userAddress.slice(0, 4)}...${userAddress.slice(34, 42)}`
-                  }
-                  disconnectWallet={ disconnectWallet }
-                  changeAccount={ connectWallet }
+                  open={userAccountDialogOpen}
+                  onClose={() => setUserAccountDialogOpen(false)}
+                  userAddress={`${userAddress.slice(
+                    0,
+                    4
+                  )}...${userAddress.slice(34, 42)}`}
+                  disconnectWallet={disconnectWallet}
+                  changeAccount={connectWallet}
                 />
               </Grid>
             )}
@@ -245,9 +317,7 @@ const Navbar = () => {
             </a> */}
 
             <Dialog
-              open={
-                router.asPath.split('#')[1] === 'install-metamask'
-              }
+              open={router.asPath.split('#')[1] === 'install-metamask'}
               onClose={() => router.push({ hash: '' })}
             >
               <Box sx={{ padding: '20px', maxWidth: '300px' }}>
@@ -270,7 +340,7 @@ const Navbar = () => {
               </Box>
             </Dialog>
 
-            { userAddress && (
+            {userAddress && (
               <CreateAccountDialog
                 isOpen={!isUserExist}
                 userAddress={userAddress}
@@ -281,7 +351,11 @@ const Navbar = () => {
               />
             )}
             {!router.pathname.includes('dashboard') ? (
-              <Button variant="outlined" onClick={handleThemeToggle}>
+              <Button
+                // variant="outlined"
+                onClick={handleThemeToggle}
+                sx={{ display: { xs: 'none', md: 'flex' } }}
+              >
                 {currentTheme.palette.mode === 'dark' ? (
                   <LightModeIcon />
                 ) : (
@@ -290,34 +364,6 @@ const Navbar = () => {
               </Button>
             ) : null}
           </div>
-
-          <IconButton
-            onClick={handleOpenNavMenu}
-            sx={{ display: { md: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <Menu
-            anchorEl={anchorElNav}
-            open={Boolean(anchorElNav)}
-            onClose={handleCloseNavMenu}
-          >
-            {pages.map((page) => (
-              <Link href={page.path} key={page.title}>
-                <a>
-                  <MenuItem
-                    onClick={handleCloseNavMenu}
-                    sx={{ justifyContent: 'center' }}
-                  >
-                    {page.icon && <ListItemIcon>{page.icon}</ListItemIcon>}
-
-                    <Typography>{page.title}</Typography>
-                  </MenuItem>
-                </a>
-              </Link>
-            ))}
-          </Menu>
         </Toolbar>
       </Container>
     </AppBar>
