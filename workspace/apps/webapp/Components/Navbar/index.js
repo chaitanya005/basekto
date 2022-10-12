@@ -279,7 +279,7 @@ const Navbar = () => {
                   userAddress={`${userAddress.slice(
                     0,
                     4
-                  )}...${userAddress.slice(34, 42)}`}
+                  )}...${userAddress.slice(38, 42)}`}
                   disconnectWallet={disconnectWallet}
                   changeAccount={connectWallet}
                 />

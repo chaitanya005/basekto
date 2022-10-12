@@ -28,9 +28,16 @@ const UserAccountDialog = ({ open, onClose, userAddress, disconnectWallet, chang
             >
 
                 <Box display="flex" alignItems="center">
-                    <Avatar src="" alt="" sx={{ mr: 1.5 }} />
+                    <Avatar
+                        src="" alt=""
+                        sx={{
+                            mr: { xs: 1, sm: 1.5 },
+                            width: { xs: '1.5rem', sm: '2rem' },
+                            height: { xs: '1.5rem', sm: '2rem' },
+                        }}
+                    />
 
-                    <Typography fontSize="1.25rem">
+                    <Typography sx={{ fontSize: { xs: '1rem', sm: '1.25rem' }}}>
                         { userAddress }
                     </Typography>
                 </Box>
@@ -38,13 +45,19 @@ const UserAccountDialog = ({ open, onClose, userAddress, disconnectWallet, chang
                 <Box
                     display="flex"
                     justifyContent="space-between"
-                    gap={ 1.5 }
+                    sx={{ gap: { xs: 1, sm: 1.5 }}}
                 >
                     <Button
                         variant="outlined"
                         size="small"
                         onClick={ disconnectWallet }
-                        sx={{ px: 1, py: 0.25 }}
+                        sx={{
+                            fontSize: {
+                                xs: '0.6rem',
+                                sm: '0.8rem'
+                            },
+                            px: 1, py: 0.25
+                        }}
                     >
                         Disconnect
                     </Button>
@@ -53,7 +66,13 @@ const UserAccountDialog = ({ open, onClose, userAddress, disconnectWallet, chang
                         variant="outlined"
                         size="small"
                         onClick={ changeAccount }
-                        sx={{ px: 1, py: 0.25 }}
+                        sx={{
+                            fontSize: {
+                                xs: '0.6rem',
+                                sm: '0.8rem'
+                            },
+                            px: 1, py: 0.25
+                        }}
                     >
                         Change
                     </Button>

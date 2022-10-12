@@ -8,6 +8,9 @@ import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 const Dialog = styled(MuiDialog)(({ theme }) => ({
+    '& .MuiPaper-root': {
+        borderRadius: '0.75rem',
+    },
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
