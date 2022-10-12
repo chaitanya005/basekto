@@ -1,7 +1,17 @@
+import { useEffect, useState } from 'react';
 import { Avatar, Box, Button, Typography } from '@mui/material';
+import { getBalance, getNetwork } from '@basketo/web-utils';
 import DialogBox from '../Common/DialogBox';
+import Link from 'next/link';
 
 const UserAccountDialog = ({ open, onClose, userAddress, disconnectWallet, changeAccount }) => {
+
+    const [balance, setBalance] = useState(0);
+    const currency = '???';
+
+    useEffect(() => {
+        getBalance().then(setBalance);
+    }, [userAddress]);
 
     return (
 
@@ -15,11 +25,15 @@ const UserAccountDialog = ({ open, onClose, userAddress, disconnectWallet, chang
                 justifyContent="space-between"
                 alignItems="center"
                 gap={ 1.5 }
-                sx={{ mb: 1 }}
             >
-                <Typography color="darkgray" fontSize="small">
-                    Connected with MetaMask
-                </Typography>
+
+                <Box display="flex" alignItems="center">
+                    <Avatar src="" alt="" sx={{ mr: 1.5 }} />
+
+                    <Typography fontSize="1.25rem">
+                        { userAddress }
+                    </Typography>
+                </Box>
 
                 <Box
                     display="flex"
@@ -46,13 +60,28 @@ const UserAccountDialog = ({ open, onClose, userAddress, disconnectWallet, chang
                 </Box>
             </Box>
 
-            <Box display="flex" alignItems="center">
-                <Avatar src="" alt="" sx={{ mr: 1.5 }} />
+            <Typography
+                fontSize="2rem"
+                textAlign="center"
+                sx={{ mt: 2, mb: 3 }}
+            >
+                <span style={{ textTransform: 'capitalize' }}>
+                    { getNetwork().name }
+                </span>
+                : { balance } { currency }
+            </Typography>
 
-                <Typography fontSize="1.25rem">
-                    { userAddress }
-                </Typography>
-            </Box>
+            <Link href="/dashboard">
+                <a>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        onClick={ onClose }
+                    >
+                        Go to Dashboard
+                    </Button>
+                </a>
+            </Link>
         </DialogBox>
     );
 };

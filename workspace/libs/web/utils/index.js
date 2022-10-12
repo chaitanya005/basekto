@@ -1,5 +1,16 @@
 import { ethers } from 'ethers';
 
+const getBalance = async () => {
+
+    const [address] = await window?.ethereum?.request({
+        method: 'eth_requestAccounts',
+    });
+
+    const provider = new ethers.providers.Web3Provider(window?.ethereum);
+    const balance = await provider.getBalance(address);
+    return ethers.utils.formatEther(balance);
+};
+
 const getNetwork = () => {
 
     return ethers.providers.getNetwork(
@@ -28,5 +39,6 @@ const switchNetwork = () => {
 };
 
 export {
-    switchNetwork, getNetwork
+    getBalance, getNetwork,
+    switchNetwork
 };
