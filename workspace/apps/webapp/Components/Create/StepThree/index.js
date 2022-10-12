@@ -1,4 +1,4 @@
-import { Button, Grid } from '@mui/material';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import { getTokens } from '../../../features/selectTokens';
 import { useSelector } from 'react-redux';
 import Explore from '../../Common/Explore';
@@ -8,6 +8,7 @@ import { BasketsABI } from '@basketo/contracts';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { getNetwork, switchNetwork } from '@basketo/web-utils'
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -27,28 +28,40 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const { selectedTokens } = useSelector(getTokens);
   const { basketDetails } = useSelector(getBasketDetails);
   const [userAddress, setUserAddress] = useState(null);
+  const [network, setNetwork] = useState(getNetwork());
   const router = useRouter();
+  const isValidNetwork = network.name === 'matic';
   // console.log(basketDetails, selectedTokens);
   // const {mutate:createBasket} = useMutation()
 
-  useEffect(async () => {
+  const walletSetup = async () => {
+    const provider = new ethers.providers.Web3Provider(
+      window?.ethereum && window?.ethereum
+    );
+    [account] = await window?.ethereum?.request({
+      method: 'eth_requestAccounts',
+    });
+    const signer = provider.getSigner();
+    setUserAddress(await signer.getAddress());
+    contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
+    contract?.on('BasketCreated', (tokenId, uri) =>
+      console.log('Event emitted this:', parseInt(tokenId), uri)
+    );
+  };
+
+  useEffect(() => {
+
     graphData === null && handleGraphdata();
-    const walletSetup = async () => {
-      const provider = new ethers.providers.Web3Provider(
-        window?.ethereum && window?.ethereum
-      );
-      [account] = await window?.ethereum?.request({
-        method: 'eth_requestAccounts',
-      });
-      const signer = provider.getSigner();
-      setUserAddress(await signer.getAddress());
-      contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
-      contract?.on('BasketCreated', (tokenId, uri) =>
-        console.log('Event emitted this:', parseInt(tokenId), uri)
-      );
-    };
-    walletSetup();
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+    provider.on('network', (newNetwork, oldNetwork) => {
+      oldNetwork && setNetwork(newNetwork);
+    });
   }, []);
+
+  useEffect(() => {
+    walletSetup();
+  }, [network]);
 
   const handleCreate = async () => {
     const basket = {
@@ -75,23 +88,47 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
         showDetails={false}
       />
 
-      <Grid display={'flex'} justifyContent="space-between" sx={{ mt: '30px' }}>
-        <Button
-          color="primary"
-          variant="outlined"
-          onClick={() => setActiveStep(1)}
-        >
-          Back{' '}
-        </Button>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={handleCreate}
-          sx={{ padding: '0 20px' }}
-        >
-          Create
-        </Button>
-      </Grid>
+
+      <Box sx={{ mt: 4 }}>
+        { !isValidNetwork && (
+          <Typography
+            color="error"
+            fontSize="small"
+            textAlign="center"
+          >
+            Please {' '}
+            <span
+              onClick={ switchNetwork }
+              style={{
+                textDecoration: 'underline',
+                cursor: 'pointer'
+              }}
+            >
+              switch
+            </span>
+            {' '}to the Polygon network before creating basket!
+          </Typography>
+        )}
+
+        <Grid display={'flex'} justifyContent="space-between" sx={{ mt: 3 }}>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={() => setActiveStep(1)}
+          >
+            Back{' '}
+          </Button>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleCreate}
+            sx={{ padding: '0 20px' }}
+            disabled={ !isValidNetwork }
+          >
+            Create
+          </Button>
+        </Grid>
+      </Box>
     </>
   );
 };

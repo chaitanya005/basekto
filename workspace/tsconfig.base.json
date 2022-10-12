@@ -18,6 +18,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@basketo/web-utils": [
+        "libs/web/utils/index.js"
+      ],
       "@basketo/web-ui": [
         "libs/web/ui/src/index.js"
       ],
