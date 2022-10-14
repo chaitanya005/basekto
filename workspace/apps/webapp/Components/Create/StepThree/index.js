@@ -30,7 +30,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const [userAddress, setUserAddress] = useState(null);
   const [network, setNetwork] = useState(getNetwork());
   const router = useRouter();
-  const isValidNetwork = network.name === 'matic';
+  const isValidNetwork = network.name === 'maticmum';
   // console.log(basketDetails, selectedTokens);
   // const {mutate:createBasket} = useMutation()
 
@@ -40,7 +40,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
     );
     [account] = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
-    });
+    }) || [];
     const signer = provider.getSigner();
     setUserAddress(await signer.getAddress());
     contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
@@ -106,7 +106,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
             >
               switch
             </span>
-            {' '}to the Polygon network before creating basket!
+            {' '}to the Polygon Mumbai { '(testnet)' } network before creating basket!
           </Typography>
         )}
 

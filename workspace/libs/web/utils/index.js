@@ -24,18 +24,35 @@ const switchNetwork = () => {
         method: 'wallet_addEthereumChain',
         params: [
             {
-                chainId: '0x89',
-                rpcUrls: ['https://polygon-rpc.com/'],
-                chainName: 'Matic Mainnet',
+                chainId: '0x13881',
+                rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+                chainName: 'Polygon Mumbai',
                 nativeCurrency: {
                     name: 'MATIC',
                     symbol: 'MATIC',
                     decimals: 18,
                 },
-                blockExplorerUrls: ['https://explorer.matic.network'],
+                blockExplorerUrls: ['https://polygonscan.com/'],
             },
         ],
     });
+
+    // window?.ethereum?.request({
+    //     method: 'wallet_addEthereumChain',
+    //     params: [
+    //         {
+    //             chainId: '0x89',
+    //             rpcUrls: ['https://polygon-rpc.com/'],
+    //             chainName: 'Matic Mainnet',
+    //             nativeCurrency: {
+    //                 name: 'MATIC',
+    //                 symbol: 'MATIC',
+    //                 decimals: 18,
+    //             },
+    //             blockExplorerUrls: ['https://explorer.matic.network'],
+    //         },
+    //     ],
+    // });
 };
 
 export {
