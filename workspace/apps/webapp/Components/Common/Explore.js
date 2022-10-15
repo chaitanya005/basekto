@@ -138,7 +138,7 @@ const Explore = ({
                     </Button>
                   }
                 >
-                  <BasketInvest />
+                  <BasketInvest tokensData={ coins } />
                 </DialogBox>
               </>
             )}
