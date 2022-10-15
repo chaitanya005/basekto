@@ -19,10 +19,7 @@ let contract;
 let account;
 
 const createNewBasket = async (basket) =>
-  await axios.post(
-    `${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`,
-    basket
-  );
+  await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`, basket);
 
 const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const { selectedTokens } = useSelector(getTokens);
@@ -33,21 +30,6 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const isValidNetwork = network.name === 'maticmum';
   // console.log(basketDetails, selectedTokens);
   // const {mutate:createBasket} = useMutation()
-
-  const walletSetup = async () => {
-    const provider = new ethers.providers.Web3Provider(
-      window?.ethereum && window?.ethereum
-    );
-    [account] = await window?.ethereum?.request({
-      method: 'eth_requestAccounts',
-    }) || [];
-    const signer = provider.getSigner();
-    setUserAddress(await signer.getAddress());
-    contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
-    contract?.on('BasketCreated', (tokenId, uri) =>
-      console.log('Event emitted this:', parseInt(tokenId), uri)
-    );
-  };
 
   useEffect(() => {
 
@@ -60,6 +42,21 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   }, []);
 
   useEffect(() => {
+
+    const walletSetup = async () => {
+      const provider = new ethers.providers.Web3Provider(
+        window?.ethereum && window?.ethereum
+      );
+      [account] = await window?.ethereum?.request({
+        method: 'eth_requestAccounts',
+      }) || [];
+      const signer = provider.getSigner();
+      setUserAddress(await signer.getAddress());
+      contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
+      contract?.on('BasketCreated', (tokenId, uri) =>
+        console.log('Event emitted this:', parseInt(tokenId), uri)
+      );
+    };
     walletSetup();
   }, [network]);
 
