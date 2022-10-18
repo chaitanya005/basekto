@@ -63,7 +63,7 @@ export function BasketCard({
         justifyContent: 'space-Between',
         ...sx,
       }}
-      variant="outlined"
+      // variant="outlined"
       {...props}
     >
       <Box

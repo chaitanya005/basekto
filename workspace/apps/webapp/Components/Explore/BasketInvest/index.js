@@ -20,7 +20,7 @@ import BasketShareDialog from './BasketShareDialog';
 const BasketInvest = ({ tokensData }) => {
 
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [amount, setAmount] = useState(null);
+    const [amount, setAmount] = useState('');
 
     const tokens = tokensData?.map((token) => ({
         ...token,

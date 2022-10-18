@@ -222,11 +222,13 @@ const Navbar = () => {
             }}
           >
             <Link href="/">
-              <img
-                src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
-                alt="Basketo"
-                style={{ maxWidth: '150px' }}
-              />
+              <a style={{ display: 'flex' }}>
+                <img
+                  src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
+                  alt="Basketo"
+                  style={{ maxWidth: '150px' }}
+                />
+              </a>
             </Link>
           </Box>
 
