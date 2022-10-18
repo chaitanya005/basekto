@@ -7,7 +7,7 @@ import Link from 'next/link';
 const UserAccountDialog = ({ open, onClose, userAddress, disconnectWallet, changeAccount }) => {
 
     const [balance, setBalance] = useState(0);
-    const currency = '???';
+    const currency = 'MATIC';
 
     useEffect(() => {
         getBalance().then(setBalance);
