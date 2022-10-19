@@ -51,6 +51,7 @@ const Explore = ({
         <Alert
           onClose={handleAlertSnackbarClose}
           severity="success"
+          variant="filled"
           sx={{ width: '100%' }}
         >
           Your Input has been saved!

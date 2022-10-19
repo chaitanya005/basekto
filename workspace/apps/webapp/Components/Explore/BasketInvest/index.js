@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Avatar,
     Box,
@@ -16,11 +16,15 @@ import {
 } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import BasketShareDialog from './BasketShareDialog';
+import { getBalance } from '@basketo/web-utils';
 
 const BasketInvest = ({ tokensData }) => {
 
+    const currencySymbol = 'MATIC';
+    const [balance, setBalance] = useState(0);
+
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [amount, setAmount] = useState(null);
+    const [amount, setAmount] = useState('');
 
     const tokens = tokensData?.map((token) => ({
         ...token,
@@ -30,6 +34,10 @@ const BasketInvest = ({ tokensData }) => {
     const handleClickOpen = () => {
         setDialogOpen(true);
     };
+
+    useEffect(() => {
+        getBalance().then(setBalance);
+    }, []);
 
     return (
 
@@ -67,7 +75,7 @@ const BasketInvest = ({ tokensData }) => {
                         Available Balance
                     </Typography>
                     <Typography>
-                        $50.25
+                        { balance } { currencySymbol }
                     </Typography>
                 </Box>
 
@@ -84,7 +92,7 @@ const BasketInvest = ({ tokensData }) => {
                     required
                     fullWidth
                     InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        endAdornment: <InputAdornment position="end">{ currencySymbol }</InputAdornment>,
                     }}
                 />
 
@@ -119,7 +127,7 @@ const BasketInvest = ({ tokensData }) => {
                                         </TableCell>
 
                                         <TableCell align="right">
-                                            ${ token.amount.toFixed(2) }
+                                            { token.amount.toFixed(2) } { currencySymbol }
                                         </TableCell>
                                     </TableRow>
                                 ))}

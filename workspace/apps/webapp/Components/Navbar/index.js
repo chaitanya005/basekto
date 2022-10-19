@@ -81,23 +81,6 @@ const Navbar = () => {
     userAddress
       ? (async () => {
           setIsUserExist(await checkIsUserExist(userAddress));
-
-          window?.ethereum?.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainId: '0x89',
-                rpcUrls: ['https://polygon-rpc.com/'],
-                chainName: 'Matic Mainnet',
-                nativeCurrency: {
-                  name: 'MATIC',
-                  symbol: 'MATIC',
-                  decimals: 18,
-                },
-                blockExplorerUrls: ['https://explorer.matic.network'],
-              },
-            ],
-          });
         })()
       : setIsUserExist(true);
   }, [userAddress]);
@@ -239,11 +222,13 @@ const Navbar = () => {
             }}
           >
             <Link href="/">
-              <img
-                src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
-                alt="Basketo"
-                style={{ maxWidth: '150px' }}
-              />
+              <a style={{ display: 'flex' }}>
+                <img
+                  src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
+                  alt="Basketo"
+                  style={{ maxWidth: '150px' }}
+                />
+              </a>
             </Link>
           </Box>
 
@@ -296,7 +281,7 @@ const Navbar = () => {
                   userAddress={`${userAddress.slice(
                     0,
                     4
-                  )}...${userAddress.slice(34, 42)}`}
+                  )}...${userAddress.slice(38, 42)}`}
                   disconnectWallet={disconnectWallet}
                   changeAccount={connectWallet}
                 />

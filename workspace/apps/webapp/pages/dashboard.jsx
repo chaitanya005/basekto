@@ -92,7 +92,7 @@ const Dashboard = () => {
         {/* left side part */}
         <Box sx={{ maxWidth: '100%', overflowX: 'auto' }}>
           {/* wallet address and blockchain info */}
-          <Box
+          {/* <Box
             sx={{
               margin: '15px 0px',
               display: 'flex',
@@ -105,7 +105,7 @@ const Dashboard = () => {
               label={'0x124...45345'}
             />
             <Chip variant="standard" label={'Ethereum Mainnet'} />
-          </Box>
+          </Box> */}
 
           <Overview />
           <YourPortfolio

@@ -36,12 +36,13 @@ const Tokens = ({ selectedTokens, handleRatio, handleRemove }) => {
                   justifyContent: 'space-between',
                 }}
                 alignItems={'center'}
+                gap={ 3 }
               >
                 <Grid display="flex" gap="10px">
                   <Grid>
                     <img src={token.img} style={{ width: '3rem' }} />
                   </Grid>
-                  <Grid textAlign={'left'} width="10rem">
+                  <Grid textAlign={'left'}>
                     <Typography variant="body1" fontWeight={700}>
                       {token.name}
                     </Typography>
