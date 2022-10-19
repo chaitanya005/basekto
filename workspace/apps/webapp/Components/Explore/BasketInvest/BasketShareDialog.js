@@ -8,71 +8,101 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import RedditIcon from '@mui/icons-material/Reddit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DialogBox from '../../Common/DialogBox';
-
-const socialMedias = [
-    { name: 'Twitter', Icon: TwitterIcon },
-    { name: 'WhatsApp', Icon: WhatsAppIcon },
-    { name: 'Telegram', Icon: TelegramIcon },
-    { name: 'Facebook', Icon: FacebookIcon },
-    { name: 'Reddit', Icon: RedditIcon },
-];
+import {
+  TwitterShareButton,
+  WhatsappShareButton,
+  FacebookShareButton,
+  TelegramShareButton,
+  RedditShareButton,
+} from 'next-share';
 
 const BasketShareDialog = ({ open, setOpen }) => {
+  const shareLink = typeof window !== 'undefined' && window.location.href;
 
-    const shareLink = typeof window !== 'undefined' && window.location.href;
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shareLink);
+  };
 
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(shareLink);
-    };
-
-    return (
-
-        <DialogBox
-            title="Share"
-            dividers
-            open={ open }
-            onClose={ () => setOpen(false) }
+  return (
+    <DialogBox
+      title="Share"
+      dividers
+      open={open}
+      onClose={() => setOpen(false)}
+    >
+      <Box display="flex" gap={4} sx={{ mb: 5, px: 1 }}>
+        <Box
+          // onClick={}
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+          textAlign="center"
+          sx={{ cursor: 'pointer' }}
+          gap={{ xs: '1rem', sm: '2.5rem' }}
         >
-            <Box display="flex" gap={ 4 } sx={{ mb: 5, px: 1 }}>
-                { socialMedias.map(({ name, Icon }) => (
+          <TwitterShareButton
+            url={shareLink}
+            title={
+              'Here is our Trending Basket which helps me to earn a lot!!!'
+            }
+          >
+            <TwitterIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
+          </TwitterShareButton>
+          <WhatsappShareButton
+            url={shareLink}
+            title={
+              'Here is our Trending Basket which helps me to earn a lot!!!'
+            }
+            // separator=":: "
+          >
+            <WhatsAppIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
+          </WhatsappShareButton>
+          <FacebookShareButton
+            url={shareLink}
+            quote={
+              'Here is our Trending Basket which helps me to earn a lot!!!'
+            }
+            hashtag={'#nextshare'}
+          >
+            <FacebookIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
+          </FacebookShareButton>
+          <TelegramShareButton
+            url={shareLink}
+            title={
+              'Here is our Trending Basket which helps me to earn a lot!!!'
+            }
+          >
+            <TelegramIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
+          </TelegramShareButton>
+          <RedditShareButton
+            url={shareLink}
+            title={
+              'Here is our Trending Basket which helps me to earn a lot!!!'
+            }
+          >
+            <RedditIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
+          </RedditShareButton>
+        </Box>
+      </Box>
 
-                    <Box
-                        key={ name }
-                        // onClick={}
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        sx={{ cursor: 'pointer' }}
-                    >
-                        <Typography fontSize="0.725rem" gutterBottom>
-                            { name }
-                        </Typography>
-                        <Icon
-                            fontSize="large"
-                            sx={{ fontSize: '2.75rem' }}
-                        />
-                    </Box>
-                ))}
-            </Box>
-
-            <Box>
-                <TextField
-                    label="Share Link"
-                    value={ shareLink }
-                    fullWidth
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton onClick={ copyToClipboard }>
-                                    <ContentCopyIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-            </Box>
-        </DialogBox>
-    );
+      <Box>
+        <TextField
+          label="Share Link"
+          value={shareLink}
+          fullWidth
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={copyToClipboard}>
+                  <ContentCopyIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
+    </DialogBox>
+  );
 };
 
 export default BasketShareDialog;

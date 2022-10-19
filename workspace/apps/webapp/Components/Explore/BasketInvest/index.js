@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { Box, Button, Chip, InputAdornment, TextField, Typography } from '@mui/material';
-import ShareIcon from '@mui/icons-material/Share';
-import BasketShareDialog from './BasketShareDialog';
 
 const BasketInvest = () => {
 
@@ -14,23 +12,6 @@ const BasketInvest = () => {
     return (
 
         <>
-            <Box
-                display="flex"
-                justifyContent="end"
-                marginBottom={ 3 }
-            >
-                <Button
-                    onClick={ handleClickOpen }
-                    startIcon={ <ShareIcon /> }
-                >
-                    Share
-                </Button>
-
-                <BasketShareDialog
-                    open={ dialogOpen }
-                    setOpen={ setDialogOpen }
-                />
-            </Box>
 
             <Box
                 display="flex"
