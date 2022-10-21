@@ -7,13 +7,12 @@ import { useState } from 'react';
 import { BasketCard } from '@basketo/web-ui';
 import axios from 'axios';
 
-const getBasketData = async (queryString) => (
-
-  await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_API}/baskets`
-    + queryString
-  )
-).data;
+const getBasketData = async (queryString) =>
+  (
+    await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_API}/baskets` + queryString
+    )
+  ).data;
 
 const Baskets = ({ queryString }) => {
   const [alert, setAlert] = useState({
@@ -42,9 +41,13 @@ const Baskets = ({ queryString }) => {
         onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
         open={alert.open}
         autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert severity={alert?.severity} sx={{ width: '100%' }}>
+        <Alert
+          severity={alert?.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           {alert?.message}
         </Alert>
       </Snackbar>
@@ -68,18 +71,22 @@ const Baskets = ({ queryString }) => {
           ) : (
             <>
               {basketsData?.baskets?.map((basket, i) => (
-                <Grid item key={i} xs={12} sm={6} md={4} lg={3}>
+                <Grid item key={i} xs={12} sm={6} md={4} lg={4}>
                   <Link href={'/explore/' + basket?._id}>
-                    <BasketCard
-                      data={{
-                        title: basket?.name,
-                        symbol: basket?.symbol,
-                        basketeer: basket?.accountId,
-                        description: basket?.description,
-                        basketGrowth: basket?.growthRate,
-                      }}
-                      showDescription
-                    />
+                    <a>
+                      <BasketCard
+                        data={{
+                          title: basket?.name,
+                          symbol: basket?.symbol,
+                          basketeer: basket?.accountId,
+                          description: basket?.description,
+                          basketGrowth: basket?.growthRate,
+                        }}
+                        showDescription
+                        showFollow
+                        showGrowth
+                      />
+                    </a>
                   </Link>
                 </Grid>
               ))}

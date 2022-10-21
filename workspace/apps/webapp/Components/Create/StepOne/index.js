@@ -50,7 +50,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
         id: symbol[0].id,
         name: val,
         symbol: symbol[0].symbol,
-        weight: 0,
+        weight: '',
         img: symbol[0].image_url,
       };
       dispatch(addToken({ token }));
@@ -60,34 +60,43 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
   const handleRatio = (e, token) => {
     const val = 100 - ratioSum(selectedTokens);
 
-    if (Number(e.target.value) <= val + token.weight) {
-      const updateTokens = selectedTokens.map((item) =>
-        item.name == token.name
-          ? { ...item, weight: Number(e.target.value) }
-          : { ...item }
-      );
-      updateTokens.map((item) =>
-        item.weight > 0 && ratioSum(updateTokens) == 100
-          ? dispatch(
-              handleIsEnable({
-                value: true,
-              })
-            )
-          : dispatch(
-              handleIsEnable({
-                value: false,
-              })
-            )
-      );
-      dispatch(
-        updatedTokens({
-          tokens: updateTokens,
-        })
-      );
+    if (Number(e.target.value) >= 0) {
+
+      if (Number(e.target.value) <= val + token.weight) {
+        const updateTokens = selectedTokens.map((item) =>
+          item.name == token.name
+            ? { ...item, weight: Number(e.target.value) }
+            : { ...item }
+        );
+        updateTokens.map((item) =>
+          item.weight > 0 && ratioSum(updateTokens) == 100
+            ? dispatch(
+                handleIsEnable({
+                  value: true,
+                })
+              )
+            : dispatch(
+                handleIsEnable({
+                  value: false,
+                })
+              )
+        );
+        dispatch(
+          updatedTokens({
+            tokens: updateTokens,
+          })
+        );
+      } else {
+        setAlert({
+          open: true,
+          message: 'Sum of Percentages exceeds 100.',
+          severity: 'error',
+        });
+      }
     } else {
       setAlert({
         open: true,
-        message: 'Sum of Percentages exceeds 100.',
+        message: 'Percentage can\'t be negative.',
         severity: 'error',
       });
     }
@@ -121,9 +130,13 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
         onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
         open={alert.open}
         autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert severity={alert?.severity} sx={{ width: '100%' }}>
+        <Alert
+          severity={alert?.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           {alert?.message}
         </Alert>
       </Snackbar>

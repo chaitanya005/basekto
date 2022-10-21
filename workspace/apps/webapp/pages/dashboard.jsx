@@ -52,29 +52,28 @@ const Dashboard = () => {
     },
   ];
 
-  //'http://localhost:8000/api/baskets/0x5557661D73f5e8C11AfB926817a21d891A13188f'
-  //0x7409D6A7650D3C983ECCe712C0E214DEe4d64cfe
-
   const [basket, setBasket] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
 
-  useEffect(async () => {
-    //setUserAddress(localStorage.getItem('address'));
-    // setUserAddress('0x5557661d73f5e8c11afb926817a21d891a13188f');
-    setIsLoading(true);
-    await axios
-      .get(
-        `http://localhost:8000/api/baskets/0x5557661D73f5e8C11AfB926817a21d891A13188f`
-      )
-      .then((basketData) => {
-        setBasket(basketData.data[0]);
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        setBasket(null);
-        console.log(e);
-      });
+  useEffect(() => {
+    //   setUserAddress(localStorage.getItem('address'));
+    //setIsLoading(true);
+    async function fetchData() {
+      await axios
+        .get(
+          `http://localhost:8000/api/baskets/0x5557661D73f5e8C11AfB926817a21d891A13188f`
+        )
+        .then((basketData) => {
+          setBasket(basketData.data[0]);
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          setBasket(null);
+          console.log(e);
+        });
+    }
+    fetchData();
   }, []);
 
   return (
@@ -93,7 +92,7 @@ const Dashboard = () => {
         {/* left side part */}
         <Box sx={{ maxWidth: '100%', overflowX: 'auto' }}>
           {/* wallet address and blockchain info */}
-          <Box
+          {/* <Box
             sx={{
               margin: '15px 0px',
               display: 'flex',
@@ -106,10 +105,13 @@ const Dashboard = () => {
               label={'0x124...45345'}
             />
             <Chip variant="standard" label={'Ethereum Mainnet'} />
-          </Box>
+          </Box> */}
 
           <Overview />
-          <YourPortfolio basketData={basket} showPortfolioBaskets={true} />
+          <YourPortfolio
+            basketData={basket}
+            showPortfolioBaskets={basket && true}
+          />
         </Box>
 
         {/* right side part  */}

@@ -115,9 +115,13 @@ const Basket = () => {
         onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
         open={alert.open}
         autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert severity={alert?.severity} sx={{ width: '100%' }}>
+        <Alert
+          severity={alert?.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           {alert?.message}
         </Alert>
       </Snackbar>
@@ -169,7 +173,7 @@ const Basket = () => {
                     Invest in Basket
                 </Typography>
 
-                <BasketInvest />
+                <BasketInvest tokensData={ coinGrowthRates } />
 
                 <Button
                     variant="contained"

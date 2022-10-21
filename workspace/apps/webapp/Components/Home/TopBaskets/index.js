@@ -43,7 +43,7 @@ const TopBaskets = () => {
                 title={<Typography variant="h6">Coming soon!!</Typography>}
               >
                 <div>
-                  <BasketCard data={basket} showGrowth hideChip />
+                  <BasketCard data={basket} showGrowth hideChip showFollow />
                 </div>
               </Tooltip>
             </Grid>
