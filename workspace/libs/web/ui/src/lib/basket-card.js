@@ -1,37 +1,17 @@
 import {
   Avatar,
   Card,
-  CardHeader,
   Chip,
-  Divider,
   Typography,
-  CardMedia,
   Button,
   CardContent,
   AvatarGroup,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import 'react-quill/dist/quill.snow.css';
-import dynamic from 'next/dynamic';
-const parse = require('html-react-parser');
-import styled from '@emotion/styled';
+
 //this is a presentational component for an individual basket card
 //TODO: implement graph component
 
-const QuillNoSSRWrapper = dynamic(import('react-quill'), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
-const modules = {
-  toolbar: false,
-};
-
-const QuillNoSSRWrap = styled(QuillNoSSRWrapper)`
-  .ql-container {
-    font-family: inherit;
-    border: none !important;
-  }
-`;
 export function BasketCard({
   sx, // Styling
   data, // Object {title, symbol, growth:{percent, period}, basketeer, graphData, description}
@@ -42,6 +22,35 @@ export function BasketCard({
   showFollow,
   ...props
 }) {
+  // To remove all tags from data
+  const RemoveHTMLTags = (html) => {
+    var regX = /(<([^>]+)>)/gi;
+    if (html.replace(regX, '').length > 120)
+      return html.replace(regX, '').slice(0, 120).concat('...');
+    return html.replace(regX, '').slice(0, 120);
+  };
+
+  // // TO extract only p tag from data
+  // const firstParagraph = '';
+  // const ptag = (desc) => {
+  //   const matches = [];
+
+  //   desc.replace(/<p>(.*?)<\/p>/g, function () {
+  //     matches.push(arguments[1]);
+  //     console.log('p :', matches);
+  //   });
+
+  //   if (!matches[0]?.length) {
+  //     desc.replace(/<h2>(.*?)<\/h2>/g, function () {
+  //       matches.push(arguments[1]);
+  //     });
+  //     console.log('h2 :', matches);
+  //   }
+
+  //   firstParagraph = matches.length ? matches[0] : '';
+  //   return RemoveHTMLTags(firstParagraph);
+  // };
+
   return (
     <Card
       sx={{
@@ -127,19 +136,26 @@ export function BasketCard({
                 }}
               >
                 {data?.symbol || 'SYMBOL'}&nbsp;|&nbsp;
-                <Typography
-                  component={'span'}
-                  variant="caption"
-                  sx={{
-                    color:
-                      data?.growth?.percent[0] === '+'
-                        ? 'success.main'
-                        : 'error.main',
-                  }}
-                >
-                  {data?.growth?.percent || '0'}%
-                </Typography>
-                &nbsp;in the past {data?.growth?.period || 'period'}
+                {!hideChip && (
+                  <Chip
+                    label={data?.basketGrowth?.toFixed(2) + '%'}
+                    sx={{
+                      margin: '0px 2px',
+
+                      height: '1rem',
+                      background: `${
+                        data?.basketGrowth >= 0 ? '#32D583' : '#F04438'
+                      }`,
+                      color: '#fff',
+                      fontWeight: 600,
+                      borderRadius: '0.4rem',
+                      '& .MuiChip-label': {
+                        p: '0.25rem 0.5rem',
+                      },
+                      maxWidth: 'fit-content',
+                    }}
+                  />
+                )}
               </Typography>
             )}
           </Typography>
@@ -148,69 +164,52 @@ export function BasketCard({
       {showDescription && (
         <>
           <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
-            <QuillNoSSRWrap
-              value={data?.description?.slice(0, 120).concat('...')}
-              modules={modules}
-              style={{ fontFamily: 'inherit' }}
-              readOnly={true}
-              theme={'bubble'}
-            />
+            {data?.description && RemoveHTMLTags(data?.description)}
+            {/* {data?.description && ptag(data?.description)} */}
           </Typography>
         </>
       )}
-      <AvatarGroup sx={{ justifyContent: 'center' }}>
-        <Avatar
-          sx={{
-            width: 30,
-            height: 30,
-          }}
-          alt="Remy Sharp"
-          src="https://assets.coingecko.com/coins/images/15453/small/ujenny.png?1620870247"
-        />
-        <Avatar
-          sx={{
-            width: 30,
-            height: 30,
-          }}
-          alt="Travis Howard"
-          src="https://assets.coingecko.com/coins/images/15810/small/gitcoin.png?1621992929"
-        />
-        <Avatar
-          sx={{
-            width: 30,
-            height: 30,
-          }}
-          alt="Cindy Baker"
-          src="https://s3.amazonaws.com/set-core/img/coin-icons/dai.svg"
-        />
-      </AvatarGroup>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', padding: '15px 20px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '10px 20px',
+          gap: '0.5rem',
+        }}
+      >
         <Avatar sx={{ width: '1.3em', height: '1.3em' }} />
-        &nbsp;&nbsp;
         <Typography>
           {data?.basketeer?.slice(0, 4) || 'Basketeer'}...
           {data?.basketeer?.slice(34, 42)}
         </Typography>
+        <AvatarGroup sx={{ justifyContent: 'center', marginLeft: 'auto' }}>
+          <Avatar
+            sx={{
+              width: 30,
+              height: 30,
+            }}
+            alt="Remy Sharp"
+            src="https://assets.coingecko.com/coins/images/15453/small/ujenny.png?1620870247"
+          />
+          <Avatar
+            sx={{
+              width: 30,
+              height: 30,
+            }}
+            alt="Travis Howard"
+            src="https://assets.coingecko.com/coins/images/15810/small/gitcoin.png?1621992929"
+          />
+          <Avatar
+            sx={{
+              width: 30,
+              height: 30,
+            }}
+            alt="Cindy Baker"
+            src="https://s3.amazonaws.com/set-core/img/coin-icons/dai.svg"
+          />
+        </AvatarGroup>
       </Box>
-      {!hideChip && (
-        <Chip
-          label={data?.basketGrowth?.toFixed(2) + '%'}
-          sx={{
-            margin: '15px 20px',
-            mt: 2,
-            height: 'auto',
-            background: `${data?.basketGrowth >= 0 ? '#32D583' : '#F04438'}`,
-            color: '#fff',
-            fontWeight: 600,
-            borderRadius: '0.4rem',
-            '& .MuiChip-label': {
-              p: '0.25rem 0.5rem',
-            },
-            maxWidth: 'fit-content',
-          }}
-        />
-      )}
     </Card>
   );
 }
