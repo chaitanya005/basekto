@@ -73,8 +73,25 @@ const Navbar = () => {
     toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
   };
 
-  useEffect(() => {
+  const updateUserAddress = (address) => {
+    localStorage.setItem('address', address);
     setUserAddress(localStorage.getItem('address'));
+  };
+
+  const removeUserAddress = () => {
+    localStorage.removeItem('address');
+    setUserAddress(null);
+  };
+
+  useEffect(() => {
+
+    if (clientSide && typeof window?.ethereum === 'undefined') {
+      if (typeof window?.ethereum === 'undefined') {
+        removeUserAddress();
+      } else {
+        setUserAddress(localStorage.getItem('address'));
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -102,12 +119,11 @@ const Navbar = () => {
   };
 
   const accountChangedHandler = async (newAccount) => {
+
     if (newAccount[0]) {
-      localStorage.setItem('address', newAccount[0]);
-      setUserAddress(localStorage.getItem('address'));
+      updateUserAddress(newAccount[0]);
     } else {
-      localStorage.removeItem('address');
-      setUserAddress(null);
+      removeUserAddress();
     }
     getAccountBalance(newAccount);
   };

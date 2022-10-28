@@ -140,7 +140,7 @@ const StepTwo = ({ setActiveStep }) => {
         { indent: '+1' },
       ],
 
-      ['link', 'image', 'video'],
+      // ['link', 'image', 'video'],
       ['clean'],
     ],
     clipboard: {
@@ -163,9 +163,9 @@ const StepTwo = ({ setActiveStep }) => {
     'list',
     'bullet',
     'indent',
-    'link',
-    'image',
-    'video',
+    // 'link',
+    // 'image',
+    // 'video',
   ];
 
   return (
