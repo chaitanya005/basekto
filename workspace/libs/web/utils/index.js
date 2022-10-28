@@ -18,6 +18,15 @@ const getNetwork = () => {
     );
 };
 
+const getProvider = (network) => {
+
+    try {
+        return new ethers.providers.Web3Provider(window?.ethereum, network);
+    } catch (err) {
+        return null;
+    }
+};
+
 const switchNetwork = () => {
 
     window?.ethereum?.request({
@@ -57,5 +66,5 @@ const switchNetwork = () => {
 
 export {
     getBalance, getNetwork,
-    switchNetwork
+    getProvider, switchNetwork
 };
