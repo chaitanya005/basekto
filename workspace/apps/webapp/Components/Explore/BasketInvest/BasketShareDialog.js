@@ -45,6 +45,9 @@ const BasketShareDialog = ({ open, setOpen }) => {
             title={
               'Here is our Trending Basket which helps me to earn a lot!!!'
             }
+            // hashtags= {"#nextshare"}
+            blankTarget={true}
+            hashtag={'#basketofinance #yoo'}
           >
             <TwitterIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
           </TwitterShareButton>
@@ -53,6 +56,8 @@ const BasketShareDialog = ({ open, setOpen }) => {
             title={
               'Here is our Trending Basket which helps me to earn a lot!!!'
             }
+            blankTarget={true}
+            hashtag={'#basketofinance'}
             // separator=":: "
           >
             <WhatsAppIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
@@ -62,7 +67,8 @@ const BasketShareDialog = ({ open, setOpen }) => {
             quote={
               'Here is our Trending Basket which helps me to earn a lot!!!'
             }
-            hashtag={'#nextshare'}
+            blankTarget={true}
+            hashtag={'#basketofinance'}
           >
             <FacebookIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
           </FacebookShareButton>
@@ -71,6 +77,8 @@ const BasketShareDialog = ({ open, setOpen }) => {
             title={
               'Here is our Trending Basket which helps me to earn a lot!!!'
             }
+            blankTarget={true}
+            hashtag={'#basketofinance'}
           >
             <TelegramIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
           </TelegramShareButton>
@@ -79,6 +87,8 @@ const BasketShareDialog = ({ open, setOpen }) => {
             title={
               'Here is our Trending Basket which helps me to earn a lot!!!'
             }
+            blankTarget={true}
+            hashtag={'#basketofinance'}
           >
             <RedditIcon fontSize="large" sx={{ fontSize: '2.75rem' }} />
           </RedditShareButton>
