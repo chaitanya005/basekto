@@ -14,7 +14,7 @@ import { Box } from '@mui/system';
 
 export function BasketCard({
   sx, // Styling
-  data, // Object {title, symbol, growth:{percent, period}, basketeer, graphData, description}
+  data, // Object {title, symbol, growth:{percent, period}, basketeer, graphData, description, coins}
   showGrowth, // Boolean
   showDescription, // Boolean
   showGraph, // Boolean
@@ -161,6 +161,7 @@ export function BasketCard({
           </Typography>
         </CardContent>
       </Box>
+
       {showDescription && (
         <>
           <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
@@ -183,31 +184,21 @@ export function BasketCard({
           {data?.basketeer?.slice(0, 4) || 'Basketeer'}...
           {data?.basketeer?.slice(34, 42)}
         </Typography>
-        <AvatarGroup sx={{ justifyContent: 'center', marginLeft: 'auto' }}>
-          <Avatar
-            sx={{
-              width: 30,
-              height: 30,
-            }}
-            alt="Remy Sharp"
-            src="https://assets.coingecko.com/coins/images/15453/small/ujenny.png?1620870247"
-          />
-          <Avatar
-            sx={{
-              width: 30,
-              height: 30,
-            }}
-            alt="Travis Howard"
-            src="https://assets.coingecko.com/coins/images/15810/small/gitcoin.png?1621992929"
-          />
-          <Avatar
-            sx={{
-              width: 30,
-              height: 30,
-            }}
-            alt="Cindy Baker"
-            src="https://s3.amazonaws.com/set-core/img/coin-icons/dai.svg"
-          />
+
+        <AvatarGroup
+          sx={{ justifyContent: 'center', marginLeft: 'auto' }}
+          max={3}
+        >
+          {data?.coins?.map((coin) => (
+            <Avatar
+              sx={{
+                width: 30,
+                height: 30,
+              }}
+              alt={coin?.symbol}
+              src={coin?.img}
+            />
+          ))}
         </AvatarGroup>
       </Box>
     </Card>

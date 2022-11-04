@@ -81,6 +81,7 @@ const Baskets = ({ queryString }) => {
                           basketeer: basket?.accountId,
                           description: basket?.description,
                           basketGrowth: basket?.growthRate,
+                          coins: basket?.coins,
                         }}
                         showDescription
                         showFollow

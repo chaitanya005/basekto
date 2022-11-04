@@ -35,6 +35,7 @@ const YourPortfolio = ({ basketData, showPortfolioBaskets }) => {
               growth: { percent: '+0.01', period: 'week' },
               basketeer: basketData?.accountId,
               description: basketData?.description,
+              coins: basketData?.coins,
             }}
             showDescription
             hideChip
