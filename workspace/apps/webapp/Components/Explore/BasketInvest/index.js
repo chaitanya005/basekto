@@ -42,23 +42,6 @@ const BasketInvest = ({ tokensData }) => {
     return (
 
         <>
-            <Box
-                display="flex"
-                justifyContent="end"
-                marginBottom={ 3 }
-            >
-                <Button
-                    onClick={ handleClickOpen }
-                    startIcon={ <ShareIcon /> }
-                >
-                    Share
-                </Button>
-
-                <BasketShareDialog
-                    open={ dialogOpen }
-                    setOpen={ setDialogOpen }
-                />
-            </Box>
 
             <Box
                 display="flex"

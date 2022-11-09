@@ -21,6 +21,10 @@ import TokensTable from '../Explore/TokensTable';
 import DialogBox from './DialogBox';
 import BasketInvest from '../Explore/BasketInvest';
 import AddAlertIcon from '@mui/icons-material/AddAlert';
+import ShareIcon from '@mui/icons-material/Share';
+// import BasketShareDialog from './BasketShareDialog';
+import BasketShareDialog from '../Explore/BasketInvest/BasketShareDialog'
+
 import parse from 'html-react-parser';
 
 const Explore = ({
@@ -36,6 +40,12 @@ const Explore = ({
 
   const [alertSnackbarOpen, setAlertSnackbarOpen] = useState(false);
   const handleAlertSnackbarClose = () => setAlertSnackbarOpen(false);
+  
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setDialogOpen(true);
+};
 
   const [investDialogOpen, setInvestDialogOpen] = useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
@@ -144,15 +154,22 @@ const Explore = ({
               </>
             )}
 
-            <Tooltip title="Alert Me">
-              <IconButton
-                color="primary"
-                onClick={() => setAlertDialogOpen(true)}
-                disabled={isLoading || isFetching}
-              >
-                <AddAlertIcon />
-              </IconButton>
-            </Tooltip>
+                <Box
+                display="flex"
+                justifyContent="end"
+                marginBottom={ 3 }
+            >
+                <Button
+                sx={{paddingRight:'5px'}}
+                    onClick={ handleClickOpen }
+                    startIcon={ <ShareIcon /> }
+                />
+
+                <BasketShareDialog
+                    open={ dialogOpen }
+                    setOpen={ setDialogOpen }
+                />
+            </Box>
 
             <DialogBox
               title="Alert Me"
