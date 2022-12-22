@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 import SearchBar from '../../Components/Explore/SearchBar';
 import Baskets from '../../Components/Explore/Baskets';
 
@@ -60,15 +62,19 @@ const Explore = () => {
 
     return (
 
-        <>
-            <SearchBar
-                search={ query.search }
-                setSearch={ (val) => setQuery({ ...query, search: val }) }
-                filters={ query.filters }
-                setFilters={ (val) => setQuery({ ...query, filters: val }) }
-            />
-            <Baskets queryString={ queryString } />
-        </>
+        <Container maxWidth="lg">
+            <Box sx={{ mt: 2, mb: 2 }}>
+                <SearchBar
+                    search={ query.search }
+                    setSearch={ (val) => setQuery({ ...query, search: val }) }
+                    filters={ query.filters }
+                    setFilters={ (val) => setQuery({ ...query, filters: val }) }
+                />
+            </Box>
+            <Box sx={{ mt: 4, mb: 8 }}>
+                <Baskets queryString={ queryString } />
+            </Box>
+        </Container>
     );
 };
 

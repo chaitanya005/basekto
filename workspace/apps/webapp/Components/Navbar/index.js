@@ -1,32 +1,30 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { ethers, utils } from 'ethers';
+import axios from 'axios';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import {
-  Dialog,
-  Typography,
-  Divider,
-  Grid,
-  IconButton,
-  Drawer,
-} from '@mui/material';
-import { useRouter } from 'next/router';
-import { AccountBalanceWallet } from '@mui/icons-material';
-import CreateAccountDialog from './CreateAccountDialog';
-import { ethers } from 'ethers';
-import axios from 'axios';
+import Container from '@mui/material/Container';
+import Dialog from '@mui/material/Dialog';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
 import ExploreIcon from '@mui/icons-material/Explore';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useTheme } from '@mui/material';
-import { toggleTheme } from '@basketo/web-ui';
+import AccountBalanceWallet from '@mui/icons-material/AccountBalanceWallet';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import { toggleTheme } from '@basketo/web-ui';
+import CreateAccountDialog from './CreateAccountDialog';
 import UserAccountDialog from './UserAccountDialog';
 
 const pages = [
@@ -81,11 +79,12 @@ const Navbar = () => {
   const removeUserAddress = () => {
     localStorage.removeItem('address');
     setUserAddress(null);
+    router.push('/');
   };
 
   useEffect(() => {
 
-    if (clientSide && typeof window?.ethereum === 'undefined') {
+    if (clientSide) {
       if (typeof window?.ethereum === 'undefined') {
         removeUserAddress();
       } else {
@@ -118,14 +117,14 @@ const Navbar = () => {
     setUserAccountDialogOpen(false);
   };
 
-  const accountChangedHandler = async (newAccount) => {
+  const accountChangedHandler = async (account) => {
 
-    if (newAccount[0]) {
-      updateUserAddress(newAccount[0]);
+    if (account[0]) {
+      updateUserAddress(utils.getAddress(account[0]));
     } else {
       removeUserAddress();
     }
-    getAccountBalance(newAccount);
+    getAccountBalance(account);
   };
 
   const getAccountBalance = async (account) => {

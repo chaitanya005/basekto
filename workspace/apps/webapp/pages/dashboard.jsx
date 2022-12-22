@@ -1,16 +1,17 @@
-import { Box, Typography, Card, Chip, Button, Divider } from '@mui/material';
-import { Navigation } from '@basketo/web-ui';
-import Overview from '../Components/dashboard/Overview';
-import {
-  AccountCircle,
-  DashboardRounded,
-  Explore,
-  Notifications,
-} from '@mui/icons-material';
-import YourPortfolio from '../Components/dashboard/YourPortfolio';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import DashboardRounded from '@mui/icons-material/DashboardRounded';
+import Explore from '@mui/icons-material/Explore';
+import Notifications from '@mui/icons-material/Notifications';
+import { Navigation } from '@basketo/web-ui';
+import Overview from '../Components/dashboard/Overview';
+import YourPortfolio from '../Components/dashboard/YourPortfolio';
+import DialogBox from '../Components/Common/DialogBox';
 
 const data = [
   { pv: 2400 },
@@ -52,98 +53,92 @@ const Dashboard = () => {
     },
   ];
 
-  const [basket, setBasket] = useState();
+  const [createdBaskets, setCreatedBaskets] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [userAddress, setUserAddress] = useState(null);
+  const [userAddress, setUserAddress] = useState(undefined);
 
   useEffect(() => {
-    //   setUserAddress(localStorage.getItem('address'));
-    //setIsLoading(true);
-    async function fetchData() {
-      await axios
+
+    setUserAddress(localStorage.getItem('address'));
+    setIsLoading(true);
+
+    function fetchData() {
+
+      axios
         .get(
-          `http://localhost:8000/api/baskets/0x5557661D73f5e8C11AfB926817a21d891A13188f`
+          `${ process.env.NEXT_PUBLIC_BACKEND_API }/baskets/${ userAddress }`
         )
         .then((basketData) => {
-          setBasket(basketData.data[0]);
-          setIsLoading(false);
+          setCreatedBaskets(basketData.data);
         })
         .catch((e) => {
-          setBasket(null);
+          setCreatedBaskets(null);
           console.log(e);
-        });
+        })
+        .finally(() => setIsLoading(false));
     }
-    fetchData();
-  }, []);
+    userAddress && fetchData();
+  }, [userAddress]);
+
+  typeof window !== 'undefined' &&
+    window.ethereum?.on('accountsChanged', (account) =>
+      setUserAddress(null)
+    );
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-      <Navigation navInfo={navigationInfo} showThemeToggle />
-      {/* 2:1 grid layout  */}
-      <Box
-        sx={{
-          padding: '20px',
-          width: '100%',
-          maxWidth: 'lg',
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '2fr 1fr', gap: '20px' },
-        }}
+    <>
+      <DialogBox
+        open={ userAddress === null }
+        title={
+          <Typography
+            variant={ 'h5' }
+            textAlign="center"
+            gutterBottom
+          >
+            Wallet not connected!
+          </Typography>
+        }
+        actions={
+          <Button
+            variant="contained"
+            onClick={ () => router.push('/') }
+            fullWidth
+          >
+            Go Back
+          </Button>
+        }
       >
-        {/* left side part */}
-        <Box sx={{ maxWidth: '100%', overflowX: 'auto' }}>
-          {/* wallet address and blockchain info */}
-          {/* <Box
-            sx={{
-              margin: '15px 0px',
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Chip
-              variant="outlined"
-              sx={{ margin: '0px 10px' }}
-              label={'0x124...45345'}
+        <Typography
+          textAlign="center"
+          marginBottom={ 3 }
+        >
+          You can&apos;t view your portfolio without your Web3 wallet. Please connect your wallet first.
+        </Typography>
+      </DialogBox>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Navigation navInfo={navigationInfo} showThemeToggle />
+        <Box
+          sx={{
+            padding: '20px',
+            width: '100%',
+            maxWidth: 'lg',
+          }}
+        >
+          <Box sx={{
+            maxWidth: '100%',
+            overflowX: 'auto'
+          }}>
+            <Overview />
+            <YourPortfolio
+              createdBaskets={ createdBaskets }
+              investedBaskets={ [] }
+              isLoading={ isLoading }
             />
-            <Chip variant="standard" label={'Ethereum Mainnet'} />
-          </Box> */}
-
-          <Overview />
-          <YourPortfolio
-            basketData={basket}
-            showPortfolioBaskets={basket && true}
-          />
-        </Box>
-
-        {/* right side part  */}
-        <Box>
-          <Card
-            variant="outlined"
-            sx={{
-              width: '100%',
-              height: '500px',
-              borderRadius: '15px',
-              padding: '15px 20px',
-            }}
-          >
-            <Box>
-              <Typography variant="h3">
-                000.00
-                <Typography component="span" variant="caption">
-                  USDT
-                </Typography>
-              </Typography>
-              <Typography variant="caption" fontSize={'12px'}>
-                WALLET BALANCE
-              </Typography>
-              <Button variant="outlined" fullWidth sx={{ mt: '20px' }}>
-                Connect another wallet
-              </Button>
-            </Box>
-            <Divider sx={{ margin: '20px 0px' }} />
-          </Card>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
