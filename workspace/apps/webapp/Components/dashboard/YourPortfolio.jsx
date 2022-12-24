@@ -1,10 +1,44 @@
-import { Box, Typography, Tooltip } from '@mui/material';
-import { BasketCard } from '@basketo/web-ui';
-import { InfoRounded } from '@mui/icons-material';
+import { useState } from 'react';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import InfoRounded from '@mui/icons-material/InfoRounded';
+import BasketList from '../Common/BasketList';
 
-const YourPortfolio = ({ basketData, showPortfolioBaskets }) => {
+
+function TabPanel({ children, value, index, ...other }) {
+
   return (
-    <Box sx={{ marginTop: '20px' }}>
+
+    <Box sx={{ mt: 4, mb: 8 }}
+      role="tabpanel"
+      hidden={ value !== index }
+      id={ `simple-tabpanel-${ index }` }
+      aria-labelledby={ `simple-tab-${ index }` }
+      { ...other }
+    >
+      { value === index && children }
+    </Box>
+  );
+}
+
+const YourPortfolio = ({ createdBaskets, investedBaskets, isLoading }) => {
+
+  const theme = useTheme();
+  const sm = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [value, setValue] = useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return (
+
+    <Box sx={{ mt: '20px' }}>
       <Typography
         variant="subtitle2"
         fontSize="12px"
@@ -17,34 +51,47 @@ const YourPortfolio = ({ basketData, showPortfolioBaskets }) => {
           />
         </Tooltip>
       </Typography>
+
       <Box
         sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-          gap: '20px',
-          marginTop: '20px',
+          mt: 2,
+          borderBottom: 1,
+          borderColor: 'divider'
         }}
       >
-        {showPortfolioBaskets ? (
-          <BasketCard
-            key={basketData?._id}
-            data={{
-              title: basketData?.name,
-              symbol: basketData?.symbol,
-              growth: { percent: '+0.01', period: 'week' },
-              basketeer: basketData?.accountId,
-              description: basketData?.description,
-              coins: basketData?.coins,
-            }}
-            showDescription
-            hideChip
-            //showGrowth
-          />
-        ) : (
-          <p>No baskets yet!</p>
-        )}
+        <Tabs
+          variant={ sm ? 'fullWidth' : 'standard' }
+          value={ value }
+          onChange={ handleChange }
+        >
+          <Tab label="Created Baskets" />
+          <Tab label="Invested Baskets" />
+        </Tabs>
       </Box>
+
+      <TabPanel value={value} index={0}>
+        { isLoading || createdBaskets?.length ? (
+            <BasketList
+              baskets={ createdBaskets }
+              isLoading={ isLoading }
+              showDescription
+            />
+        ) : (
+          <p>You haven&apos;t created any baskets yet!</p>
+        )}
+      </TabPanel>
+
+      <TabPanel value={value} index={1}>
+        { investedBaskets?.length ? (
+            <BasketList
+              baskets={ investedBaskets }
+              isLoading={ false }
+              showDescription
+            />
+        ) : (
+          <p>You haven&apos;t invested in any baskets yet!</p>
+        )}
+      </TabPanel>
     </Box>
   );
 };

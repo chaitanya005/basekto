@@ -1,13 +1,11 @@
-import Link from 'next/link';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import { Snackbar, Alert, Skeleton } from '@mui/material';
-import { useQuery } from 'react-query';
 import { useState } from 'react';
-import { BasketCard } from '@basketo/web-ui';
+import { useQuery } from 'react-query';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import BasketList from '../../Common/BasketList';
 
-const getBasketData = async (queryString) =>
+const getBasketData = async (queryString = '') =>
   (
     await axios.get(
       `${process.env.NEXT_PUBLIC_BACKEND_API}/baskets` + queryString
@@ -51,50 +49,14 @@ const Baskets = ({ queryString }) => {
           {alert?.message}
         </Alert>
       </Snackbar>
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
-        <Grid container spacing={2}>
-          {isLoading || isFetching ? (
-            <>
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Grid item key={i} xs={12} sm={6} md={4} lg={3}>
-                  <Skeleton
-                    sx={{
-                      borderRadius: '15px',
-                      width: '100%',
-                      height: '300px',
-                    }}
-                    animation="wave"
-                  />
-                </Grid>
-              ))}
-            </>
-          ) : (
-            <>
-              {basketsData?.baskets?.map((basket, i) => (
-                <Grid item key={i} xs={12} sm={6} md={4} lg={4}>
-                  <Link href={'/explore/' + basket?._id}>
-                    <a>
-                      <BasketCard
-                        data={{
-                          title: basket?.name,
-                          symbol: basket?.symbol,
-                          basketeer: basket?.accountId,
-                          description: basket?.description,
-                          basketGrowth: basket?.growthRate,
-                          coins: basket?.coins,
-                        }}
-                        showDescription
-                        showFollow
-                        showGrowth
-                      />
-                    </a>
-                  </Link>
-                </Grid>
-              ))}
-            </>
-          )}
-        </Grid>
-      </Container>
+
+      <BasketList
+        baskets={ basketsData?.baskets }
+        isLoading={ isLoading || isFetching }
+        showDescription
+        showFollow
+        showGrowth
+      />
     </>
   );
 };

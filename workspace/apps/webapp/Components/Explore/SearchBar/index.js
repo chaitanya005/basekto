@@ -1,4 +1,3 @@
-import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -13,7 +12,7 @@ import Filters from '../Filters';
 
 const SearchBar = ({ search, setSearch, filters, setFilters }) => {
   return (
-    <Container maxWidth="lg" sx={{ mt: 2, mb: 2 }}>
+    <>
       <Typography variant="h3" sx={{ fontSize: '2.5rem', mb: 3 }}>
         Discover, invest, & participate in Baskets
       </Typography>
@@ -76,7 +75,7 @@ const SearchBar = ({ search, setSearch, filters, setFilters }) => {
       </Box>
 
       <Divider />
-    </Container>
+    </>
   );
 };
 
