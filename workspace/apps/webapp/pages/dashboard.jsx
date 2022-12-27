@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -11,6 +10,7 @@ import Notifications from '@mui/icons-material/Notifications';
 import { Navigation } from '@basketo/web-ui';
 import Overview from '../Components/dashboard/Overview';
 import YourPortfolio from '../Components/dashboard/YourPortfolio';
+import Profile from '../Components/dashboard/Profile';
 import DialogBox from '../Components/Common/DialogBox';
 
 const data = [
@@ -24,6 +24,7 @@ const data = [
 ];
 
 const Dashboard = () => {
+
   const router = useRouter();
 
   const navigationInfo = [
@@ -40,8 +41,8 @@ const Dashboard = () => {
       icon: <Notifications />,
     },
     {
-      route: '/my-profile',
-      onClick: () => router.push({ pathname: '/my-profile' }),
+      route: '/dashboard#profile',
+      onClick: () => router.push({ hash: '#profile' }),
       label: 'Profile',
       icon: <AccountCircle />,
     },
@@ -53,37 +54,32 @@ const Dashboard = () => {
     },
   ];
 
-  const [createdBaskets, setCreatedBaskets] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [userAddress, setUserAddress] = useState(undefined);
+  const getUserAddress = () => localStorage.getItem('address');
 
   useEffect(() => {
-
-    setUserAddress(localStorage.getItem('address'));
-    setIsLoading(true);
-
-    function fetchData() {
-
-      axios
-        .get(
-          `${ process.env.NEXT_PUBLIC_BACKEND_API }/baskets/${ userAddress }`
-        )
-        .then((basketData) => {
-          setCreatedBaskets(basketData.data);
-        })
-        .catch((e) => {
-          setCreatedBaskets(null);
-          console.log(e);
-        })
-        .finally(() => setIsLoading(false));
-    }
-    userAddress && fetchData();
-  }, [userAddress]);
+    setUserAddress(getUserAddress);
+  }, []);
 
   typeof window !== 'undefined' &&
     window.ethereum?.on('accountsChanged', (account) =>
-      setUserAddress(null)
+      setUserAddress(getUserAddress)
     );
+
+  const dashboardPages = {
+    '': (
+      <Box sx={{
+        maxWidth: '100%',
+        overflowX: 'auto'
+      }}>
+        <Overview />
+        <YourPortfolio userAddress={ userAddress } />
+      </Box>
+    ),
+    'profile': (
+      <Profile userAddress={ userAddress } />
+    )
+  }
 
   return (
     <>
@@ -125,17 +121,11 @@ const Dashboard = () => {
             maxWidth: 'lg',
           }}
         >
-          <Box sx={{
-            maxWidth: '100%',
-            overflowX: 'auto'
-          }}>
-            <Overview />
-            <YourPortfolio
-              createdBaskets={ createdBaskets }
-              investedBaskets={ [] }
-              isLoading={ isLoading }
-            />
-          </Box>
+          {
+            dashboardPages[
+              router.asPath.split('#')[1] ?? ''
+            ]
+          }
         </Box>
       </Box>
     </>
