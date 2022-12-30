@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles';
 import parse from 'html-react-parser';
 import ProfileEditDialog from './ProfileEditDialog';
 
-const Profile = ({ userAddress }) => {
+const YourProfile = ({ userAddress }) => {
 
     const sm = useMediaQuery(useTheme().breakpoints.down('sm'));
 
@@ -166,4 +166,4 @@ const Profile = ({ userAddress }) => {
     );
 };
 
-export default Profile;
+export default YourProfile;

@@ -1,17 +1,9 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import DashboardRounded from '@mui/icons-material/DashboardRounded';
-import Explore from '@mui/icons-material/Explore';
-import Notifications from '@mui/icons-material/Notifications';
-import { Navigation } from '@basketo/web-ui';
+import { onAccountsChanged } from '@basketo/web-utils';
 import Overview from '../Components/dashboard/Overview';
 import YourPortfolio from '../Components/dashboard/YourPortfolio';
-import Profile from '../Components/dashboard/Profile';
-import DialogBox from '../Components/Common/DialogBox';
+import SideNavigationLayout from '../Components/Common/SideNavigationLayout';
 
 const data = [
   { pv: 2400 },
@@ -25,35 +17,6 @@ const data = [
 
 const Dashboard = () => {
 
-  const router = useRouter();
-
-  const navigationInfo = [
-    {
-      route: '/dashboard',
-      onClick: () => router.push({ hash: '' }),
-      label: 'Overview',
-      icon: <DashboardRounded />,
-    },
-    {
-      route: '/dashboard#notifications',
-      onClick: () => router.push({ hash: '#notifications' }),
-      label: 'Notifications',
-      icon: <Notifications />,
-    },
-    {
-      route: '/dashboard#profile',
-      onClick: () => router.push({ hash: '#profile' }),
-      label: 'Profile',
-      icon: <AccountCircle />,
-    },
-    {
-      route: '/explore',
-      onClick: () => router.push({ pathname: '/explore' }),
-      label: 'Explore',
-      icon: <Explore />,
-    },
-  ];
-
   const [userAddress, setUserAddress] = useState(undefined);
   const getUserAddress = () => localStorage.getItem('address');
 
@@ -61,74 +24,23 @@ const Dashboard = () => {
     setUserAddress(getUserAddress);
   }, []);
 
-  typeof window !== 'undefined' &&
-    window.ethereum?.on('accountsChanged', (account) =>
-      setUserAddress(getUserAddress)
-    );
+  onAccountsChanged(() =>
+    setUserAddress(getUserAddress())
+  );
 
-  const dashboardPages = {
-    '': (
-      <Box sx={{
-        maxWidth: '100%',
-        overflowX: 'auto'
-      }}>
+  return (
+
+    <SideNavigationLayout userAddress={ userAddress }>
+      <Box
+        sx={{
+          maxWidth: '100%',
+          overflowX: 'auto'
+        }}
+      >
         <Overview />
         <YourPortfolio userAddress={ userAddress } />
       </Box>
-    ),
-    'profile': (
-      <Profile userAddress={ userAddress } />
-    )
-  }
-
-  return (
-    <>
-      <DialogBox
-        open={ userAddress === null }
-        title={
-          <Typography
-            variant={ 'h5' }
-            textAlign="center"
-            gutterBottom
-          >
-            Wallet not connected!
-          </Typography>
-        }
-        actions={
-          <Button
-            variant="contained"
-            onClick={ () => router.push('/') }
-            fullWidth
-          >
-            Go Back
-          </Button>
-        }
-      >
-        <Typography
-          textAlign="center"
-          marginBottom={ 3 }
-        >
-          You can&apos;t view your portfolio without your Web3 wallet. Please connect your wallet first.
-        </Typography>
-      </DialogBox>
-
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Navigation navInfo={navigationInfo} showThemeToggle />
-        <Box
-          sx={{
-            padding: '20px',
-            width: '100%',
-            maxWidth: 'lg',
-          }}
-        >
-          {
-            dashboardPages[
-              router.asPath.split('#')[1] ?? ''
-            ]
-          }
-        </Box>
-      </Box>
-    </>
+    </SideNavigationLayout>
   );
 };
 

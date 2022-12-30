@@ -3,8 +3,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import DialogBox from '../../Common/DialogBox';
-import TextEditor from '../../Common/TextEditor';
+import DialogBox from '../Common/DialogBox';
+import TextEditor from '../Common/TextEditor';
 
 const fields = [
     { name: 'firstName', label: 'First Name' },
