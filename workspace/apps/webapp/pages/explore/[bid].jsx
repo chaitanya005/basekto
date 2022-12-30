@@ -2,30 +2,44 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { Snackbar, Alert, Grid, useMediaQuery, useTheme, Paper, Typography } from '@mui/material';
+import {
+  Snackbar,
+  Alert,
+  Grid,
+  useMediaQuery,
+  useTheme,
+  Paper,
+  Typography,
+} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useQuery } from 'react-query';
 import Explore from '../../Components/Common/Explore.js';
 import axios from 'axios';
 import BasketInvest from 'apps/webapp/Components/Explore/BasketInvest/index.js';
+import Web3 from 'web3';
 
-const getBasketData = async (bid) => (
+const getBasketData = async (bid) =>
+  (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/${bid}`))
+    .data;
 
-  await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_API}/basket/${bid}`
-  )
-).data;
+const getGraphDataWithGrowthRates = async (basketData, days) =>
+  (
+    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`, {
+      basketData,
+      days,
+    })
+  ).data;
 
-const getGraphData = async (basketData, days) => (
-
-  await axios.post(
-    `${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`,
-    { basketData, days }
-  )
-).data;
+const getCoinPrices = async (coins) =>
+  (
+    await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_API}/price?coins=${JSON.stringify(
+        coins
+      )}`
+    )
+  ).data;
 
 const Basket = () => {
-
   const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
 
   const router = useRouter();
@@ -36,8 +50,7 @@ const Basket = () => {
     severity: 'success',
     message: '',
   });
-  // const [basketCoins, setBasketCoins] = useState(null);
-  const [coinGrowthRates, setCoinGrowthRates] = useState(null)
+  const [coinDetails, setCoinDetails] = useState(null);
 
   const {
     data: basket,
@@ -55,13 +68,14 @@ const Basket = () => {
   });
 
   const {
-    data: graphData,
+    data: graphDataWithGrowthRates,
     isLoading: isGraphLoading,
     isFetching: isGraphFetching,
   } = useQuery(
     ['basketGraph', bid, days],
-    () => getGraphData(basket?.coins, days),
+    () => getGraphDataWithGrowthRates(basket?.coins, days),
     {
+      staleTime: 300000,
       onError: () => {
         setAlert({
           open: true,
@@ -73,40 +87,75 @@ const Basket = () => {
     }
   );
 
-  useEffect(() => {
-    getPrices();
-  }, [basket]);
-
-  const getPrices = async () => {
-    if (basket) {
-      const coinPrices = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_API}/price?coins=${JSON.stringify(
-          basket?.coins
-        )}`
-      );
-      const formattingCoinPrices = basket.coins.map((coin, i) => [
-        { ...coin, price: coinPrices.data[i]['usd'] },
-      ]);
-      getGrowthRates(formattingCoinPrices.flat());
+  const { data: coinPrices, isFetching: isCoinPriceFetching } = useQuery(
+    ['coinPrices', bid],
+    () => getCoinPrices(basket?.coins),
+    {
+      staleTime: 300000,
+      onError: () => {
+        setAlert({
+          open: true,
+          severity: 'error',
+          message: "Couldn't fetch Coin Price data.",
+        });
+      },
+      enabled: !!basket?.coins,
     }
-  };
+  );
 
-  const getGrowthRates = async (coins) => {
-    if (basket) {
-      const growthRates = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_BACKEND_API
-        }/growth-rate?coins=${JSON.stringify(basket?.coins)}`
-      );
-      const formattingGrowthRates = coins.map((coin, i) => [
+  useEffect(() => {
+    if (!isCoinPriceFetching && coinPrices) {
+      const growthRates = graphDataWithGrowthRates?.growthPercentageOfCoins;
+      const formattingCoins = basket?.coins.map((coin, i) => [
         {
           ...coin,
-          withWeight: growthRates.data[i]['withWeight'],
-          growthRate: growthRates.data[i]['growthRate'],
+          price: coinPrices?.[i]['usd'],
+          withWeight: growthRates?.[i]['withWeight'],
+          growthRate: growthRates?.[i]['growthRate'],
         },
       ]);
-      setCoinGrowthRates(formattingGrowthRates.flat())
+      setCoinDetails(formattingCoins?.flat());
     }
+  }, [isCoinPriceFetching, coinPrices, graphDataWithGrowthRates]);
+
+  const handleInvest = async () => {
+    const buyTokens = [];
+    const sellAmounts = [];
+    const takerAddress = localStorage.getItem('address');
+    console.log(takerAddress);
+    const sellToken = 'MATIC';
+
+    for (let coin of basket?.coins) {
+      buyTokens.push(coin.coinAddress);
+      const amount = (0.05 * coin.weight) / 100;
+      sellAmounts.push(amount * 10 ** 18);
+    }
+
+    const params = {
+      buyTokens: [...buyTokens],
+      sellAmounts: [...sellAmounts],
+      takerAddress,
+      sellToken,
+    };
+
+    const web3 = new Web3(Web3.givenProvider);
+
+    const quotes = [];
+    for (let i = 0; i < params.buyTokens.length; i++) {
+      const response = await fetch(
+        `https://mumbai.api.0x.org/swap/v1/quote?sellToken=${params.sellToken}&buyToken=0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa&sellAmount=${params.sellAmounts[i]}&takerAddress=${params.takerAddress}`
+      );
+      const quote = await response.json();
+      quotes.push(quote);
+    }
+
+    const batch = new web3.BatchRequest();
+
+    for (let i = 0; i < quotes.length; i++) {
+      batch.add(web3.eth.sendTransaction.request(quotes[i]));
+    }
+
+    batch.execute();
   };
 
   return (
@@ -135,27 +184,23 @@ const Basket = () => {
           Back
         </Button>
 
-        <Grid
-          container
-          spacing={ 8 }
-        >
-          <Grid item xs={ 12 } md={ 8 }>
+        <Grid container spacing={8}>
+          <Grid item xs={12} md={8}>
             <Explore
               isLoading={isLoading}
               isFetching={isFetching}
               basket={basket}
-              graphData={graphData}
+              graphData={graphDataWithGrowthRates?.graphData}
               setDays={setDays}
               showDetails={true}
-              coins={coinGrowthRates}
+              coins={coinDetails}
             />
           </Grid>
 
-          <Grid item xs={ 12 } md={ 4 }>
-            { !mdDown && (
-
+          <Grid item xs={12} md={4}>
+            {!mdDown && (
               <Paper
-                elevation={ 0 }
+                elevation={0}
                 sx={{
                   position: 'sticky',
                   top: '90px',
@@ -165,22 +210,14 @@ const Basket = () => {
                   borderRadius: 2,
                 }}
               >
-                <Typography
-                    variant="h5"
-                    textAlign="center"
-                    gutterBottom
-                >
-                    Invest in Basket
+                <Typography variant="h5" textAlign="center" gutterBottom>
+                  Invest in Basket
                 </Typography>
 
-                <BasketInvest tokensData={ coinGrowthRates } />
+                <BasketInvest tokensData={coinDetails} />
 
-                <Button
-                    variant="contained"
-                    // onClick={}
-                    fullWidth
-                >
-                    Invest
+                <Button variant="contained" onClick={handleInvest} fullWidth>
+                  Invest
                 </Button>
               </Paper>
             )}

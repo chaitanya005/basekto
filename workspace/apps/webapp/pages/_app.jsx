@@ -5,23 +5,35 @@ import { Provider } from 'react-redux';
 import { store } from '../app/store';
 import Script from 'next/script';
 import Layout from '../Components/Layout';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
+import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      //   staleTime: 60000,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      refetchInterval: Infinity,
-      cacheTime: Infinity,
+      //   refetchInterval: Infinity,
+      //   cacheTime: Infinity,
       retry: false,
       retryOnMount: false,
     },
-    mutations: {
-      retry: false,
-    },
+    // mutations: {
+    //   retry: false,
+    // },
   },
+});
+
+const localStoragePersistor = createWebStoragePersistor({
+  storage: typeof window !== 'undefined' && window.localStorage,
+});
+
+persistQueryClient({
+  queryClient,
+  persistor: localStoragePersistor,
 });
 
 function App({ Component, pageProps }) {
@@ -46,6 +58,7 @@ function App({ Component, pageProps }) {
           <Layout>
             <Component {...pageProps} />
           </Layout>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </Provider>
     </ThemeProvider>
