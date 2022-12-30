@@ -27,6 +27,12 @@ const getProvider = (network) => {
     }
 };
 
+const onAccountsChanged = (cb) => {
+
+    typeof window !== 'undefined' &&
+        window?.ethereum?.on('accountsChanged', cb);
+};
+
 const switchNetwork = () => {
 
     window?.ethereum?.request({
@@ -65,6 +71,9 @@ const switchNetwork = () => {
 };
 
 export {
-    getBalance, getNetwork,
-    getProvider, switchNetwork
+    getBalance,
+    getNetwork,
+    getProvider,
+    onAccountsChanged,
+    switchNetwork,
 };

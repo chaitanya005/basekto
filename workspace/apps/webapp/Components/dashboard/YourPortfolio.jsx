@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -26,15 +27,38 @@ function TabPanel({ children, value, index, ...other }) {
   );
 }
 
-const YourPortfolio = ({ createdBaskets, investedBaskets, isLoading }) => {
+const YourPortfolio = ({ userAddress }) => {
 
-  const theme = useTheme();
-  const sm = useMediaQuery(theme.breakpoints.down('sm'));
+  const sm = useMediaQuery(useTheme().breakpoints.down('sm'));
 
-  const [value, setValue] = useState(0);
+  const [tabIndex, setTabIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [createdBaskets, setCreatedBaskets] = useState(null);
+  const investedBaskets = [];
+
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setTabIndex(newValue);
   };
+
+  useEffect(() => {
+
+    setIsLoading(true);
+
+    function fetchData() {
+
+      axios.get(
+          `${ process.env.NEXT_PUBLIC_BACKEND_API }/baskets/${ userAddress }`
+        ).then((basketData) => {
+          setCreatedBaskets(basketData.data);
+        }).catch((e) => {
+          setCreatedBaskets(null);
+          console.log(e);
+        }).finally(() =>
+          setIsLoading(false)
+        );
+    }
+    userAddress && fetchData();
+  }, [userAddress]);
 
   return (
 
@@ -61,7 +85,7 @@ const YourPortfolio = ({ createdBaskets, investedBaskets, isLoading }) => {
       >
         <Tabs
           variant={ sm ? 'fullWidth' : 'standard' }
-          value={ value }
+          value={ tabIndex }
           onChange={ handleChange }
         >
           <Tab label="Created Baskets" />
@@ -69,7 +93,7 @@ const YourPortfolio = ({ createdBaskets, investedBaskets, isLoading }) => {
         </Tabs>
       </Box>
 
-      <TabPanel value={value} index={0}>
+      <TabPanel value={ tabIndex } index={0}>
         { isLoading || createdBaskets?.length ? (
             <BasketList
               baskets={ createdBaskets }
@@ -81,7 +105,7 @@ const YourPortfolio = ({ createdBaskets, investedBaskets, isLoading }) => {
         )}
       </TabPanel>
 
-      <TabPanel value={value} index={1}>
+      <TabPanel value={ tabIndex } index={1}>
         { investedBaskets?.length ? (
             <BasketList
               baskets={ investedBaskets }
