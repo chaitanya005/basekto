@@ -52,6 +52,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
         symbol: symbol[0].symbol,
         weight: '',
         img: symbol[0].image_url,
+        coinAddress: symbol[0].address,
       };
       dispatch(addToken({ token }));
     }
@@ -61,7 +62,6 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
     const val = 100 - ratioSum(selectedTokens);
 
     if (Number(e.target.value) >= 0) {
-
       if (Number(e.target.value) <= val + token.weight) {
         const updateTokens = selectedTokens.map((item) =>
           item.name == token.name
@@ -96,7 +96,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
     } else {
       setAlert({
         open: true,
-        message: 'Percentage can\'t be negative.',
+        message: "Percentage can't be negative.",
         severity: 'error',
       });
     }

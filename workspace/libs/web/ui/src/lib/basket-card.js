@@ -31,7 +31,7 @@ export function BasketCard({
     return html.replace(regX, '').slice(0, 120);
   };
 
-  const avatarColors = ['#637bfe', '#00e676', '#00b0ff'];
+  const avatarColors = ['#637bfe', '#00e676', '#00b0ff', '#ff3d00', '#00e5ff'];
 
   const stringAvatar = (bsktSymbol) => {
     const randomColor = Math.floor(Math.random() * avatarColors.length);
@@ -95,7 +95,7 @@ export function BasketCard({
             }}
             variant="h6"
           >
-            <Avatar {...stringAvatar(data?.symbol)} />
+            <Avatar {...stringAvatar(data?.symbol?.toUpperCase())} />
             {(data?.title.length > 15
               ? data.title.slice(0, 15).concat('...')
               : data.title) || 'No title'}

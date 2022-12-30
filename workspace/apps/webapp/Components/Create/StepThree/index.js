@@ -23,13 +23,13 @@ const createNewBasket = async (basket) =>
   await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`, basket);
 
 const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
-
   const router = useRouter();
   const { selectedTokens } = useSelector(getTokens);
   const { basketDetails } = useSelector(getBasketDetails);
 
   const [userAddress, setUserAddress] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   // console.log(basketDetails, selectedTokens);
   // const {mutate:createBasket} = useMutation()
@@ -37,10 +37,10 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const isWalletConnected = () => !!localStorage.getItem('address');
 
   const handleCreate = async () => {
-
     // check if wallet settings are valid
     if (!isWalletConnected()) {
       setSnackbarOpen(true);
+      setErrMsg('Please connect your wallet and try again!');
       return;
     }
     if (getNetwork().name !== 'maticmum') {
@@ -49,26 +49,38 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
     }
 
     // wallet setup
-    [account] = await window?.ethereum?.request({
-      method: 'eth_requestAccounts',
-    }) || [];
+    [account] =
+      (await window?.ethereum?.request({
+        method: 'eth_requestAccounts',
+      })) || [];
     const signer = getProvider().getSigner();
     setUserAddress(await signer.getAddress());
-    contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
-    contract?.on('BasketCreated', (tokenId, uri) =>
-      console.log('Event emitted this:', parseInt(tokenId), uri)
-    );
+    try {
+      contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
+      contract?.on('BasketCreated', (tokenId, uri) =>
+        console.log('Event emitted this:', parseInt(tokenId), uri)
+      );
+    } catch (err) {
+      console.log('err', err);
+      setSnackbarOpen(true);
+      setErrMsg('Something went wrong! Please Try again');
+    }
 
     // create basket
     const basket = {
       ...basketDetails,
       coins: selectedTokens,
-      accountId: userAddress,
+      accountId: localStorage.getItem('address'),
     };
-    const tokenId = await contract.createBasket(account, 'teststring');
-    console.log(tokenId);
-    const newBasket = await createNewBasket(basket);
-    newBasket ? router.push('/explore') : console.log('Not creating');
+    try {
+      const tokenId = await contract.createBasket(account, 'teststring');
+      const newBasket = await createNewBasket(basket);
+      newBasket ? router.push('/explore') : console.log('Not creating');
+    } catch (err) {
+      console.log('error', err);
+      setSnackbarOpen(true);
+      setErrMsg('Something went wrong! Please Try again');
+    }
   };
 
   useEffect(() => {
@@ -80,39 +92,44 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
-        onClose={ () => setSnackbarOpen(false) }
+        onClose={() => {
+          setSnackbarOpen(false), setErrMsg('');
+        }}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert
-          onClose={ () => setSnackbarOpen(false) }
+          onClose={() => {
+            setSnackbarOpen(false), setErrMsg('');
+          }}
           severity="error"
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Please connect your wallet and try again!
+          {errMsg}
         </Alert>
       </Snackbar>
 
       <DialogBox
         title="Invalid Network"
-        open={ dialogOpen }
-        onClose={ () => setDialogOpen(false) }
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
         dividers
       >
-        <Typography marginBottom={ 2 }>
-          In order to create a basket, { 'you\'ll' } need to switch to the Polygon { '(Mumbai)' } network
+        <Typography marginBottom={2}>
+          In order to create a basket, {"you'll"} need to switch to the Polygon{' '}
+          {'(Mumbai)'} network
         </Typography>
 
         <Button
           color="primary"
           variant="contained"
-          onClick={ () => {
+          onClick={() => {
             switchNetwork();
             setDialogOpen(false);
           }}
           fullWidth
         >
-          Switch to Polygon { '(Mumbai)' }
+          Switch to Polygon {'(Mumbai)'}
         </Button>
       </DialogBox>
 

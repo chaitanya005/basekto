@@ -2,14 +2,47 @@ const Basket = require('../models/basket');
 const DevBasket = require('../models/devBasket');
 const User = require('../models/user');
 
-const singleBasket = (_id) =>
-  process.env.NODE_ENV !== 'production'
-    ? DevBasket.findOne({ _id })
-    : Basket.findOne({ _id });
-const user = (userAddress) => User.findOne({ userAddress });
-const findUserById = (userAddress) => User.findOne({ userAddress });
-const userBaskets = (userAddress) => Basket.find({ accountId: userAddress });
-const readBaskets = () =>
-  process.env.NODE_ENV !== 'production' ? DevBasket.find() : Basket.find();
+let createNewBasket, singleBasket, user, findUserById, userBaskets, readBaskets;
 
-module.exports = { singleBasket, user, userBaskets, readBaskets, findUserById };
+switch (process.env.NODE_ENV) {
+  case 'production':
+    createNewBasket = (accountId, name, description, symbol, coins) =>
+      new Basket({
+        accountId: accountId,
+        name: name,
+        description: description,
+        symbol: symbol,
+        coins: coins,
+      });
+    singleBasket = (_id) => Basket.findOne({ _id });
+    user = (userAddress) => User.findOne({ userAddress });
+    findUserById = (userAddress) => User.findOne({ userAddress });
+    userBaskets = (userAddress) => Basket.find({ accountId: userAddress });
+    readBaskets = () => Basket.find();
+    break;
+
+  default:
+    createNewBasket = (accountId, name, description, symbol, coins) =>
+      new DevBasket({
+        accountId: accountId,
+        name: name,
+        description: description,
+        symbol: symbol,
+        coins: coins,
+      });
+    singleBasket = (_id) => DevBasket.findOne({ _id });
+    user = (userAddress) => User.findOne({ userAddress });
+    findUserById = (userAddress) => User.findOne({ userAddress });
+    userBaskets = (userAddress) => DevBasket.find({ accountId: userAddress });
+    readBaskets = () => DevBasket.find();
+    break;
+}
+
+module.exports = {
+  singleBasket,
+  user,
+  userBaskets,
+  readBaskets,
+  findUserById,
+  createNewBasket,
+};

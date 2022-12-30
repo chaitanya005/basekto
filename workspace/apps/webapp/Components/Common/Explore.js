@@ -88,7 +88,7 @@ const Explore = ({
             />
           ) : (
             <Avatar
-              src={basket?.image ?? 'default img'}
+              src={basket?.image || 'default img'}
               alt={basket?.symbol + ' logo'}
               sx={{ width: 48, height: 48 }}
             />

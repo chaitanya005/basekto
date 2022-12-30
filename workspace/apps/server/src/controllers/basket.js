@@ -1,20 +1,20 @@
 const Basket = require('../models/basket');
 const Ohlc = require('../models/ohlcData');
-const { singleBasket, userBaskets, readBaskets } = require('../utils/db');
+const {
+  singleBasket,
+  userBaskets,
+  readBaskets,
+  createNewBasket,
+} = require('../utils/db');
 
 const createBasket = async (req, res) => {
   try {
     const { accountId, name, description, symbol, coins } = req.body;
-    const basket = new Basket({
-      accountId: accountId,
-      name: name,
-      description: description,
-      symbol: symbol,
-      coins: coins,
-    });
+    const basket = createNewBasket(accountId, name, description, symbol, coins);
     await basket.save();
     res.send(basket);
   } catch (err) {
+    console.log(err);
     res.status(400).json(err);
   }
 };
@@ -24,6 +24,7 @@ const getBasket = async (req, res) => {
     const basket = await singleBasket(req.params.id);
     res.send(basket);
   } catch (err) {
+    console.log(err);
     res.status(400).json(err);
   }
 };
@@ -33,6 +34,7 @@ const getBasketsByUsers = async (req, res) => {
     const baskets = await userBaskets(req.params.userAddress);
     res.send(baskets);
   } catch (err) {
+    console.log(err);
     res.status(400).json(err);
   }
 };
@@ -54,6 +56,7 @@ const getBaskets = async (req, res) => {
     }
     res.send({ baskets: basketsWithGrowthRates.flat() });
   } catch (err) {
+    console.log(err);
     res.status(400).json(err);
   }
 };
@@ -63,10 +66,11 @@ const getGrowthRatePercentages = async (coins) => {
 
   for (let i = 0; i < coins.length; i++) {
     const growthRateOfCoin = await Ohlc.findOne({ coin: coins[i].id });
-    const firstVal = growthRateOfCoin.data[0];
-    const lastVal = growthRateOfCoin.data[growthRateOfCoin.data.length - 1];
+    const firstVal = growthRateOfCoin?.data[0];
+    const lastVal = growthRateOfCoin?.data[growthRateOfCoin?.data.length - 1];
 
-    const growthRate = ((lastVal['4'] - firstVal['1']) * 100) / firstVal['1'];
+    const growthRate =
+      ((lastVal?.['4'] - firstVal?.['1']) * 100) / firstVal?.['1'];
 
     growthPercentageOfCoins.push({
       growthRate: (growthRate * coins[i].weight) / 100,

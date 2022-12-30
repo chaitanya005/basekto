@@ -57,6 +57,7 @@ function deleteExistingOhlcData() {
   });
 }
 
+// deleteExistingOhlcData();
 setInterval(deleteExistingOhlcData, 1000 * 60 * 60 * 4);
 // 1 minute - 60,000 milliseconds
 // 1 hour - 36,00,000 milliseconds
