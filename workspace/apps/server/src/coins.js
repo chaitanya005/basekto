@@ -1,0 +1,55 @@
+export const coinsData = [
+  {
+    id: 'chainlink',
+    img: 'https://set-core.s3.amazonaws.com/img/coin-icons/chainlink.svg',
+    name: 'Chainlink',
+    symbol: 'LINK',
+    weight: 16,
+  },
+  {
+    id: 'the-graph',
+    img: 'https://assets.coingecko.com/coins/images/13397/small/Graph_Token.png?1608145566',
+    name: 'The Graph',
+    symbol: 'GRT',
+    weight: 33,
+  },
+  {
+    id: 'basic-attention-token',
+    img: 'https://assets.coingecko.com/coins/images/677/small/basic-attention-token.png?1547034427',
+    name: 'Basic Attention Token',
+    symbol: 'BAT',
+    weight: 8,
+  },
+  {
+    id: 'ethereum-name-service',
+    img: 'https://assets.coingecko.com/coins/images/19785/small/acatxTm8_400x400.jpg?1635850140',
+    name: 'Ethereum Name Service',
+    symbol: 'ENS',
+    weight: 43,
+  },
+  {
+    id: 'weth',
+    name: 'Wrapped Eth',
+    symbol: 'WETH',
+    img: 'https://s3.amazonaws.com/set-core/img/coin-icons/eth.svg',
+  },
+  {
+    id: 'compound-ether',
+    name: 'Compound ETH',
+    symbol: 'cETH',
+    img: 'https://assets.coingecko.com/coins/images/10643/small/ceth2.JPG?1581389598',
+  },
+  {
+    id: 'uniswap',
+    name: 'Uniswap',
+    symbol: 'UNI',
+    img: 'https://set-core.s3.amazonaws.com/img/coin-icons/uni.svg',
+  },
+  {
+    id: 'aave',
+    name: 'Aave Token',
+    symbol: 'AAVE',
+    address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
+    image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/aave.svg',
+  },
+];

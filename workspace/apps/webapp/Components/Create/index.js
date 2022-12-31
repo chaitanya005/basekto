@@ -52,14 +52,12 @@ const Create = () => {
   };
 
   const handleGraphdata = async () => {
-
     try {
-
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`,
         { basketData: selectedTokens, days: days }
       );
-      setGraphData(res.data);
+      setGraphData(res.data.graphData);
     } catch (err) {
       console.log(err);
     }

@@ -17,7 +17,7 @@ const SearchBar = ({ search, setSearch, filters, setFilters }) => {
         Discover, invest, & participate in Baskets
       </Typography>
 
-      <Grid container alignItems="center" spacing={1} sx={{ mb: 2 }}>
+      {/* <Grid container alignItems="center" spacing={1} sx={{ mb: 2 }}>
         <Grid item sx={{ flex: 1 }}>
           <TextField
             variant="outlined"
@@ -72,7 +72,7 @@ const SearchBar = ({ search, setSearch, filters, setFilters }) => {
             Clear All
           </Chip>
         )}
-      </Box>
+      </Box> */}
 
       <Divider />
     </>

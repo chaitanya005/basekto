@@ -8,6 +8,7 @@ import {
   AvatarGroup,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import { deepOrange, deepPurple, deepGreen } from '@mui/material/colors';
 
 //this is a presentational component for an individual basket card
 //TODO: implement graph component
@@ -30,26 +31,24 @@ export function BasketCard({
     return html.replace(regX, '').slice(0, 120);
   };
 
-  // // TO extract only p tag from data
-  // const firstParagraph = '';
-  // const ptag = (desc) => {
-  //   const matches = [];
+  const avatarColors = ['#637bfe', '#00e676', '#00b0ff', '#ff3d00', '#00e5ff'];
 
-  //   desc.replace(/<p>(.*?)<\/p>/g, function () {
-  //     matches.push(arguments[1]);
-  //     console.log('p :', matches);
-  //   });
-
-  //   if (!matches[0]?.length) {
-  //     desc.replace(/<h2>(.*?)<\/h2>/g, function () {
-  //       matches.push(arguments[1]);
-  //     });
-  //     console.log('h2 :', matches);
-  //   }
-
-  //   firstParagraph = matches.length ? matches[0] : '';
-  //   return RemoveHTMLTags(firstParagraph);
-  // };
+  const stringAvatar = (bsktSymbol) => {
+    const randomColor = Math.floor(Math.random() * avatarColors.length);
+    return {
+      sx: {
+        width: '3rem',
+        height: '3rem',
+        gridColumn: '1/2',
+        gridRow: '1/3',
+        alignSelf: 'center',
+        justifySelf: 'center',
+        bgcolor: avatarColors[randomColor],
+        fontSize: '18px',
+      },
+      children: `${bsktSymbol.split(' ')[0][0]}${bsktSymbol.split(' ')[0][1]}`,
+    };
+  };
 
   return (
     <Card
@@ -96,18 +95,7 @@ export function BasketCard({
             }}
             variant="h6"
           >
-            <Avatar
-              sx={{
-                width: '3rem',
-                height: '3rem',
-                gridColumn: '1/2',
-                gridRow: '1/3',
-                alignSelf: 'center',
-                justifySelf: 'center',
-              }}
-              alt="web-3 Icon"
-              src="https://set-core.s3.amazonaws.com/img/coin-icons/usdc.svg"
-            />
+            <Avatar {...stringAvatar(data?.symbol?.toUpperCase())} />
             {(data?.title.length > 15
               ? data.title.slice(0, 15).concat('...')
               : data.title) || 'No title'}
@@ -135,7 +123,7 @@ export function BasketCard({
                   gridRow: '2/3',
                 }}
               >
-                {data?.symbol || 'SYMBOL'}&nbsp;|&nbsp;
+                {data?.symbol || 'SYMBOL'} |{' '}
                 {!hideChip && (
                   <Chip
                     label={data?.basketGrowth?.toFixed(2) + '%'}
@@ -166,7 +154,6 @@ export function BasketCard({
         <>
           <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
             {data?.description && RemoveHTMLTags(data?.description)}
-            {/* {data?.description && ptag(data?.description)} */}
           </Typography>
         </>
       )}

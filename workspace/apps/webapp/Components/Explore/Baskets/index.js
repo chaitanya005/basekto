@@ -23,6 +23,8 @@ const Baskets = ({ queryString }) => {
     data: basketsData,
     isLoading,
     isFetching,
+    isStale,
+    refetch,
   } = useQuery('exploreBaskets', () => getBasketData(queryString), {
     onError: () => {
       setAlert({
@@ -31,7 +33,10 @@ const Baskets = ({ queryString }) => {
         message: 'Something went wrong.',
       });
     },
+    staleTime: 60000,
   });
+
+  if (isStale) refetch();
 
   return (
     <>
@@ -49,10 +54,9 @@ const Baskets = ({ queryString }) => {
           {alert?.message}
         </Alert>
       </Snackbar>
-
       <BasketList
-        baskets={ basketsData?.baskets }
-        isLoading={ isLoading || isFetching }
+        baskets={basketsData?.baskets}
+        isLoading={isLoading || isFetching}
         showDescription
         showFollow
         showGrowth

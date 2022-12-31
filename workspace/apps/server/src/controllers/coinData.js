@@ -14,6 +14,7 @@ const getCoinPrice = async (req, res) => {
     }
     res.json(prices);
   } catch (err) {
+    console.log('/price', err);
     res.status(400).json(err);
   }
 };
@@ -43,6 +44,7 @@ const getCoinGrowthRate = async (req, res) => {
     }
     res.send(growthPercentageOfCoins);
   } catch (err) {
+    console.log('/growth-rate', err);
     res.status(400).json(err);
   }
 };

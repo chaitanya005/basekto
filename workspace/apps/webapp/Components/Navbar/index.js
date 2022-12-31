@@ -81,7 +81,6 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-
     if (clientSide) {
 
       if (typeof window?.ethereum === 'undefined') {
@@ -122,7 +121,6 @@ const Navbar = () => {
   };
 
   const accountChangedHandler = async (account) => {
-
     if (account[0]) {
       updateUserAddress(utils.getAddress(account[0]));
     } else {
