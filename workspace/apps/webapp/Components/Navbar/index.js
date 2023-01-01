@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { ethers, utils } from 'ethers';
+import { utils } from 'ethers';
 import axios from 'axios';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -24,8 +24,9 @@ import AccountBalanceWallet from '@mui/icons-material/AccountBalanceWallet';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { toggleTheme } from '@basketo/web-ui';
+import { ethAddEventListener } from '@basketo/web-utils';
 import CreateAccountDialog from './CreateAccountDialog';
-import UserAccountDialog from './UserAccountDialog';
+import UserAccountDropdown from './UserAccountDropdown';
 
 const pages = [
   { title: 'Explore', path: '/explore', icon: <ExploreIcon /> },
@@ -62,10 +63,7 @@ const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [userAddress, setUserAddress] = useState(null);
-  const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
-
-  const [userAccountDialogOpen, setUserAccountDialogOpen] = useState(false);
 
   const handleThemeToggle = () => {
     toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
@@ -84,11 +82,18 @@ const Navbar = () => {
 
   useEffect(() => {
     if (clientSide) {
+
       if (typeof window?.ethereum === 'undefined') {
         removeUserAddress();
       } else {
         setUserAddress(localStorage.getItem('address'));
       }
+
+      const cleanup = ethAddEventListener(
+        'accountsChanged',
+        accountChangedHandler
+      );
+      return cleanup;
     }
   }, []);
 
@@ -113,7 +118,6 @@ const Navbar = () => {
 
   const disconnectWallet = () => {
     accountChangedHandler([]);
-    setUserAccountDialogOpen(false);
   };
 
   const accountChangedHandler = async (account) => {
@@ -122,21 +126,7 @@ const Navbar = () => {
     } else {
       removeUserAddress();
     }
-    getAccountBalance(account);
   };
-
-  const getAccountBalance = async (account) => {
-    const balance = await window.ethereum?.request({
-      method: 'eth_getBalance',
-      params: [account, 'latest'],
-    });
-    setUserBalance(ethers.utils.formatEther(balance));
-  };
-
-  typeof window !== 'undefined' &&
-    window.ethereum?.on('accountsChanged', (account) =>
-      accountChangedHandler(account)
-    );
 
   return (
     <AppBar
@@ -275,28 +265,26 @@ const Navbar = () => {
               </Button>
             ) : (
               <Grid display={'flex'} gap={'1rem'} alignItems={'center'}>
-                <Button
-                  sx={{ fontSize: { xs: '10px', md: '14px' } }}
-                  variant="outlined"
-                  onClick={() => setUserAccountDialogOpen(true)}
-                >
-                  <Typography>
-                    {userBalance}
-                    {'     '}
-                    {userAddress.slice(0, 4)}...
-                    {userAddress.slice(34, 42)}
-                  </Typography>
-                </Button>
-
-                <UserAccountDialog
-                  open={userAccountDialogOpen}
-                  onClose={() => setUserAccountDialogOpen(false)}
-                  userAddress={`${userAddress.slice(
-                    0,
-                    4
-                  )}...${userAddress.slice(38, 42)}`}
+                <UserAccountDropdown
+                  button={{
+                    children: (
+                      <Typography>
+                        {userAddress.slice(0, 4)}...
+                        {userAddress.slice(34, 42)}
+                      </Typography>
+                    ),
+                    props: {
+                      sx: {
+                        fontSize: {
+                          xs: '10px',
+                          md: '14px'
+                        }
+                      },
+                      variant: 'outlined'
+                    }
+                  }}
+                  userAddress={ userAddress }
                   disconnectWallet={disconnectWallet}
-                  changeAccount={connectWallet}
                 />
               </Grid>
             )}

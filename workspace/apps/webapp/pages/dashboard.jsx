@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import { onAccountsChanged } from '@basketo/web-utils';
+import { ethAddEventListener } from '@basketo/web-utils';
 import Overview from '../Components/dashboard/Overview';
 import YourPortfolio from '../Components/dashboard/YourPortfolio';
 import SideNavigationLayout from '../Components/Common/SideNavigationLayout';
@@ -21,12 +21,14 @@ const Dashboard = () => {
   const getUserAddress = () => localStorage.getItem('address');
 
   useEffect(() => {
-    setUserAddress(getUserAddress);
-  }, []);
 
-  onAccountsChanged(() =>
-    setUserAddress(getUserAddress())
-  );
+    const updateUserAddress = () =>
+      setUserAddress(getUserAddress());
+
+    updateUserAddress();
+    const cleanup = ethAddEventListener('accountsChanged', updateUserAddress);
+    return cleanup;
+  }, []);
 
   return (
 

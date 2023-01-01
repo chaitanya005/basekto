@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { onAccountsChanged } from '@basketo/web-utils';
+import { ethAddEventListener } from '@basketo/web-utils';
 import YourProfile from '../Components/Profile';
 import SideNavigationLayout from '../Components/Common/SideNavigationLayout';
 
@@ -9,12 +9,15 @@ const Profile = () => {
     const getUserAddress = () => localStorage.getItem('address');
 
     useEffect(() => {
-      setUserAddress(getUserAddress());
+
+        const updateUserAddress = () =>
+            setUserAddress(getUserAddress());
+
+        updateUserAddress();
+        const cleanup = ethAddEventListener('accountsChanged', updateUserAddress);
+        return cleanup;
     }, []);
 
-    onAccountsChanged(() =>
-        setUserAddress(getUserAddress())
-    );
 
     return (
 

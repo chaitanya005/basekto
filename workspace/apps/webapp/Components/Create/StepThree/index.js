@@ -8,7 +8,7 @@ import { BasketsABI } from '@basketo/contracts';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { getNetwork, getProvider, switchNetwork } from '@basketo/web-utils';
+import { getProvider, switchNetwork } from '@basketo/web-utils';
 import DialogBox from '../../Common/DialogBox';
 
 //the contract address is of polygon mumbai testnet on alchemy
@@ -43,7 +43,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
       setErrMsg('Please connect your wallet and try again!');
       return;
     }
-    if (getNetwork().name !== 'maticmum') {
+    if (Number(window?.ethereum?.chainId) !== 80001) {
       setDialogOpen(true);
       return;
     }

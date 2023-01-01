@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import axios from 'axios';
 
 const getBalance = async () => {
   const [address] = await window?.ethereum?.request({
@@ -10,8 +11,11 @@ const getBalance = async () => {
   return ethers.utils.formatEther(balance);
 };
 
-const getNetwork = () => {
-  return ethers.providers.getNetwork(Number(window?.ethereum?.chainId));
+const getNetwork = async () => {
+
+    const chainId = Number(window?.ethereum?.chainId);
+    const chains = await (await axios.get('https://chainid.network/chains.json')).data;
+    return chains.find(chain => chain.chainId === chainId);
 };
 
 const getProvider = (network) => {
@@ -22,9 +26,14 @@ const getProvider = (network) => {
   }
 };
 
-const onAccountsChanged = (cb) => {
-  typeof window !== 'undefined' && window?.ethereum?.on('accountsChanged', cb);
-};
+const ethAddEventListener = (event, cb) => {
+
+    if (typeof window === 'undefined') {
+        return;
+    }
+    window?.ethereum?.on(event, cb);
+    return () => window?.ethereum?.removeListener(event, cb);
+}
 
 const switchNetwork = () => {
   window?.ethereum?.request({
@@ -63,9 +72,9 @@ const switchNetwork = () => {
 };
 
 export {
-  getBalance,
-  getNetwork,
-  getProvider,
-  onAccountsChanged,
-  switchNetwork,
+    ethAddEventListener,
+    getBalance,
+    getNetwork,
+    getProvider,
+    switchNetwork,
 };
