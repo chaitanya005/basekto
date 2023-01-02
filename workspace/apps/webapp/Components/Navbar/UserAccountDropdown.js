@@ -31,7 +31,7 @@ const UserAccountDropdown = ({ button, userAddress, disconnectWallet }) => {
 
     const [copySuccess, setCopySuccess] = useState(false);
 
-    const [balance, setBalance] = useState(0);
+    const [balance, setBalance] = useState('');
     const [network, setNetwork] = useState({
         name: '',
         currency: '',
@@ -50,7 +50,7 @@ const UserAccountDropdown = ({ button, userAddress, disconnectWallet }) => {
                     name: title || name,
                     currency: nativeCurrency.symbol,
                     icon: icon,
-                })
+                });
             });
         };
 
@@ -161,7 +161,7 @@ const UserAccountDropdown = ({ button, userAddress, disconnectWallet }) => {
                         sx={{ mt: 2 }}
                     >
                         <Typography fontSize="2rem">
-                            { balance.toString().slice(0, 5) } { network.currency }
+                            { Number(balance).toFixed(3) } { network.currency }
                         </Typography>
 
                         <Box

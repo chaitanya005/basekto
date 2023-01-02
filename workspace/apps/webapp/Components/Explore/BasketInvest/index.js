@@ -1,26 +1,22 @@
 import { useEffect, useState } from 'react';
-import {
-  Avatar,
-  Box,
-  Button,
-  InputAdornment,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { getBalance } from '@basketo/web-utils';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import InputAdornment from '@mui/material/InputAdornment';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { ethAddEventListener, getBalance, getNetwork } from '@basketo/web-utils';
 
 const BasketInvest = ({ tokensData }) => {
-  const currencySymbol = 'MATIC';
-  const [balance, setBalance] = useState(0);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [balance, setBalance] = useState('');
+  const [currencySymbol, setCurrencySymbol] = useState('');
   const [amount, setAmount] = useState('');
 
   const tokens = tokensData?.map((token) => ({
@@ -28,14 +24,33 @@ const BasketInvest = ({ tokensData }) => {
     amount: (amount * token.weight) / 100,
   }));
 
-  const handleClickOpen = () => {
-    setDialogOpen(true);
-  };
-
   useEffect(() => {
-    const result = getBalance();
-    result.then(setBalance);
-  }, [getBalance]);
+
+    function updateBalance() {
+      const result = getBalance();
+      result.then(setBalance);
+    }
+
+    function updateCurrencySymbol() {
+      getNetwork().then(({ nativeCurrency }) => {
+        setCurrencySymbol(nativeCurrency.symbol);
+      });
+    }
+
+    function update() {
+      updateBalance();
+      updateCurrencySymbol();
+    }
+
+    update();
+    const networkChangedCleanup = ethAddEventListener('networkChanged', update);
+    const accountsChangedCleanup = ethAddEventListener('accountsChanged', updateBalance);
+
+    return () => {
+      networkChangedCleanup();
+      accountsChangedCleanup();
+    };
+  }, []);
 
   return (
     <>
@@ -44,7 +59,7 @@ const BasketInvest = ({ tokensData }) => {
           <Typography>Available Balance</Typography>
           <Typography>
             {' '}
-            {balance} {currencySymbol}
+            {Number(balance).toFixed(2)} {currencySymbol}
           </Typography>
         </Box>
 
