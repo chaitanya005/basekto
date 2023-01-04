@@ -1,22 +1,22 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import {
-  Snackbar,
-  Alert,
-  Grid,
-  useMediaQuery,
-  useTheme,
-  Paper,
-  Typography,
-} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useQuery } from 'react-query';
-import Explore from '../../Components/Common/Explore.js';
-import axios from 'axios';
-import BasketInvest from 'apps/webapp/Components/Explore/BasketInvest/index.js';
 import Web3 from 'web3';
+import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Snackbar from '@mui/material/Snackbar';
+import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { isValidNetwork } from '@basketo/web-utils';
+import Explore from '../../Components/Common/Explore';
+import BasketInvest from '../../Components/Explore/BasketInvest';
+import SwitchNetworkPopup from '../../Components/Common/Popups/SwitchNetworkPopup';
 
 const getBasketData = async (bid) =>
   (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/${bid}`))
@@ -51,6 +51,7 @@ const Basket = () => {
     message: '',
   });
   const [coinDetails, setCoinDetails] = useState(null);
+  const [switchNetworkPopupOpen, setSwitchNetworkPopupOpen] = useState(false);
 
   const {
     data: basket,
@@ -119,6 +120,22 @@ const Basket = () => {
   }, [isCoinPriceFetching, coinPrices, graphDataWithGrowthRates]);
 
   const handleInvest = async () => {
+
+    if (!localStorage.getItem('address')) {
+
+      setAlert({
+        open: true,
+        severity: 'error',
+        message: 'Please connect your wallet and try again!',
+      });
+      return;
+    }
+
+    if (!(await isValidNetwork())) {
+      setSwitchNetworkPopupOpen(true);
+      return;
+    }
+
     const buyTokens = [];
     const sellAmounts = [];
     const takerAddress = localStorage.getItem('address');
@@ -174,6 +191,17 @@ const Basket = () => {
           {alert?.message}
         </Alert>
       </Snackbar>
+
+      <SwitchNetworkPopup
+        isOpen={ switchNetworkPopupOpen }
+        onClose={ () => setSwitchNetworkPopupOpen(false) }
+        onComplete={ async () => {
+          if (await isValidNetwork()) {
+            setSwitchNetworkPopupOpen(false);
+            handleInvest();
+          }
+        }}
+      />
 
       <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
         <Button

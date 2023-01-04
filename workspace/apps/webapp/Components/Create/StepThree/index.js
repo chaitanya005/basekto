@@ -1,15 +1,19 @@
-import { Alert, Box, Button, Grid, Snackbar, Typography } from '@mui/material';
-import { getTokens } from '../../../features/selectTokens';
-import { useSelector } from 'react-redux';
-import Explore from '../../Common/Explore';
-import { getBasketDetails } from '../../../features/basketDetails';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { BasketsABI } from '@basketo/contracts';
+import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import axios from 'axios';
-import { useRouter } from 'next/router';
-import { getProvider, switchNetwork } from '@basketo/web-utils';
-import DialogBox from '../../Common/DialogBox';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Snackbar from '@mui/material/Snackbar';
+import { BasketsABI } from '@basketo/contracts';
+import { getProvider, isValidNetwork } from '@basketo/web-utils';
+import { getBasketDetails } from '../../../features/basketDetails';
+import { getTokens } from '../../../features/selectTokens';
+import SwitchNetworkPopup from '../../Common/Popups/SwitchNetworkPopup';
+import Explore from '../../Common/Explore';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -34,7 +38,8 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   // console.log(basketDetails, selectedTokens);
   // const {mutate:createBasket} = useMutation()
 
-  const isWalletConnected = () => !!localStorage.getItem('address');
+  const isWalletConnected = () =>
+    !!localStorage.getItem('address');
 
   const handleCreate = async () => {
     // check if wallet settings are valid
@@ -43,7 +48,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
       setErrMsg('Please connect your wallet and try again!');
       return;
     }
-    if (Number(window?.ethereum?.chainId) !== 80001) {
+    if (!(await isValidNetwork())) {
       setDialogOpen(true);
       return;
     }
@@ -93,13 +98,15 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={() => {
-          setSnackbarOpen(false), setErrMsg('');
+          setSnackbarOpen(false);
+          setErrMsg('');
         }}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert
           onClose={() => {
-            setSnackbarOpen(false), setErrMsg('');
+            setSnackbarOpen(false);
+            setErrMsg('');
           }}
           severity="error"
           variant="filled"
@@ -109,29 +116,15 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
         </Alert>
       </Snackbar>
 
-      <DialogBox
-        title="Invalid Network"
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        dividers
-      >
-        <Typography marginBottom={2}>
-          In order to create a basket, {"you'll"} need to switch to the Polygon{' '}
-          {'(Mumbai)'} network
-        </Typography>
-
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={() => {
-            switchNetwork();
+      <SwitchNetworkPopup
+        isOpen={ dialogOpen }
+        onClose={ () => setDialogOpen(false) }
+        onComplete={ async () => {
+          if (await isValidNetwork()) {
             setDialogOpen(false);
-          }}
-          fullWidth
-        >
-          Switch to Polygon {'(Mumbai)'}
-        </Button>
-      </DialogBox>
+          }
+        }}
+      />
 
       <Explore
         basket={{

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { ethAddEventListener } from '@basketo/web-utils';
@@ -17,8 +18,14 @@ const data = [
 
 const Dashboard = () => {
 
+  const router = useRouter();
+
   const [userAddress, setUserAddress] = useState(undefined);
   const getUserAddress = () => localStorage.getItem('address');
+
+  if (userAddress === null) {
+    router.push('/#connect-wallet');
+  }
 
   useEffect(() => {
 
@@ -30,7 +37,7 @@ const Dashboard = () => {
     return cleanup;
   }, []);
 
-  return (
+  return userAddress && (
 
     <SideNavigationLayout userAddress={ userAddress }>
       <Box
