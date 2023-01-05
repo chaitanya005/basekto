@@ -17,6 +17,7 @@ import { isValidNetwork } from '@basketo/web-utils';
 import Explore from '../../Components/Common/Explore';
 import BasketInvest from '../../Components/Explore/BasketInvest';
 import SwitchNetworkPopup from '../../Components/Common/Popups/SwitchNetworkPopup';
+import RequestingPopup from 'apps/webapp/Components/Common/Popups/RequestingPopup';
 
 const getBasketData = async (bid) =>
   (await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/${bid}`))
@@ -51,7 +52,8 @@ const Basket = () => {
     message: '',
   });
   const [coinDetails, setCoinDetails] = useState(null);
-  const [switchNetworkPopupOpen, setSwitchNetworkPopupOpen] = useState(false);
+  const [networkInvalid, setNetworkInvalid] = useState(false);
+  const [isInvesting, setIsInvesting] = useState(false);
 
   const {
     data: basket,
@@ -119,7 +121,7 @@ const Basket = () => {
     }
   }, [isCoinPriceFetching, coinPrices, graphDataWithGrowthRates]);
 
-  const handleInvest = async () => {
+  const invest = async () => {
 
     if (!localStorage.getItem('address')) {
 
@@ -132,7 +134,7 @@ const Basket = () => {
     }
 
     if (!(await isValidNetwork())) {
-      setSwitchNetworkPopupOpen(true);
+      setNetworkInvalid(true);
       return;
     }
 
@@ -168,11 +170,25 @@ const Basket = () => {
 
     const batch = new web3.BatchRequest();
 
-    for (let i = 0; i < quotes.length; i++) {
-      batch.add(web3.eth.sendTransaction.request(quotes[i]));
-    }
+    return new Promise((resolve, reject) => {
 
-    batch.execute();
+      for (let i = 0; i < quotes.length; i++) {
+        batch.add(web3.eth.sendTransaction.request(quotes[i], () => {
+          if (i === quotes.length - 1) {
+            resolve();
+          }
+        }));
+      }
+      batch.execute();
+    });
+  };
+
+  const handleInvest = () => {
+
+    setIsInvesting(true);
+    invest().finally(() =>
+      setIsInvesting(false)
+    );
   };
 
   return (
@@ -192,12 +208,16 @@ const Basket = () => {
         </Alert>
       </Snackbar>
 
+      <RequestingPopup
+        isOpen={ isInvesting }
+      />
+
       <SwitchNetworkPopup
-        isOpen={ switchNetworkPopupOpen }
-        onClose={ () => setSwitchNetworkPopupOpen(false) }
+        isOpen={ networkInvalid }
+        onClose={ () => setNetworkInvalid(false) }
         onComplete={ async () => {
           if (await isValidNetwork()) {
-            setSwitchNetworkPopupOpen(false);
+            setNetworkInvalid(false);
             handleInvest();
           }
         }}
@@ -215,13 +235,15 @@ const Basket = () => {
         <Grid container spacing={8}>
           <Grid item xs={12} md={8}>
             <Explore
-              isLoading={isLoading}
-              isFetching={isFetching}
+              isLoading={isLoading || isFetching}
               basket={basket}
               graphData={graphDataWithGrowthRates?.graphData}
+              isGraphLoading={isGraphLoading || isGraphFetching}
               setDays={setDays}
               showDetails={true}
               coins={coinDetails}
+              isCoinsDataLoading={isLoading || isFetching || isCoinPriceFetching }
+              handleInvest={handleInvest}
             />
           </Grid>
 

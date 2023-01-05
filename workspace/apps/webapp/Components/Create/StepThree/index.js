@@ -12,8 +12,9 @@ import { BasketsABI } from '@basketo/contracts';
 import { getProvider, isValidNetwork } from '@basketo/web-utils';
 import { getBasketDetails } from '../../../features/basketDetails';
 import { getTokens } from '../../../features/selectTokens';
-import SwitchNetworkPopup from '../../Common/Popups/SwitchNetworkPopup';
 import Explore from '../../Common/Explore';
+import SwitchNetworkPopup from '../../Common/Popups/SwitchNetworkPopup';
+import RequestingPopup from '../../Common/Popups/RequestingPopup';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -34,14 +35,16 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
   const [userAddress, setUserAddress] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errMsg, setErrMsg] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [networkInvalid, setNetworkInvalid] = useState(false);
+  const [isCreatingBasket, setIsCreatingBasket] = useState(false);
   // console.log(basketDetails, selectedTokens);
   // const {mutate:createBasket} = useMutation()
 
   const isWalletConnected = () =>
     !!localStorage.getItem('address');
 
-  const handleCreate = async () => {
+  const createBasket = async () => {
+
     // check if wallet settings are valid
     if (!isWalletConnected()) {
       setSnackbarOpen(true);
@@ -49,7 +52,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
       return;
     }
     if (!(await isValidNetwork())) {
-      setDialogOpen(true);
+      setNetworkInvalid(true);
       return;
     }
 
@@ -88,6 +91,14 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
     }
   };
 
+  const handleCreate = () => {
+
+    setIsCreatingBasket(true);
+    createBasket().finally(() =>
+      setIsCreatingBasket(false)
+    );
+  };
+
   useEffect(() => {
     graphData === null && handleGraphdata();
   }, []);
@@ -116,12 +127,17 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
         </Alert>
       </Snackbar>
 
+      <RequestingPopup
+        isOpen={ isCreatingBasket }
+      />
+
       <SwitchNetworkPopup
-        isOpen={ dialogOpen }
-        onClose={ () => setDialogOpen(false) }
+        isOpen={ networkInvalid }
+        onClose={ () => setNetworkInvalid(false) }
         onComplete={ async () => {
           if (await isValidNetwork()) {
-            setDialogOpen(false);
+            setNetworkInvalid(false);
+            handleCreate();
           }
         }}
       />

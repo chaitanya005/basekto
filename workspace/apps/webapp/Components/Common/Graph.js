@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useState, useEffect, useRef } from 'react';
+import Skeleton from '@mui/material/Skeleton';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import {
   LineChart,
   Line,
@@ -13,16 +14,39 @@ import TimeFrameBtns from './TimeFrameBtns';
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
-const Graph = ({ data, setDays }) => {
+const Graph = ({ data, setDays, isLoading }) => {
+
   const theme = useTheme();
-  const sm = useMediaQuery(theme.breakpoints.down('sm'));
+  const aspect = useMediaQuery(theme.breakpoints.down('sm'))
+    ? 1.25
+    : 2.25;
+
+  const skeletonRef = useRef(null);
+  const [skeletonHeight, setSkeletonHeight] = useState('0px');
+
   const [timeFrame, setTimeFrame] = useState(Object.keys(timeFrames)[0]);
 
   useEffect(() => {
     setDays(timeFrames[timeFrame]);
   }, [setDays, timeFrame]);
 
-  return (
+  useEffect(() => {
+    setSkeletonHeight(skeletonRef.current?.offsetWidth / aspect + 'px');
+  }, [aspect, isLoading]);
+
+  return isLoading ? (
+
+    <Skeleton
+      ref={ skeletonRef }
+      variant="rectangular"
+      animation="wave"
+      sx={{
+        width: '100%',
+        height: skeletonHeight,
+        borderRadius: '1rem',
+      }}
+    />
+  ) : (
     <>
       <TimeFrameBtns
         value={timeFrame}
@@ -41,13 +65,13 @@ const Graph = ({ data, setDays }) => {
         }}
       />
 
-      <ResponsiveContainer width="100%" height="auto" aspect={sm ? 1.25 : 2.25}>
+      <ResponsiveContainer width="100%" height="auto" aspect={aspect}>
         <LineChart
           width={500}
           height={300}
           data={data}
           margin={{
-            left: sm ? -24 : -16,
+            left: aspect ? -24 : -16,
           }}
           style={{
             fontSize: 'clamp(0.75rem, 0.6rem + 1vw, 1rem)',
