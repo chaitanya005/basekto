@@ -9,6 +9,8 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import InfoRounded from '@mui/icons-material/InfoRounded';
 import BasketList from '../Common/BasketList';
+import MiniGraph from '../Common/MiniGraph';
+import { demoData as graphData } from '../../mocks/demoData';
 
 
 function TabPanel({ children, value, index, ...other }) {
@@ -98,7 +100,11 @@ const YourPortfolio = ({ userAddress }) => {
             <BasketList
               baskets={ createdBaskets }
               isLoading={ isLoading }
-              showDescription
+              showGrowth
+              showGraph
+              graph={
+                <MiniGraph data={ graphData } />
+              }
             />
         ) : (
           <p>You haven&apos;t created any baskets yet!</p>

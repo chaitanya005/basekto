@@ -1,14 +1,12 @@
-import {
-  Avatar,
-  Card,
-  Chip,
-  Typography,
-  Button,
-  CardContent,
-  AvatarGroup,
-} from '@mui/material';
-import { Box } from '@mui/system';
-import { deepOrange, deepPurple, deepGreen } from '@mui/material/colors';
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
+// import { deepOrange, deepPurple, deepGreen } from '@mui/material/colors';
 
 //this is a presentational component for an individual basket card
 //TODO: implement graph component
@@ -19,6 +17,7 @@ export function BasketCard({
   showGrowth, // Boolean
   showDescription, // Boolean
   showGraph, // Boolean
+  graph,
   hideChip,
   showFollow,
   ...props
@@ -151,11 +150,23 @@ export function BasketCard({
       </Box>
 
       {showDescription && (
-        <>
-          <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
-            {data?.description && RemoveHTMLTags(data?.description)}
-          </Typography>
-        </>
+        <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
+          {data?.description && RemoveHTMLTags(data?.description)}
+        </Typography>
+      )}
+
+      { showGraph && (
+
+        <Box
+          sx={{
+            margin: '20px',
+            padding: '20px',
+            background: '#aaa1',
+            borderRadius: '1rem',
+          }}
+        >
+          { graph }
+        </Box>
       )}
 
       <Box

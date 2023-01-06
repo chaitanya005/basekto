@@ -4,6 +4,8 @@ import axios from 'axios';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import BasketList from '../../Common/BasketList';
+import MiniGraph from '../../Common/MiniGraph';
+import { demoData as graphData } from '../../../mocks/demoData';
 
 const getBasketData = async (queryString = '') =>
   (
@@ -54,12 +56,16 @@ const Baskets = ({ queryString }) => {
           {alert?.message}
         </Alert>
       </Snackbar>
+
       <BasketList
         baskets={basketsData?.baskets}
         isLoading={isLoading || isFetching}
-        showDescription
         showFollow
         showGrowth
+        showGraph
+        graph={
+          <MiniGraph data={ graphData } />
+        }
       />
     </>
   );

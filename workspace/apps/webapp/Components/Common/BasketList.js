@@ -6,9 +6,7 @@ import { BasketCard } from '@basketo/web-ui';
 const BasketList = ({
   baskets,
   isLoading,
-  showDescription,
-  showFollow,
-  showGrowth,
+  ...props
 }) => {
   return (
     <Grid container spacing={2}>
@@ -42,9 +40,7 @@ const BasketList = ({
                       basketGrowth: basket?.growthRate,
                       coins: basket?.coins,
                     }}
-                    showDescription={showDescription}
-                    showFollow={showFollow}
-                    showGrowth={showGrowth}
+                    { ...props }
                   />
                 </a>
               </Link>
