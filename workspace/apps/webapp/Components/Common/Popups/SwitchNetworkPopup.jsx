@@ -40,7 +40,7 @@ const SwitchNetworkPopup = ({ isOpen, onClose, onComplete }) => {
                 dividers
             >
                 <Typography marginBottom={ 2 }>
-                    In order to create a basket, {"you'll"} need to switch to the Polygon{' '}
+                    In order to continue, {"you'll"} need to switch to the Polygon{' '}
                     {'(Mumbai)'} network
                 </Typography>
 
