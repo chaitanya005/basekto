@@ -143,7 +143,7 @@ const BasketPage = () => {
     }
   );
 
-  console.log(process.env.VERCEL_ENV, process.env.NODE_ENV);
+  console.log(process.env.VERCEL_ENV, process.env.NODE_ENV, process.env.NEXT_PUBLIC_ENV);
 
   const handleInvest = async () => {
     const buyTokens = [];
