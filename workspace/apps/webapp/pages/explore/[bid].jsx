@@ -143,7 +143,7 @@ const BasketPage = () => {
     }
   );
 
-  console.log(process.env.NODE_ENV);
+  console.log(process.env.VERCEL_ENV, process.env.NODE_ENV);
 
   const handleInvest = async () => {
     const buyTokens = [];
@@ -175,7 +175,7 @@ const BasketPage = () => {
     // need to check the user's network and change according to the test net or main net
     // ...
     const url =
-      process.env.NODE_ENV === 'production'
+      process.env.VERCEL_ENV === 'production'
         ? `${mainNet}swap/v1/quote`
         : `${testNet}swap/v1/quote`;
 

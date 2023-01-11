@@ -36,7 +36,7 @@ const getProvider = (network) => {
 
 const isValidNetwork = async () => {
   const chainId = await getChainId();
-  return process.env.NODE_ENV === 'Production'
+  return process.env.VERCEL_ENV === 'Production'
     ? chainId === 137
       ? true
       : false

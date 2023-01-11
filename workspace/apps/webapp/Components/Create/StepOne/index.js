@@ -56,7 +56,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
         val == item.name ? { ...item } : ''
       );
       if (
-        process.env.NODE_ENV !== 'production' &&
+        process.env.VERCEL_ENV !== 'production' &&
         (symbol[0].address || symbol[0].polyAddress)
       ) {
         setAlert({
@@ -66,7 +66,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
         });
         return;
       } else if (
-        process.env.NODE_ENV === 'production' &&
+        process.env.VERCEL_ENV === 'production' &&
         (symbol[0].address || symbol[0].mumbaiAddress)
       ) {
         setAlert({
