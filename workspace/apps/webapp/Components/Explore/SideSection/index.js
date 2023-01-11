@@ -18,6 +18,15 @@ const SideSection = (props) => {
     handlePublish,
   } = props;
 
+  const handleYourPositions = () => {
+    const yourPosition =
+      (graphDataWithGrowthRates?.growthRateOfbasket / 100) *
+        investments?.[0]?.totalAmount +
+      investments?.[0]?.totalAmount;
+
+    return yourPosition.toPrecision(2);
+  };
+
   return (
     <>
       <Grid
@@ -68,10 +77,7 @@ const SideSection = (props) => {
                 : 'rotate(360deg)'
             }
             timeFrame={timeFrame}
-            value={`${(
-              investments?.[0]?.totalAmount +
-              graphDataWithGrowthRates?.growthRateOfbasket
-            ).toFixed(2)}`}
+            value={`${handleYourPositions()}`}
           />
         </Grid>
         <Paper

@@ -36,11 +36,11 @@ const getProvider = (network) => {
 
 const isValidNetwork = async () => {
   const chainId = await getChainId();
-  return process.env.VERCEL_ENV === 'production'
-    ? chainId === 137
+  return process.env.NEXT_PUBLIC_ENV === 'testnet'
+    ? chainId === 80001
       ? true
       : false
-    : chainId === 80001
+    : chainId === 137
     ? true
     : false;
 };

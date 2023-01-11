@@ -36,7 +36,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
   const { selectedTokens } = useSelector(getTokens);
   const isEnabled = useSelector(getIsEnable);
   const allCoins =
-    process.env.VERCEL_ENV === 'testnet' ? testNetCoins : supportingCoins;
+    process.env.NEXT_PUBLIC_ENV === 'testnet' ? testNetCoins : supportingCoins;
 
   const handleTokens = (e, val) => {
     if (selectedTokens.length >= 5) {
