@@ -56,6 +56,11 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
     }
   };
 
+  const handleCurrentValue = (value) => {
+    const currentValue = (value / 100) * 1000 + 1000;
+    return currentValue.toFixed(2);
+  };
+
   return isLoading ? (
     <Skeleton
       ref={skeletonRef}
@@ -95,9 +100,9 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
               <Typography variant="h6" color="secondary">
                 Current value of $1000 invested is $
                 {activeValue ? (
-                  <>{1000 + parseFloat(activeValue?.toFixed(2))}</>
+                  <>{handleCurrentValue(activeValue)}</>
                 ) : (
-                  <>{1000 + parseFloat(parseFloat(lastValue).toFixed(2))}</>
+                  <>{handleCurrentValue(lastValue)}</>
                 )}{' '}
               </Typography>
               <Typography

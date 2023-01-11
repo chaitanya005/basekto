@@ -35,7 +35,8 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
   const dispatch = useDispatch();
   const { selectedTokens } = useSelector(getTokens);
   const isEnabled = useSelector(getIsEnable);
-  const allCoins = [...testNetCoins, ...supportingCoins, ...coinsList];
+  const allCoins =
+    process.env.VERCEL_ENV === 'testnet' ? testNetCoins : supportingCoins;
 
   const handleTokens = (e, val) => {
     if (selectedTokens.length >= 5) {
@@ -55,27 +56,27 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
       const symbol = allCoins.filter((item) =>
         val == item.name ? { ...item } : ''
       );
-      if (
-        process.env.VERCEL_ENV !== 'production' &&
-        (symbol[0].address || symbol[0].polyAddress)
-      ) {
-        setAlert({
-          open: true,
-          message: 'Sorry! In Test Net we are not supporting this coin',
-          severity: 'error',
-        });
-        return;
-      } else if (
-        process.env.VERCEL_ENV === 'production' &&
-        (symbol[0].address || symbol[0].mumbaiAddress)
-      ) {
-        setAlert({
-          open: true,
-          message: 'Sorry! Currently, We are not supporting this coin',
-          severity: 'error',
-        });
-        return;
-      }
+      // if (
+      //   process.env.VERCEL_ENV !== 'production' &&
+      //   (symbol[0].address || symbol[0].polyAddress)
+      // ) {
+      //   setAlert({
+      //     open: true,
+      //     message: 'Sorry! In Test Net we are not supporting this coin',
+      //     severity: 'error',
+      //   });
+      //   return;
+      // } else if (
+      //   process.env.VERCEL_ENV === 'production' &&
+      //   (symbol[0].address || symbol[0].mumbaiAddress)
+      // ) {
+      //   setAlert({
+      //     open: true,
+      //     message: 'Sorry! Currently, We are not supporting this coin',
+      //     severity: 'error',
+      //   });
+      //   return;
+      // }
 
       // if (symbol[0].address || symbol[0].mumbaiAddress) {
       //   setAlert({
