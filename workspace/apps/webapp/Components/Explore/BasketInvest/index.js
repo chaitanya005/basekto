@@ -11,21 +11,17 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { ethAddEventListener, getBalance, getNetwork } from '@basketo/web-utils';
+import {
+  ethAddEventListener,
+  getBalance,
+  getNetwork,
+} from '@basketo/web-utils';
 
-const BasketInvest = ({ tokensData }) => {
-
+const BasketInvest = ({ tokensData, amount, setAmount }) => {
   const [balance, setBalance] = useState('');
   const [currencySymbol, setCurrencySymbol] = useState('');
-  const [amount, setAmount] = useState('');
-
-  const tokens = tokensData?.map((token) => ({
-    ...token,
-    amount: (amount * token.weight) / 100,
-  }));
 
   useEffect(() => {
-
     function updateBalance() {
       const result = getBalance();
       result.then(setBalance);
@@ -44,7 +40,10 @@ const BasketInvest = ({ tokensData }) => {
 
     update();
     const networkChangedCleanup = ethAddEventListener('networkChanged', update);
-    const accountsChangedCleanup = ethAddEventListener('accountsChanged', updateBalance);
+    const accountsChangedCleanup = ethAddEventListener(
+      'accountsChanged',
+      updateBalance
+    );
 
     return () => {
       networkChangedCleanup();
@@ -82,7 +81,7 @@ const BasketInvest = ({ tokensData }) => {
           }}
         />
 
-        {amount && tokens && (
+        {amount && tokensData && (
           <TableContainer component={Paper} sx={{ maxHeight: 200 }}>
             <Table stickyHeader>
               <TableHead>
@@ -92,7 +91,7 @@ const BasketInvest = ({ tokensData }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tokens?.map((token) => (
+                {tokensData?.map((token) => (
                   <TableRow
                     key={token.name}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -109,7 +108,7 @@ const BasketInvest = ({ tokensData }) => {
                     </TableCell>
 
                     <TableCell align="right">
-                      {token.amount.toFixed(2)} {currencySymbol}
+                      {token.amount} {currencySymbol}
                     </TableCell>
                   </TableRow>
                 ))}

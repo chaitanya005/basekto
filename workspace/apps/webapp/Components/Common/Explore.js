@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import parse from 'html-react-parser';
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
@@ -19,17 +19,20 @@ import BasketInvest from '../Explore/BasketInvest';
 import BasketShareDialog from '../Explore/BasketInvest/BasketShareDialog';
 // import InvestReturns from '../Explore/InvestmentReturns';
 import TokensTable from '../Explore/TokensTable';
+import Investments from '../Explore/Investments';
 
 const Explore = ({
   basket,
   showDetails,
   isLoading,
-  graphData,
+  graphDataWithGrowthRates,
   isGraphLoading,
   setDays,
   coins,
   isCoinsDataLoading,
-  handleInvest
+  handleStoreInvest,
+  days,
+  investments,
 }) => {
   const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
 
@@ -44,6 +47,11 @@ const Explore = ({
 
   const [investDialogOpen, setInvestDialogOpen] = useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [graphData, setGraphData] = useState(null);
+
+  useEffect(() => {
+    setGraphData(graphDataWithGrowthRates);
+  }, [graphDataWithGrowthRates, days]);
 
   return (
     <>
@@ -137,7 +145,7 @@ const Explore = ({
                   actions={
                     <Button
                       variant="contained"
-                      onClick={handleInvest}
+                      onClick={handleStoreInvest}
                       fullWidth
                     >
                       Continue
@@ -195,6 +203,7 @@ const Explore = ({
         <Graph
           data={graphData}
           setDays={setDays}
+          totalAmount={investments?.[0]?.totalAmount}
           isLoading={isGraphLoading}
         />
       </Box>
@@ -207,13 +216,19 @@ const Explore = ({
         />
       </Box>
 
+      {investments?.[0]?.invested_basket && (
+        <Box sx={{ mb: 2 }}>
+          <Investments investments={investments?.[0]?.invested_basket} />
+        </Box>
+      )}
+
       {/* {showDetails && (
         <Box sx={{ mb: 4 }}>
           <InvestReturns />
         </Box>
       )} */}
 
-      <Box>
+      <Box sx={{ mb: 4 }}>
         <Typography variant="h5">About</Typography>
 
         <Divider sx={{ mt: 1, mb: 1 }} />

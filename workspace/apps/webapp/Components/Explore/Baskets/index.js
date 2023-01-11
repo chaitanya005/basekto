@@ -1,18 +1,11 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import axios from 'axios';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import BasketList from '../../Common/BasketList';
 import MiniGraph from '../../Common/MiniGraph';
 import { demoData as graphData } from '../../../mocks/demoData';
-
-const getBasketData = async (queryString = '') =>
-  (
-    await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/baskets` + queryString
-    )
-  ).data;
+import { getPublishedBaskets } from '@basketo/web-utils';
 
 const Baskets = ({ queryString }) => {
   const [alert, setAlert] = useState({
@@ -27,7 +20,7 @@ const Baskets = ({ queryString }) => {
     isFetching,
     isStale,
     refetch,
-  } = useQuery('exploreBaskets', () => getBasketData(queryString), {
+  } = useQuery('exploreBaskets', () => getPublishedBaskets(), {
     onError: () => {
       setAlert({
         open: true,
@@ -63,9 +56,8 @@ const Baskets = ({ queryString }) => {
         showFollow
         showGrowth
         showGraph
-        graph={
-          <MiniGraph data={ graphData } />
-        }
+        showDescription
+        graph={<MiniGraph data={graphData} />}
       />
     </>
   );

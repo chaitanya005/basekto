@@ -1,4 +1,5 @@
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box } from '@mui/system';
 
 const TimeFrameBtns = ({
   value,
@@ -15,24 +16,26 @@ const TimeFrameBtns = ({
   };
 
   return (
-    <ToggleButtonGroup
-      size={size}
-      value={value}
-      exclusive
-      onChange={handleChange}
-      sx={btnGroupStyles}
-    >
-      {Object.keys(timeFrames).map((timeFrame) => (
-        <ToggleButton
-          key={timeFrame}
-          value={timeFrame}
-          color={color}
-          sx={btnStyles}
-        >
-          {getBtnText ? getBtnText(timeFrame) : timeFrame}
-        </ToggleButton>
-      ))}
-    </ToggleButtonGroup>
+    <>
+      <ToggleButtonGroup
+        size={size}
+        value={value}
+        exclusive
+        onChange={handleChange}
+        sx={btnGroupStyles}
+      >
+        {Object.keys(timeFrames).map((timeFrame) => (
+          <ToggleButton
+            key={timeFrame}
+            value={timeFrame}
+            color={color}
+            sx={btnStyles}
+          >
+            {getBtnText ? getBtnText(timeFrame) : timeFrame}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
+    </>
   );
 };
 

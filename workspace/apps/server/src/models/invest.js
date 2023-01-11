@@ -1,25 +1,18 @@
 const mongoose = require('mongoose');
 
-const DevBasketSchema = new mongoose.Schema({
-  accountId: {
+const InvestSchema = new mongoose.Schema({
+  userAddress: {
     type: String,
     required: true,
   },
-  name: {
-    type: String,
+  amount: {
+    type: Number,
     required: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
-  symbol: {
-    type: String,
-    required: true,
-  },
-  publishedBasket: {
+  basketId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'devPublishedBasket',
+    required: true,
+    ref: 'basket',
   },
   coins: [
     {
@@ -49,8 +42,9 @@ const DevBasketSchema = new mongoose.Schema({
       },
     },
   ],
+  created_at: { type: Date, default: Date.now },
 });
 
-const DevBasket = mongoose.model('dev-basket', DevBasketSchema);
+const Invest = mongoose.model('Invest', InvestSchema);
 
-module.exports = DevBasket;
+module.exports = Invest;

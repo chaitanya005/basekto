@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { coinsList } from '../../../mocks/coins';
+import { coinsList, supportingCoins, testNetCoins } from '../../../mocks/coins';
 import CommonModal from '../Modal';
 import Graph from '../../Common/Graph';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,24 +35,64 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
   const dispatch = useDispatch();
   const { selectedTokens } = useSelector(getTokens);
   const isEnabled = useSelector(getIsEnable);
+  const allCoins = [...testNetCoins, ...supportingCoins, ...coinsList];
 
   const handleTokens = (e, val) => {
+    if (selectedTokens.length >= 5) {
+      setAlert({
+        open: true,
+        message: "Sorry! You've reached the Basket limit!",
+        severity: 'error',
+      });
+      return;
+    }
     if (val !== null && !selectedTokens.some((item) => item.name == val)) {
       dispatch(
         handleIsEnable({
           value: false,
         })
       );
-      const symbol = coinsList.filter((item) =>
+      const symbol = allCoins.filter((item) =>
         val == item.name ? { ...item } : ''
       );
+      if (
+        process.env.NODE_ENV !== 'production' &&
+        (symbol[0].address || symbol[0].polyAddress)
+      ) {
+        setAlert({
+          open: true,
+          message: 'Sorry! In Test Net we are not supporting this coin',
+          severity: 'error',
+        });
+        return;
+      } else if (
+        process.env.NODE_ENV === 'production' &&
+        (symbol[0].address || symbol[0].mumbaiAddress)
+      ) {
+        setAlert({
+          open: true,
+          message: 'Sorry! Currently, We are not supporting this coin',
+          severity: 'error',
+        });
+        return;
+      }
+
+      // if (symbol[0].address || symbol[0].mumbaiAddress) {
+      //   setAlert({
+      //     open: true,
+      //     message: 'Sorry! Currently, We are not supporting this coin',
+      //     severity: 'error',
+      //   });
+      //   return;
+      // }
       const token = {
         id: symbol[0].id,
         name: val,
         symbol: symbol[0].symbol,
         weight: '',
-        img: symbol[0].image_url,
-        coinAddress: symbol[0].address,
+        img: symbol[0].image_url || symbol[0].img,
+        coinAddress:
+          symbol[0].address || symbol[0].polyAddress || symbol[0].mumbaiAddress,
       };
       dispatch(addToken({ token }));
     }
@@ -145,7 +185,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
           id="free-solo-demo"
           freeSolo
           onChange={handleTokens}
-          options={coinsList.map((option) => option.name)}
+          options={allCoins.map((option) => option.name)}
           sx={{ marginTop: '20px' }}
           renderInput={(params) => (
             <TextField {...params} label="Select Tokens" />

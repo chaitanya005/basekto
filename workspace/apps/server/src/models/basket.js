@@ -17,6 +17,10 @@ const BasketSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  publishedBasket: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'publishedBasket',
+  },
   coins: [
     {
       id: {
@@ -36,6 +40,10 @@ const BasketSchema = new mongoose.Schema({
         required: true,
       },
       img: {
+        type: String,
+        required: true,
+      },
+      coinAddress: {
         type: String,
         required: true,
       },

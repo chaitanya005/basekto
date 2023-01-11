@@ -45,7 +45,9 @@ export function BasketCard({
         bgcolor: avatarColors[randomColor],
         fontSize: '18px',
       },
-      children: `${bsktSymbol.split(' ')[0][0]}${bsktSymbol.split(' ')[0][1]}`,
+      children: `${bsktSymbol?.split(' ')[0][0]}${
+        bsktSymbol?.split(' ')[0][1]
+      }`,
     };
   };
 
@@ -155,8 +157,7 @@ export function BasketCard({
         </Typography>
       )}
 
-      { showGraph && (
-
+      {/* {showGraph && (
         <Box
           sx={{
             margin: '20px',
@@ -165,9 +166,9 @@ export function BasketCard({
             borderRadius: '1rem',
           }}
         >
-          { graph }
+          {graph}
         </Box>
-      )}
+      )} */}
 
       <Box
         sx={{

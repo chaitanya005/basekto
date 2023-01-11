@@ -86,7 +86,7 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
   const getFormattedValue = (column, value) => {
     switch (column) {
       case 'price': {
-        return '$' + value;
+        return '$' + value.toFixed(2);
       }
       case 'growthRate':
       case 'withWeight':
@@ -99,19 +99,19 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
     }
   };
 
-  const getDetailedFormattedValues = (token) => {
-    const detailedColumns = ['price', 'growthRate', 'withWeight'];
-    return detailedColumns.map((column) =>
-      getFormattedValue(column, token[column])
-    );
-  };
+  // const getDetailedFormattedValues = (token) => {
+  //   const detailedColumns = ['price', 'growthRate', 'withWeight'];
+  //   return detailedColumns.map((column) =>
+  //     getFormattedValue(column, token[column])
+  //   );
+  // };
 
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: { sm: 650 } }}>
         <TableHead>
           <TableHeadRow>
-            <StyledTableCell>Token</StyledTableCell>
+            <StyledTableCell>Allocations</StyledTableCell>
             {showDetails && smDown ? (
               <StyledTableCell>
                 <Box
@@ -148,11 +148,13 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
               <>
                 {showDetails && (
                   <>
-                    <StyledTableCell align="right">Price</StyledTableCell>
                     <StyledTableCell align="right">
+                      Current Price
+                    </StyledTableCell>
+                    {/* <StyledTableCell align="right">
                       Growth Rate {'(100%)'}
                     </StyledTableCell>
-                    <StyledTableCell align="right">Growth Rate</StyledTableCell>
+                    <StyledTableCell align="right">Growth Rate</StyledTableCell> */}
                   </>
                 )}
                 <StyledTableCell align="right">Weight {'(%)'}</StyledTableCell>
@@ -209,7 +211,7 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
                 </StyledTableCell>
               ) : (
                 <>
-                  {showDetails &&
+                  {/* {showDetails &&
                     (token
                       ? getDetailedFormattedValues(token)
                       : Array.from({ length: 3 })
@@ -225,8 +227,21 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
                           </LoadingAnimation>
                         </Box>
                       </StyledTableCell>
-                    ))}
+                    ))} */}
 
+                  {showDetails && (
+                    <StyledTableCell key={i}>
+                      <Box display="flex" justifyContent="right">
+                        <LoadingAnimation
+                          variant="text"
+                          size="30px"
+                          isLoading={isLoading}
+                        >
+                          ${token?.price?.toFixed(2)}
+                        </LoadingAnimation>
+                      </Box>
+                    </StyledTableCell>
+                  )}
                   <StyledTableCell>
                     <Box display="flex" justifyContent="right">
                       <LoadingAnimation
@@ -234,7 +249,8 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
                         size="30px"
                         isLoading={isLoading}
                       >
-                        {token && getFormattedValue('weight', token.weight)}
+                        {/* {token && getFormattedValue('weight', token.weight)} */}
+                        {token?.weight}%
                       </LoadingAnimation>
                     </Box>
                   </StyledTableCell>
