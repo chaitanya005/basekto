@@ -386,6 +386,7 @@ switch (process.env.RAILGUN_ENV) {
           $unwind: '$publishedBaskets',
         },
       ]);
+    break;
 
   default:
     createNewBasket = (accountId, name, description, symbol, coins) =>

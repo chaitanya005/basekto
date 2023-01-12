@@ -949,13 +949,13 @@ export const coinsList = [
 ];
 
 export const supportingCoins = [
-  // {
-  //   id: 'chainlink',
-  //   img: 'https://set-core.s3.amazonaws.com/img/coin-icons/chainlink.svg',
-  //   name: 'Chainlink',
-  //   symbol: 'LINK',
-  //   polyAddress: '0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39',
-  // },
+  {
+    id: 'chainlink',
+    img: 'https://set-core.s3.amazonaws.com/img/coin-icons/chainlink.svg',
+    name: 'Chainlink',
+    symbol: 'LINK',
+    polyAddress: '0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39',
+  },
   {
     id: 'the-graph',
     img: 'https://assets.coingecko.com/coins/images/13397/small/Graph_Token.png?1608145566',
@@ -963,13 +963,13 @@ export const supportingCoins = [
     symbol: 'GRT',
     polyAddress: '0x5fe2b58c013d7601147dcdd68c143a77499f5531',
   },
-  // {
-  //   id: 'weth',
-  //   name: 'Wrapped Eth',
-  //   symbol: 'WETH',
-  //   img: 'https://s3.amazonaws.com/set-core/img/coin-icons/eth.svg',
-  //   polyAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-  // },
+  {
+    id: 'weth',
+    name: 'Wrapped Eth',
+    symbol: 'WETH',
+    img: 'https://s3.amazonaws.com/set-core/img/coin-icons/eth.svg',
+    polyAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+  },
   {
     id: 'aave',
     name: 'Aave Token',

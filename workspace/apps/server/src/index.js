@@ -57,7 +57,6 @@ function deleteExistingOhlcData() {
   });
 }
 
-console.log(process.env.NODE_ENV, process.env.RAILGUN_ENV);
 // deleteExistingOhlcData();
 setInterval(deleteExistingOhlcData, 1000 * 60 * 60 * 4);
 // 1 minute - 60,000 milliseconds
