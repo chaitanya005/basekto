@@ -7,9 +7,10 @@ const getCoinsList = (req, res) => {
       .then((result) => {
         let coins = result.data.filter(
           (coin) =>
-            coin.platforms?.ethereum?.length > 1 ||
+            // coin.platforms?.ethereum?.length > 1 ||
             coin.platforms?.['polygon-pos']?.length > 1
         );
+        console.log(coins.length);
         res.json(coins);
       })
       .catch((err) => console.log(err));

@@ -26,35 +26,44 @@ async function getDataPoints(req, res) {
       timeStamp = timeStamps;
       growthRatePercentage.push(growthRate);
 
+      //(Incorrect Formula need to change in future)
       //growthRate of Each coin over a period of time
-      const firstVal = graphData.data[0];
-      const lastVal = graphData.data[graphData.data.length - 1];
+      // const firstVal = graphData.data[0];
+      // const lastVal = graphData.data[graphData.data.length - 1];
 
-      const growthRateOfCoin =
-        ((lastVal['4'] - firstVal['1']) * 100) / firstVal['1'];
-      growthPercentageOfCoins.push({
-        name: basketData[i].name,
-        growthRate: growthRateOfCoin,
-        withWeight: (growthRateOfCoin * basketData[i].weight) / 100,
-      });
+      // const growthRateOfCoin =
+      //   ((lastVal['4'] - firstVal['1']) * 100) / firstVal['1'];
+      // growthPercentageOfCoins.push({
+      //   name: basketData[i].name,
+      //   growthRate: growthRateOfCoin,
+      //   withWeight: (growthRateOfCoin * basketData[i].weight) / 100,
+      // });
     }
-    var sum = (r, a) =>
+    let sum = (r, a) =>
       r.map((b, i) => {
         let num = a[i] + b;
         return Number(num.toFixed(5));
       });
     let totalGrowthRates = growthRatePercentage.reduce(sum);
-    let array = [];
+    let formattedGrowthRatesWithTimeStamp = [];
     const data = (a1, a2) =>
       a1.map((a, i) => {
         let obj = {
-          point: a,
-          timeStamp: moment(a2[i]).format('MMM Do YY hh:mm a'),
+          'Growth Rate': a,
+          timeStamp: moment(a2[i]).format('MMM Do YY - hh:mm a'),
         };
-        array.push(obj);
+        formattedGrowthRatesWithTimeStamp.push(obj);
       });
     data(totalGrowthRates, timeStamp);
-    res.status(200).json({ growthPercentageOfCoins, graphData: array });
+    formattedGrowthRatesWithTimeStamp.pop();
+    const totalGrowthRateOfbasket =
+      formattedGrowthRatesWithTimeStamp[
+        formattedGrowthRatesWithTimeStamp.length - 1
+      ]['Growth Rate'] - formattedGrowthRatesWithTimeStamp[0]['Growth Rate'];
+    res.status(200).json({
+      graphData: formattedGrowthRatesWithTimeStamp,
+      growthRateOfbasket: totalGrowthRateOfbasket,
+    });
   } catch (err) {
     console.log('/graph_data', err);
     res.status(400).json({ msg: 'Error' });

@@ -3,13 +3,7 @@ import Grid from '@mui/material/Grid';
 import Skeleton from '@mui/material/Skeleton';
 import { BasketCard } from '@basketo/web-ui';
 
-const BasketList = ({
-  baskets,
-  isLoading,
-  showDescription,
-  showFollow,
-  showGrowth,
-}) => {
+const BasketList = ({ baskets, isLoading, ...props }) => {
   return (
     <Grid container spacing={2}>
       {isLoading ? (
@@ -42,9 +36,7 @@ const BasketList = ({
                       basketGrowth: basket?.growthRate,
                       coins: basket?.coins,
                     }}
-                    showDescription={showDescription}
-                    showFollow={showFollow}
-                    showGrowth={showGrowth}
+                    {...props}
                   />
                 </a>
               </Link>

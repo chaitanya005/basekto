@@ -2,14 +2,11 @@ import { createTheme } from '@mui/material/styles';
 import colorPalette from './palette.js';
 
 const buttonStyle = (variant, color) => ({
-  backgroundColor: colorPalette[color][variant == 'contained'? 'main':'inherit'],
-  color: colorPalette[color][variant=='text'?'dark':'darker'],
+  backgroundColor:
+    colorPalette[color][variant == 'contained' ? 'main' : 'inherit'],
+  color: colorPalette[color][variant == 'text' ? 'dark' : 'darker'],
   border: `1.5px solid ${
-    colorPalette[color][
-        variant === 'outlined'
-        ? 'darker'
-        : 'inherit'
-    ]
+    colorPalette[color][variant === 'outlined' ? 'darker' : 'inherit']
   }`,
   '&:hover': {
     backgroundColor:
@@ -17,26 +14,31 @@ const buttonStyle = (variant, color) => ({
     border: `1.5px solid ${
       colorPalette[color][variant === 'text' ? 'inherit' : 'darker']
     }`,
-    boxShadow:'none'
+    boxShadow: 'none',
   },
 });
 
 const textFieldStyle = (variant, color) => ({
   '.MuiInputLabel-root': {
     color: `${colorPalette[color].dark} !important`,
-    fontWeight:'500'
+    fontWeight: '500',
   },
   '& .MuiOutlinedInput-root fieldset': {
-    border:`1.5px solid ${colorPalette[color][color=='primary'?'darker':'black']} !important`
+    border: `1.5px solid ${
+      colorPalette[color][color == 'primary' ? 'darker' : 'black']
+    } !important`,
   },
   '& .MuiInput-underline:before': {
-    borderBottomColor: colorPalette[color][color=='primary'?'darker':'black']
+    borderBottomColor:
+      colorPalette[color][color == 'primary' ? 'darker' : 'black'],
   },
   '& .MuiInput-underline:hover:before': {
-    borderBottomColor: colorPalette[color][color=='primary'?'darker':'black'],
+    borderBottomColor:
+      colorPalette[color][color == 'primary' ? 'darker' : 'black'],
   },
   '& .MuiInput-underline:after': {
-    borderBottomColor: colorPalette[color][color=='primary'?'dark':'black'],
+    borderBottomColor:
+      colorPalette[color][color == 'primary' ? 'dark' : 'black'],
   },
 });
 
@@ -44,12 +46,12 @@ const lightTheme = createTheme({
   typography: { fontFamily: 'Work Sans' },
   palette: {
     mode: 'light',
-    divider:'#ACACAC',
+    divider: '#ACACAC',
     primary: {
       light: colorPalette.primary.lighter,
       main: colorPalette.primary.main,
       dark: colorPalette.primary.dark,
-      contrastText: colorPalette.primary.darker
+      contrastText: colorPalette.primary.darker,
     },
     secondary: {
       main: colorPalette.secondary.black,
@@ -65,12 +67,12 @@ const lightTheme = createTheme({
           padding: '0.5em 1.2em',
           boxSizing: 'border-box',
           boxShadow: 'none',
-          borderWidth:'1.5px',
-          transition:'200ms',
-          "&:hover":{
-            borderWidth:'1.5px',
-            transform: 'translate(0px,-1.5px)'
-          }
+          borderWidth: '1.5px',
+          transition: '200ms',
+          '&:hover': {
+            borderWidth: '1.5px',
+            transform: 'translate(0px,-1.5px)',
+          },
         },
       },
       variants: [
@@ -85,7 +87,7 @@ const lightTheme = createTheme({
         {
           props: { variant: 'text', color: 'primary' },
           style: buttonStyle('text', 'primary'),
-        }
+        },
       ],
     },
     MuiTextField: {
@@ -128,56 +130,69 @@ const lightTheme = createTheme({
           },
         },
         {
-          props:{variant:'section', color:'primary'},
-          style:{
+          props: { variant: 'section', color: 'primary' },
+          style: {
             borderRadius: '0px',
             boxShadow: 'none',
             backgroundColor: colorPalette.primary.lighter,
-          }
+          },
         },
         {
-          props:{variant:'section', color:'secondary'},
-          style:{
+          props: { variant: 'section', color: 'secondary' },
+          style: {
             borderRadius: '0px',
             boxShadow: 'none',
-            backgroundColor: "#f2f2f2",
-          }
-        }
+            backgroundColor: '#f2f2f2',
+          },
+        },
       ],
     },
-    MuiLink:{
-      styleOverrides:{root:{color:colorPalette.primary.dark, fontWeight:'600'}}
+    MuiLink: {
+      styleOverrides: {
+        root: { color: colorPalette.primary.dark, fontWeight: '600' },
+      },
     },
-    MuiListItemIcon:{
-      styleOverrides:{root:{color:colorPalette.primary.dark}}
+    MuiListItemIcon: {
+      styleOverrides: { root: { color: colorPalette.primary.dark } },
     },
-    MuiTypography:{
-      variants:[
+    MuiTypography: {
+      variants: [
         {
-          props:{variant:'subtitle2'},
-          style:{letterSpacing:'0.23em'}
-        }
-      ]
-    },
-    MuiCard:{
-      variants:[
+          props: { variant: 'subtitle2' },
+          style: { letterSpacing: '0.23em' },
+        },
         {
-          props:{variant:'outlined'},
-          style:{
-            border:"1.5px solid #ACACAC",
-          }
-        }
-      ]
+          props: { variant: 'outlined', color: 'primary' },
+          style: textFieldStyle('outlined', 'primary'),
+        },
+      ],
     },
-    MuiBottomNavigation:{
-      styleOverrides:{
-        root:{
-          "& .Mui-selected":{
-            color:`${colorPalette.primary.dark} !important`
-          }
-        }
-      }
-    }
+    MuiCard: {
+      variants: [
+        {
+          props: { variant: 'outlined' },
+          style: {
+            border: '1.5px solid #ACACAC',
+          },
+        },
+      ],
+    },
+    MuiBottomNavigation: {
+      styleOverrides: {
+        root: {
+          '& .Mui-selected': {
+            color: `${colorPalette.primary.dark} !important`,
+          },
+        },
+      },
+    },
+    // MuiTableCell: {
+    //   styleOverrides: {
+    //     root: {
+    //       color: `${colorPalette.primary.dark} !important`,
+    //     },
+    //   },
+    // },
   },
 });
 

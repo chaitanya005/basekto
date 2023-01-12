@@ -1,41 +1,55 @@
 import { useEffect, useState } from 'react';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import InputAdornment from '@mui/material/InputAdornment';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import {
-  Avatar,
-  Box,
-  Button,
-  InputAdornment,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { getBalance } from '@basketo/web-utils';
+  ethAddEventListener,
+  getBalance,
+  getNetwork,
+} from '@basketo/web-utils';
 
-const BasketInvest = ({ tokensData }) => {
-  const currencySymbol = 'MATIC';
-  const [balance, setBalance] = useState(0);
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [amount, setAmount] = useState('');
-
-  const tokens = tokensData?.map((token) => ({
-    ...token,
-    amount: (amount * token.weight) / 100,
-  }));
-
-  const handleClickOpen = () => {
-    setDialogOpen(true);
-  };
+const BasketInvest = ({ tokensData, amount, setAmount }) => {
+  const [balance, setBalance] = useState('');
+  const [currencySymbol, setCurrencySymbol] = useState('');
 
   useEffect(() => {
-    const result = getBalance();
-    result.then(setBalance);
-  }, [getBalance]);
+    function updateBalance() {
+      const result = getBalance();
+      result.then(setBalance);
+    }
+
+    function updateCurrencySymbol() {
+      getNetwork().then(({ nativeCurrency }) => {
+        setCurrencySymbol(nativeCurrency.symbol);
+      });
+    }
+
+    function update() {
+      updateBalance();
+      updateCurrencySymbol();
+    }
+
+    update();
+    const networkChangedCleanup = ethAddEventListener('networkChanged', update);
+    const accountsChangedCleanup = ethAddEventListener(
+      'accountsChanged',
+      updateBalance
+    );
+
+    return () => {
+      networkChangedCleanup();
+      accountsChangedCleanup();
+    };
+  }, []);
 
   return (
     <>
@@ -44,7 +58,7 @@ const BasketInvest = ({ tokensData }) => {
           <Typography>Available Balance</Typography>
           <Typography>
             {' '}
-            {balance} {currencySymbol}
+            {Number(balance).toFixed(2)} {currencySymbol}
           </Typography>
         </Box>
 
@@ -67,7 +81,7 @@ const BasketInvest = ({ tokensData }) => {
           }}
         />
 
-        {amount && tokens && (
+        {amount && tokensData && (
           <TableContainer component={Paper} sx={{ maxHeight: 200 }}>
             <Table stickyHeader>
               <TableHead>
@@ -77,7 +91,7 @@ const BasketInvest = ({ tokensData }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tokens?.map((token) => (
+                {tokensData?.map((token) => (
                   <TableRow
                     key={token.name}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -94,7 +108,7 @@ const BasketInvest = ({ tokensData }) => {
                     </TableCell>
 
                     <TableCell align="right">
-                      {token.amount.toFixed(2)} {currencySymbol}
+                      {token.amount} {currencySymbol}
                     </TableCell>
                   </TableRow>
                 ))}

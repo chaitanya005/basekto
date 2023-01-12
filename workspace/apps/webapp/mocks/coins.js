@@ -139,13 +139,13 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/15861/small/abracadabra-3.png?1622544862',
   },
-  {
-    id: 'usd-coin',
-    name: 'USD',
-    symbol: 'USDC',
-    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/usdc.svg',
-  },
+  // {
+  //   id: 'usd-coin',
+  //   name: 'USD',
+  //   symbol: 'USDC',
+  //   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+  //   image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/usdc.svg',
+  // },
   {
     id: 'compound-wrapped-btc',
     name: 'Compound BTC',
@@ -184,13 +184,13 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/13514/large/mirror_logo_transparent.png?1611564758',
   },
-  {
-    id: 'chainlink',
-    name: 'Chainlink',
-    symbol: 'LINK',
-    address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
-    image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/chainlink.svg',
-  },
+  // {
+  //   id: 'chainlink',
+  //   name: 'Chainlink',
+  //   symbol: 'LINK',
+  //   address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+  //   image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/chainlink.svg',
+  // },
   {
     id: 'cdai',
     name: 'Compound Dai',
@@ -243,13 +243,13 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/12900/small/Rari_Logo_Transparent.png?1613978014',
   },
-  {
-    id: 'tether',
-    name: 'Tether',
-    symbol: 'USDT',
-    address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-    image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/usdt.svg',
-  },
+  // {
+  //   id: 'tether',
+  //   name: 'Tether',
+  //   symbol: 'USDT',
+  //   address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+  //   image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/usdt.svg',
+  // },
   {
     id: 'governance-ohm',
     name: 'Governance OHM',
@@ -281,14 +281,14 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/12381/small/token_2000x2000.png?1615791204',
   },
-  {
-    id: 'sushi',
-    name: 'Sushi',
-    symbol: 'SUSHI',
-    address: '0x6B3595068778DD592e39A122f4f5a5cF09C90fE2',
-    image_url:
-      'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688',
-  },
+  // {
+  //   id: 'sushi',
+  //   name: 'Sushi',
+  //   symbol: 'SUSHI',
+  //   address: '0x6B3595068778DD592e39A122f4f5a5cF09C90fE2',
+  //   image_url:
+  //     'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688',
+  // },
   {
     id: 'mirrored-facebook',
     name: 'Mirrored Facebook',
@@ -319,14 +319,14 @@ export const coinsList = [
     address: '0x18aAA7115705e8be94bfFEBDE57Af9BFc265B998',
     image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/audius.png',
   },
-  {
-    id: 'the-graph',
-    name: 'The Graph',
-    symbol: 'GRT',
-    address: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7',
-    image_url:
-      'https://assets.coingecko.com/coins/images/13397/small/Graph_Token.png?1608145566',
-  },
+  // {
+  //   id: 'the-graph',
+  //   name: 'The Graph',
+  //   symbol: 'GRT',
+  //   address: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7',
+  //   image_url:
+  //     'https://assets.coingecko.com/coins/images/13397/small/Graph_Token.png?1608145566',
+  // },
   {
     id: 'ribbon-finance',
     name: 'Ribbon Finance',
@@ -388,13 +388,13 @@ export const coinsList = [
     address: '0x557B933a7C2c45672B610F8954A3deB39a51A8Ca',
     image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/revv.png',
   },
-  {
-    id: 'aave',
-    name: 'Aave Token',
-    symbol: 'AAVE',
-    address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
-    image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/aave.svg',
-  },
+  // {
+  //   id: 'aave',
+  //   name: 'Aave Token',
+  //   symbol: 'AAVE',
+  //   address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
+  //   image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/aave.svg',
+  // },
   {
     id: 'keep3rv1',
     name: 'Keep3rV1',
@@ -494,14 +494,14 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png?1624446912',
   },
-  {
-    id: 'wmatic',
-    name: 'Wrapped Matic',
-    symbol: 'WMATIC',
-    address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-    image_url:
-      'https://assets.coingecko.com/coins/images/14073/small/matic.png?1628852392',
-  },
+  // {
+  //   id: 'wmatic',
+  //   name: 'Wrapped Matic',
+  //   symbol: 'WMATIC',
+  //   address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+  //   image_url:
+  //     'https://assets.coingecko.com/coins/images/14073/small/matic.png?1628852392',
+  // },
   {
     id: 'aave-polygon-wbtc',
     name: 'Aave Polygon WBTC',
@@ -624,13 +624,13 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/8251/small/frm.png?1563777564',
   },
-  {
-    id: 'wrapped-bitcoin',
-    name: 'Bitcoin',
-    symbol: 'WBTC',
-    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    image_url: 'https://s3.amazonaws.com/set-core/img/coin-icons/btc.svg',
-  },
+  // {
+  //   id: 'wrapped-bitcoin',
+  //   name: 'Bitcoin',
+  //   symbol: 'WBTC',
+  //   address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+  //   image_url: 'https://s3.amazonaws.com/set-core/img/coin-icons/btc.svg',
+  // },
   {
     id: 'uma',
     name: 'UMA',
@@ -693,13 +693,13 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/15714/small/omnPqaTY.png?1622820503',
   },
-  {
-    id: 'weth',
-    name: 'Wrapped Eth',
-    symbol: 'WETH',
-    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    image_url: 'https://s3.amazonaws.com/set-core/img/coin-icons/eth.svg',
-  },
+  // {
+  //   id: 'weth',
+  //   name: 'Wrapped Eth',
+  //   symbol: 'WETH',
+  //   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  //   image_url: 'https://s3.amazonaws.com/set-core/img/coin-icons/eth.svg',
+  // },
   {
     id: 'spice-finance',
     name: 'SPICE',
@@ -814,13 +814,13 @@ export const coinsList = [
     address: '0xBB0E17EF65F82Ab018d8EDd776e8DD940327B28b',
     image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/axie.png',
   },
-  {
-    id: 'dai',
-    name: 'Dai',
-    symbol: 'DAI',
-    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/mcd.svg',
-  },
+  // {
+  //   id: 'dai',
+  //   name: 'Dai',
+  //   symbol: 'DAI',
+  //   address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  //   image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/mcd.svg',
+  // },
   {
     id: 'decentral-games',
     name: 'Decentral Games',
@@ -890,14 +890,14 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
   },
-  {
-    id: 'usd-coin',
-    name: 'Virtual USD',
-    symbol: 'vUSD',
-    address: '0xC84Da6c8ec7A57cD10B939E79eaF9d2D17834E04',
-    image_url:
-      'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
-  },
+  // {
+  //   id: 'usd-coin',
+  //   name: 'Virtual USD',
+  //   symbol: 'vUSD',
+  //   address: '0xC84Da6c8ec7A57cD10B939E79eaF9d2D17834E04',
+  //   image_url:
+  //     'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
+  // },
   {
     id: 'weth',
     name: 'WETH',
@@ -914,14 +914,14 @@ export const coinsList = [
     image_url:
       'https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744',
   },
-  {
-    id: 'usd-coin',
-    name: 'USD Coin',
-    symbol: 'USDC',
-    address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-    image_url:
-      'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
-  },
+  // {
+  //   id: 'usd-coin',
+  //   name: 'USD Coin',
+  //   symbol: 'USDC',
+  //   address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+  //   image_url:
+  //     'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
+  // },
   {
     id: 'aave-polygon-wmatic',
     name: 'Aave Polygon WMATIC',
@@ -945,5 +945,123 @@ export const coinsList = [
     address: '0x1a13F4Ca1d028320A707D99520AbFefca3998b7F',
     image_url:
       'https://assets.coingecko.com/coins/images/17249/small/amUSDC_2x.png?1626941306',
+  },
+];
+
+export const supportingCoins = [
+  // {
+  //   id: 'chainlink',
+  //   img: 'https://set-core.s3.amazonaws.com/img/coin-icons/chainlink.svg',
+  //   name: 'Chainlink',
+  //   symbol: 'LINK',
+  //   polyAddress: '0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39',
+  // },
+  {
+    id: 'the-graph',
+    img: 'https://assets.coingecko.com/coins/images/13397/small/Graph_Token.png?1608145566',
+    name: 'The Graph',
+    symbol: 'GRT',
+    polyAddress: '0x5fe2b58c013d7601147dcdd68c143a77499f5531',
+  },
+  // {
+  //   id: 'weth',
+  //   name: 'Wrapped Eth',
+  //   symbol: 'WETH',
+  //   img: 'https://s3.amazonaws.com/set-core/img/coin-icons/eth.svg',
+  //   polyAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+  // },
+  {
+    id: 'aave',
+    name: 'Aave Token',
+    symbol: 'AAVE',
+    image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/aave.svg',
+    polyAddress: '0xd6df932a45c0f255f85145f286ea0b292b21c90b',
+  },
+  {
+    id: 'wmatic',
+    symbol: 'wmatic',
+    name: 'Wrapped Matic',
+    img: 'https://assets.coingecko.com/coins/images/14073/small/matic.png?1628852392',
+    polyAddress: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+  },
+  {
+    id: 'wrapped-bitcoin',
+    symbol: 'wbtc',
+    name: 'Wrapped Bitcoin',
+    img: 'https://s3.amazonaws.com/set-core/img/coin-icons/btc.svg',
+    polyAddress: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6',
+  },
+  {
+    id: '1inch',
+    symbol: '1inch',
+    name: '1inch',
+    polyAddress: '0x9c2c5fd7b07e95ee044ddeba0e97a665f142394f',
+    img: 'https://assets.coingecko.com/coins/images/13469/small/1inch-token.png',
+  },
+  {
+    id: 'wrapped-ust',
+    symbol: 'ustc',
+    name: 'Wrapped USTC',
+    polyAddress: '0x692597b009d13c4049a947cab2239b7d6517875f',
+    img: 'https://assets.coingecko.com/coins/images/15462/small/ust.png',
+  },
+  {
+    id: 'uniswap',
+    symbol: 'uni',
+    name: 'Uniswap',
+    img: 'https://set-core.s3.amazonaws.com/img/coin-icons/uni.svg',
+    polyAddress: '0xb33eaad8d922b1083446dc23f610c2567fb5180f',
+  },
+  {
+    id: 'usd-coin',
+    symbol: 'usdc',
+    name: 'USD Coin',
+    polyAddress: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+    img: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
+  },
+  {
+    id: 'dai',
+    symbol: 'dai',
+    name: 'Dai',
+    img: 'https://set-core.s3.amazonaws.com/img/coin-icons/mcd.svg',
+    polyAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+  },
+  {
+    id: 'sushi',
+    symbol: 'sushi',
+    name: 'Sushi',
+    polyAddress: '0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a',
+    img: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688',
+  },
+  {
+    id: 'tether',
+    symbol: 'usdt',
+    name: 'Tether',
+    polyAddress: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+    img: 'https://set-core.s3.amazonaws.com/img/coin-icons/usdt.svg',
+  },
+  {
+    id: 'wbnb',
+    symbol: 'wbnb',
+    name: 'Wrapped BNB',
+    polyAddress: '0xa649325aa7c5093d12d6f98eb4378deae68ce23f',
+    img: 'https://assets.coingecko.com/coins/images/9576/small/BUSD.png',
+  },
+];
+
+export const testNetCoins = [
+  {
+    id: 'weth',
+    name: 'Wrapped Eth',
+    symbol: 'WETH',
+    mumbaiAddress: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
+    image_url: 'https://s3.amazonaws.com/set-core/img/coin-icons/eth.svg',
+  },
+  {
+    id: 'chainlink',
+    name: 'Chainlink',
+    symbol: 'LINK',
+    mumbaiAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
+    image_url: 'https://set-core.s3.amazonaws.com/img/coin-icons/chainlink.svg',
   },
 ];

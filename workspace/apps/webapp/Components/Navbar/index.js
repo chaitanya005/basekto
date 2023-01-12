@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { utils } from 'ethers';
 import axios from 'axios';
@@ -24,9 +24,11 @@ import AccountBalanceWallet from '@mui/icons-material/AccountBalanceWallet';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { toggleTheme } from '@basketo/web-ui';
-import { ethAddEventListener } from '@basketo/web-utils';
+import { ethAddEventListener, isValidNetwork } from '@basketo/web-utils';
 import CreateAccountDialog from './CreateAccountDialog';
 import UserAccountDropdown from './UserAccountDropdown';
+import SwitchNetworkPopup from '../Common/Popups/SwitchNetworkPopup';
+import ConnectWalletPopup from '../Common/Popups/ConnectWalletPopup';
 
 const pages = [
   { title: 'Explore', path: '/explore', icon: <ExploreIcon /> },
@@ -64,6 +66,7 @@ const Navbar = () => {
 
   const [userAddress, setUserAddress] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
+  const [switchNetworkPopupOpen, setSwitchNetworkPopupOpen] = useState(false);
 
   const handleThemeToggle = () => {
     toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
@@ -77,7 +80,6 @@ const Navbar = () => {
   const removeUserAddress = () => {
     localStorage.removeItem('address');
     setUserAddress(null);
-    router.push('/');
   };
 
   useEffect(() => {
@@ -106,18 +108,31 @@ const Navbar = () => {
   }, [userAddress]);
 
   const connectWallet = async () => {
+
+    if (!(await isValidNetwork())) {
+      setSwitchNetworkPopupOpen(true);
+      return;
+    }
+
     if (clientSide && typeof window?.ethereum === 'undefined') {
       router.push({ hash: 'install-metamask' });
       return;
     }
+
     account = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
     });
     accountChangedHandler(account);
+
+    if (router.asPath.split('#')[1] === 'connect-wallet') {
+      router.push({ hash: '' });
+    }
+    Router.reload();
   };
 
   const disconnectWallet = () => {
     accountChangedHandler([]);
+    Router.reload();
   };
 
   const accountChangedHandler = async (account) => {
@@ -288,6 +303,18 @@ const Navbar = () => {
                 />
               </Grid>
             )}
+
+            <SwitchNetworkPopup
+              isOpen={ switchNetworkPopupOpen }
+              onClose={ () => setSwitchNetworkPopupOpen(false) }
+              onComplete={ async () => {
+                if (await isValidNetwork()) {
+                  setSwitchNetworkPopupOpen(false);
+                  connectWallet();
+                }
+              }}
+            />
+
             {/* <a
               href="https://t.me/basketofinance"
               target="_blank"
@@ -325,6 +352,13 @@ const Navbar = () => {
                 </Button>
               </Box>
             </Dialog>
+
+            <ConnectWalletPopup
+              isOpen={router.asPath.split('#')[1] === 'connect-wallet'}
+              onClose={() => router.push({ hash: '' })}
+              connectWallet={ connectWallet }
+              onComplete={() => router.push({ hash: '' })}
+            />
 
             {userAddress && (
               <CreateAccountDialog

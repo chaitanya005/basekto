@@ -1,40 +1,38 @@
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
+import parse from 'html-react-parser';
+import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import InputAdornment from '@mui/material/InputAdornment';
+import Skeleton from '@mui/material/Skeleton';
+import Snackbar from '@mui/material/Snackbar';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import ShareIcon from '@mui/icons-material/Share';
 import Graph from './Graph';
-import {
-  Alert,
-  IconButton,
-  InputAdornment,
-  Skeleton,
-  Snackbar,
-  TextField,
-  Tooltip,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
-import InvestReturns from '../Explore/InvestmentReturns';
-import TokensTable from '../Explore/TokensTable';
 import DialogBox from './DialogBox';
 import BasketInvest from '../Explore/BasketInvest';
-import AddAlertIcon from '@mui/icons-material/AddAlert';
-import ShareIcon from '@mui/icons-material/Share';
-// import BasketShareDialog from './BasketShareDialog';
 import BasketShareDialog from '../Explore/BasketInvest/BasketShareDialog';
-
-import parse from 'html-react-parser';
+// import InvestReturns from '../Explore/InvestmentReturns';
+import TokensTable from '../Explore/TokensTable';
+import Investments from '../Explore/Investments';
 
 const Explore = ({
   basket,
   showDetails,
   isLoading,
-  isFetching,
-  graphData,
+  graphDataWithGrowthRates,
+  isGraphLoading,
   setDays,
   coins,
+  isCoinsDataLoading,
+  handleStoreInvest,
+  days,
+  investments,
 }) => {
   const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
 
@@ -49,6 +47,11 @@ const Explore = ({
 
   const [investDialogOpen, setInvestDialogOpen] = useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [graphData, setGraphData] = useState(null);
+
+  useEffect(() => {
+    setGraphData(graphDataWithGrowthRates);
+  }, [graphDataWithGrowthRates, days]);
 
   return (
     <>
@@ -80,7 +83,7 @@ const Explore = ({
         }}
       >
         <Box display="flex" alignItems="center" sx={{ '> *': { mr: 2 } }}>
-          {isLoading || isFetching ? (
+          {isLoading ? (
             <Skeleton
               variant="circular"
               sx={{ width: 48, height: 48 }}
@@ -94,7 +97,7 @@ const Explore = ({
             />
           )}
 
-          {isLoading || isFetching ? (
+          {isLoading ? (
             <Skeleton
               animation="wave"
               variant="text"
@@ -122,7 +125,7 @@ const Explore = ({
                   variant="contained"
                   fullWidth
                   onClick={() => setInvestDialogOpen(true)}
-                  disabled={isLoading || isFetching}
+                  disabled={isLoading}
                   sx={{
                     width: { sm: '8em' },
                     fontSize: '1.125rem',
@@ -142,7 +145,7 @@ const Explore = ({
                   actions={
                     <Button
                       variant="contained"
-                      // onClick={}
+                      onClick={handleStoreInvest}
                       fullWidth
                     >
                       Continue
@@ -197,16 +200,27 @@ const Explore = ({
       </Box>
 
       <Box sx={{ mb: 2 }}>
-        <Graph data={graphData} setDays={setDays} />
+        <Graph
+          data={graphData}
+          setDays={setDays}
+          totalAmount={investments?.[0]?.totalAmount}
+          isLoading={isGraphLoading}
+        />
       </Box>
 
       <Box sx={{ mb: 6, mt: 6 }}>
         <TokensTable
           tokensData={coins}
           showDetails={showDetails}
-          isLoading={isLoading}
+          isLoading={isCoinsDataLoading}
         />
       </Box>
+
+      {investments?.[0]?.invested_basket && (
+        <Box sx={{ mb: 2 }}>
+          <Investments investments={investments?.[0]?.invested_basket} />
+        </Box>
+      )}
 
       {/* {showDetails && (
         <Box sx={{ mb: 4 }}>
@@ -214,12 +228,12 @@ const Explore = ({
         </Box>
       )} */}
 
-      <Box>
+      <Box sx={{ mb: 4 }}>
         <Typography variant="h5">About</Typography>
 
         <Divider sx={{ mt: 1, mb: 1 }} />
 
-        {isLoading || isFetching ? (
+        {isLoading ? (
           <>
             <Skeleton animation="wave" variant="text" sx={{ width: '100%' }} />
             <Skeleton animation="wave" variant="text" sx={{ width: '70%' }} />

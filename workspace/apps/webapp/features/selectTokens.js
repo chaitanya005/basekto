@@ -26,11 +26,20 @@ const selectTokens = createSlice({
     handleIsEnable: (state, action) => {
       state.isEnable = action.payload.value;
     },
+
+    deleteAllTokens: (state, action) => {
+      state.selectedTokens = action.payload.emptyData;
+    },
   },
 });
 
-export const { addToken, updatedTokens, deleteToken, handleIsEnable } =
-  selectTokens.actions;
+export const {
+  addToken,
+  updatedTokens,
+  deleteToken,
+  handleIsEnable,
+  deleteAllTokens,
+} = selectTokens.actions;
 export const getTokens = (state) => state.selectedTokens;
 export const getIsEnable = (state) => state.selectedTokens.isEnable;
 
