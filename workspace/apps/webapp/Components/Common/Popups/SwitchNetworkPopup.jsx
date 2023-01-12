@@ -13,7 +13,7 @@ const SwitchNetworkPopup = ({ isOpen, onClose, onComplete }) => {
     setError('');
     setRequesting(true);
 
-    process.env.VERCEL_ENV === 'production'
+    process.env.NEXT_PUBLIC_ENV === 'staging' || 'production'
       ? switchToMaticMainnet()
       : switchToTestNetwork()
           .then(() => {
@@ -41,8 +41,7 @@ const SwitchNetworkPopup = ({ isOpen, onClose, onComplete }) => {
         dividers
       >
         <Typography marginBottom={2}>
-          In order to continue, {"you'll"} need to switch to the Polygon{' '}
-          {'(Mumbai)'} network
+          In order to continue, {"you'll"} need to switch to the Polygon network
         </Typography>
 
         <Typography
@@ -55,7 +54,10 @@ const SwitchNetworkPopup = ({ isOpen, onClose, onComplete }) => {
         </Typography>
 
         <Button color="primary" variant="contained" onClick={onClick} fullWidth>
-          Switch to Polygon {'(Mumbai)'}
+          Switch to{' '}
+          {process.env.NEXT_PUBLIC_ENV === 'testnet'
+            ? 'Polygon (Mumbai)'
+            : 'Matic Mainnet'}
         </Button>
       </DialogBox>
     </>

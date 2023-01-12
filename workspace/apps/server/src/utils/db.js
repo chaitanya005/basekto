@@ -144,6 +144,128 @@ switch (process.env.RAILGUN_ENV) {
       ]);
     break;
 
+  case 'staging':
+    createNewBasket = (accountId, name, description, symbol, coins) =>
+      new Basket({
+        accountId: accountId,
+        name: name,
+        description: description,
+        symbol: symbol,
+        coins: coins,
+      });
+    singleBasket = (_id) => Basket.findOne({ _id });
+    user = (userAddress) => User.findOne({ userAddress });
+    findUserById = (userAddress) => User.findOne({ userAddress });
+    userBaskets = (userAddress) => Basket.find({ accountId: userAddress });
+    readBaskets = () => Basket.find();
+    userInvestedBaskets = (userAddress) =>
+      Basket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $lookup: {
+            from: 'invests',
+            localField: '_id',
+            foreignField: 'basketId',
+            as: 'invested_basket',
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'invested_basket.userAddress',
+            foreignField: 'userAddress',
+            as: 'user',
+          },
+        },
+        {
+          $match: {
+            'user.userAddress': userAddress,
+          },
+        },
+      ]);
+    userInvestmentsInBasket = (userAddress, basketId) =>
+      Basket.aggregate([
+        {
+          $lookup: {
+            from: 'invests',
+            localField: '_id',
+            foreignField: 'basketId',
+            as: 'invested_basket',
+          },
+        },
+        {
+          $unwind: '$invested_basket',
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'invested_basket.userAddress',
+            foreignField: 'userAddress',
+            as: 'user',
+          },
+        },
+        {
+          $match: {
+            $and: [
+              { 'user.userAddress': userAddress },
+              { 'invested_basket.basketId': ObjectId(basketId) },
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: '$_id',
+            invested_basket: {
+              $push: '$invested_basket',
+            },
+            totalAmount: {
+              $sum: '$invested_basket.amount',
+            },
+          },
+        },
+      ]);
+    createNewInvestment = (basketId, userAddress, coins, amount) =>
+      new Invest({
+        userAddress: userAddress,
+        basketId: basketId,
+        amount: amount,
+        coins: coins,
+      });
+    createPublishBasket = (userAddress, basketId) =>
+      new publishedBasket({
+        userAddress: userAddress,
+        basketId: basketId,
+      });
+    findBasketById = (basketId) => Basket.findById(ObjectId(basketId));
+    updateBasketWithPublishId = (basketId, newPublishedBasket) =>
+      Basket.findByIdAndUpdate(
+        basketId,
+        { $set: { publishedBasket: newPublishedBasket._id } },
+        { new: true }
+      );
+    readPublishedBaskets = () =>
+      Basket.aggregate([
+        {
+          $lookup: {
+            from: 'publishedbaskets',
+            localField: 'publishedBasket',
+            foreignField: '_id',
+            as: 'publishedBaskets',
+          },
+        },
+        {
+          $unwind: '$publishedBaskets',
+        },
+      ]);
+    break;
+
   case 'testnet':
     createNewBasket = (accountId, name, description, symbol, coins) =>
       new DevBasket({
