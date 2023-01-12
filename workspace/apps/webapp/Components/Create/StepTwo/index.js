@@ -34,11 +34,11 @@ const MyTextField = styled(TextField)`
 const StepTwo = ({ setActiveStep }) => {
   const [description, setDescription] = useState('');
 
+  const dispatch = useDispatch();
+  const { basketDetails } = useSelector(getBasketDetails);
   useEffect(() => {
     setDescription('' || basketDetails.description);
   }, []);
-  const dispatch = useDispatch();
-  const { basketDetails } = useSelector(getBasketDetails);
 
   const formik = useFormik({
     initialValues: {
