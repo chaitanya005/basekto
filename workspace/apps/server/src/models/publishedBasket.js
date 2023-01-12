@@ -17,7 +17,7 @@ const publishedBasketSchema = new mongoose.Schema({
 });
 
 const publishedBasket = mongoose.model(
-  'publishedBasketSchema',
+  'publishedBasket',
   publishedBasketSchema
 );
 
