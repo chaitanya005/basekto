@@ -50,7 +50,8 @@ async function getDataPoints(req, res) {
       a1.map((a, i) => {
         let obj = {
           'Growth Rate': a,
-          timeStamp: moment(a2[i]).format('MMM Do YY - hh:mm a'),
+          // timeStamp: moment(a2[i]).format('MMM Do YY - hh:mm a'),
+          timeStamp: a2[i],
         };
         formattedGrowthRatesWithTimeStamp.push(obj);
       });
