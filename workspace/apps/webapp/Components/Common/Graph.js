@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import TimeFrameBtns from './TimeFrameBtns';
 import { Box, Grid, Typography } from '@mui/material';
+import moment from 'moment';
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
@@ -40,16 +41,19 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
   }, [aspect, isLoading]);
 
   useEffect(() => {
+    const timeStamp = data?.[data?.length - 1]?.timeStamp;
     setFirstValue(data?.[0]?.['Growth Rate']);
     setLastValue(data?.[data?.length - 1]?.['Growth Rate']);
-    setLastDate(data?.[data?.length - 1]?.timeStamp);
+    setLastDate(moment(timeStamp).format('MMM Do YY - hh:mm a'));
   }, [data]);
 
   const CustomizedToolTip = (props) => {
     const { active, payload } = props;
+    const growthRate = payload?.[0]?.payload['Growth Rate'];
+    const timeStamp = payload?.[0]?.payload?.timeStamp;
     if (active) {
-      setActiveValue(payload?.[0]?.payload['Growth Rate']);
-      setActiveDate(payload?.[0]?.payload.timeStamp);
+      setActiveValue(growthRate);
+      setActiveDate(moment(timeStamp).format('MMM Do YY - hh:mm a'));
     } else {
       setActiveValue('');
       setActiveDate('');
