@@ -24,7 +24,7 @@ const SideSection = (props) => {
         investments?.[0]?.totalAmount +
       investments?.[0]?.totalAmount;
 
-    return yourPosition.toPrecision(2);
+    return yourPosition.toPrecision(1);
   };
 
   return (

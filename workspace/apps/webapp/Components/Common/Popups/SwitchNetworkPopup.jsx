@@ -13,21 +13,23 @@ const SwitchNetworkPopup = ({ isOpen, onClose, onComplete }) => {
     setError('');
     setRequesting(true);
 
-    process.env.NEXT_PUBLIC_ENV === 'staging' || 'production'
-      ? switchToMaticMainnet()
-      : switchToTestNetwork()
-          .then(() => {
-            setError('');
-            onComplete();
-          })
-          .catch((err) => {
-            if (err.code === -32002) {
-              setError(
-                'Something went wrong! A request to switch network may already be ongoing, please check, or try again'
-              );
-            }
-          })
-          .finally(() => setRequesting(false));
+    const switchNetwork =
+      process.env.NEXT_PUBLIC_ENV === 'testnet'
+        ? switchToTestNetwork
+        : switchToMaticMainnet;
+    switchNetwork()
+      .then(() => {
+        setError('');
+        onComplete();
+      })
+      .catch((err) => {
+        if (err.code === -32002) {
+          setError(
+            'Something went wrong! A request to switch network may already be ongoing, please check, or try again'
+          );
+        }
+      })
+      .finally(() => setRequesting(false));
   };
 
   return (
