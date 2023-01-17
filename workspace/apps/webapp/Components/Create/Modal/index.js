@@ -1,4 +1,5 @@
-import { Box, Button, Modal, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
 
 const style = {
   position: 'absolute',
@@ -7,9 +8,8 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: '80%',
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  borderRadius: '1rem',
   boxShadow: 24,
-  p: 4,
 };
 
 const CommonModal = ({ setOpen, open, children }) => {

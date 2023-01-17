@@ -1,8 +1,11 @@
-import { Button, Grid, Paper, Typography } from '@mui/material';
-import React from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import BasketInvest from '../BasketInvest';
 import BasketPerformance from '../BasketPerformance';
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 
 const SideSection = (props) => {
   const {
@@ -28,21 +31,18 @@ const SideSection = (props) => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        position: 'sticky',
+        top: '90px',
+      }}
+    >
       <Grid
-        sx={{
-          position: 'sticky',
-          top: '90px',
-        }}
+        container
+        spacing={2}
+        sx={{ mb: 2.5 }}
       >
-        <Grid
-          sx={{
-            display: 'flex',
-            justifyContent: 'row',
-            mb: 2.5,
-            gap: 1.5,
-          }}
-        >
+        <Grid item xs={12} lg={6}>
           <BasketPerformance
             title={'Basket Growth'}
             color={
@@ -60,6 +60,9 @@ const SideSection = (props) => {
               2
             )}%`}
           />
+        </Grid>
+
+        <Grid item xs={12} lg={6}>
           <BasketPerformance
             title={
               investments?.[0] ? 'Your Positions' : "You haven't invested yet!"
@@ -80,48 +83,50 @@ const SideSection = (props) => {
             value={`${handleTotalPositions()}`}
           />
         </Grid>
-        <Paper
-          elevation={0}
-          sx={{
-            border: '1px solid #ddd',
-            borderRadius: 2,
-            padding: '2rem 1rem 2.5rem',
-          }}
-        >
-          <Grid>
-            <Typography variant="h5" textAlign="center" gutterBottom>
-              Invest in Basket
-            </Typography>
+      </Grid>
 
-            <BasketInvest
-              tokensData={tokens}
-              amount={amount}
-              setAmount={setAmount}
-            />
+      <Paper
+        elevation={0}
+        sx={{
+          border: '1px solid #ddd',
+          borderRadius: 2,
+          padding: '2rem 1rem 2.5rem',
+        }}
+      >
+        <Grid>
+          <Typography variant="h5" textAlign="center" gutterBottom>
+            Invest in Basket
+          </Typography>
 
+          <BasketInvest
+            tokensData={tokens}
+            amount={amount}
+            setAmount={setAmount}
+          />
+
+          <Button
+            variant="contained"
+            onClick={handleStoreInvest}
+            fullWidth
+            disabled={amount ? false : true}
+          >
+            Invest
+          </Button>
+
+          {basket?.accountId === userAddress && !basket.publishedBasket && (
             <Button
               variant="contained"
-              onClick={handleStoreInvest}
               fullWidth
-              disabled={amount ? false : true}
+              sx={{ mt: 2 }}
+              startIcon={<PublishedWithChangesIcon />}
+              onClick={handlePublish}
             >
-              Invest
+              Publish This Basket
             </Button>
-            {basket?.accountId === userAddress && !basket.publishedBasket && (
-              <Button
-                variant="contained"
-                fullWidth
-                sx={{ mt: 2 }}
-                startIcon={<PublishedWithChangesIcon />}
-                onClick={handlePublish}
-              >
-                Publish This Basket
-              </Button>
-            )}
-          </Grid>
-        </Paper>
-      </Grid>
-    </>
+          )}
+        </Grid>
+      </Paper>
+    </Box>
   );
 };
 

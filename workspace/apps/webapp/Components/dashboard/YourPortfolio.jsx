@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -105,6 +104,7 @@ const YourPortfolio = ({ userAddress }) => {
           {alert?.message}
         </Alert>
       </Snackbar>
+
       <Typography
         variant="subtitle2"
         fontSize="12px"
@@ -153,7 +153,7 @@ const YourPortfolio = ({ userAddress }) => {
         {isInvestedBasketsLoading || userInvestedBaskets?.length ? (
           <BasketList
             baskets={userInvestedBaskets}
-            isLoading={false}
+            isLoading={isInvestedBasketsLoading}
             showDescription
           />
         ) : (

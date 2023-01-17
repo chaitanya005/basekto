@@ -3,29 +3,27 @@ import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import Web3 from 'web3';
 import axios from 'axios';
+import Confetti from 'react-confetti';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Snackbar from '@mui/material/Snackbar';
-import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { isValidNetwork } from '@basketo/web-utils';
 import Explore from '../../Components/Common/Explore';
-import BasketInvest from '../../Components/Explore/BasketInvest';
+import SideSection from '../../Components/Explore/SideSection';
 import SwitchNetworkPopup from '../../Components/Common/Popups/SwitchNetworkPopup';
-import RequestingPopup from 'apps/webapp/Components/Common/Popups/RequestingPopup';
+import LoadingPopup from '../../Components/Common/Popups/LoadingPopup';
 import {
   getBasketData,
   getGraphDataWithGrowthRates,
   getCoinPrices,
   getInvestmentsData,
+  isValidNetwork,
 } from '@basketo/web-utils';
-import SideSection from 'apps/webapp/Components/Explore/SideSection';
-import Confetti from 'react-confetti';
+
 const publishBasket = async (userAddress, basketId) =>
   await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/publish`, {
     userAddress,
@@ -135,7 +133,10 @@ const BasketPage = () => {
     setUserAddress(userAddress);
   }, []);
 
-  const { data: investments } = useQuery(
+  const {
+    data: investments,
+    refetch: refetchInvestments
+  } = useQuery(
     ['investment', basket?._id, userAddress],
     () => getInvestmentsData(basket?._id),
     {
@@ -227,11 +228,13 @@ const BasketPage = () => {
         severity: 'error',
         message: 'Please connect your wallet and try again!',
       });
+      setIsInvesting(false);
       return;
     }
 
     if (!(await isValidNetwork())) {
       setNetworkInvalid(true);
+      setIsInvesting(false);
       return;
     }
     const investedCoins = await handleInvest();
@@ -257,6 +260,7 @@ const BasketPage = () => {
             severity: 'success',
             message: "Hurray! You've Successfully Invested in this Basket.",
           });
+          refetchInvestments();
           setTransactionIsSuccess(true);
           setIsInvesting(false);
         })
@@ -285,10 +289,16 @@ const BasketPage = () => {
 
   return (
     <>
-      {typeof window !== undefined && transactionIsSuccess && (
+      {typeof window !== 'undefined' && transactionIsSuccess && (
         <Confetti
+          confettiSource={{
+            x: 0,
+            y: window?.scrollY,
+            w: window?.innerWidth,
+            h: 0,
+          }}
           width={window?.innerWidth}
-          height={window?.innerHeight}
+          height={window?.document.body.scrollHeight}
           recycle={false}
           numberOfPieces={2000}
         />
@@ -308,7 +318,11 @@ const BasketPage = () => {
         </Alert>
       </Snackbar>
 
-      <RequestingPopup isOpen={isInvesting} />
+      <LoadingPopup
+        isOpen={isInvesting}
+        title="Requesting Wallet"
+        text="Waiting for your confirmation to invest in the basket"
+      />
 
       <SwitchNetworkPopup
         isOpen={networkInvalid}
@@ -341,7 +355,11 @@ const BasketPage = () => {
               days={days}
               showDetails={true}
               coins={coinDetails}
+              tokens={tokensWithAmount}
+              amount={amount}
+              setAmount={setAmount}
               investments={investments}
+              refetchInvestments={refetchInvestments}
               handleStoreInvest={handleStoreInvest}
               isCoinsDataLoading={
                 isLoading || isFetching || isCoinPriceFetching

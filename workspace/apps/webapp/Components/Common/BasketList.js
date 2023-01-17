@@ -8,13 +8,14 @@ const BasketList = ({ baskets, isLoading, ...props }) => {
     <Grid container spacing={2}>
       {isLoading ? (
         <>
-          {Array.from({ length: 4 }).map((_, i) => (
+          {Array.from({ length: 6 }).map((_, i) => (
             <Grid item key={i} xs={12} sm={6} md={4} lg={4}>
               <Skeleton
                 sx={{
                   borderRadius: '15px',
                   width: '100%',
-                  height: '300px',
+                  height: '180px',
+                  transform: 'scale(1, 1)',
                 }}
                 animation="wave"
               />

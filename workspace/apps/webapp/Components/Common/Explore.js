@@ -30,6 +30,9 @@ const Explore = ({
   setDays,
   coins,
   isCoinsDataLoading,
+  tokens,
+  amount,
+  setAmount,
   handleStoreInvest,
   days,
   investments,
@@ -91,10 +94,16 @@ const Explore = ({
             />
           ) : (
             <Avatar
-              src={basket?.image || 'default img'}
-              alt={basket?.symbol + ' logo'}
-              sx={{ width: 48, height: 48 }}
-            />
+              // src={basket?.image || 'default img'}
+              // alt={basket?.symbol + ' logo'}
+              sx={{
+                width: 48,
+                height: 48,
+                bgcolor: '#637bfe',
+              }}
+            >
+              {basket?.symbol?.toUpperCase().slice(0, 2)}
+            </Avatar>
           )}
 
           {isLoading ? (
@@ -152,7 +161,11 @@ const Explore = ({
                     </Button>
                   }
                 >
-                  <BasketInvest tokensData={coins} />
+                  <BasketInvest
+                    tokensData={tokens}
+                    amount={amount}
+                    setAmount={setAmount}
+                  />
                 </DialogBox>
               </>
             )}
@@ -228,7 +241,7 @@ const Explore = ({
         </Box>
       )} */}
 
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ mb: showDetails ? 28 : 4 }}>
         <Typography variant="h5">About</Typography>
 
         <Divider sx={{ mt: 1, mb: 1 }} />

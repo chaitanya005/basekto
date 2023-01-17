@@ -1,32 +1,29 @@
 import { useState } from 'react';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Skeleton from '@mui/material/Skeleton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import {
-  Avatar,
-  Box,
-  Menu,
-  MenuItem,
-  Skeleton,
-  styled,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { styled, useTheme } from '@mui/material/styles';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
     color: '#777',
     fontSize: '0.9rem',
     fontWeight: 'bold',
   },
   [`&.${tableCellClasses.body}`]: {
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
     fontSize: '1rem',
     fontWeight: 'bold',
   },
@@ -75,8 +72,8 @@ const TokensTable = ({ tokensData, showDetails, isLoading }) => {
   const columns = {
     weight: 'Weight (%)',
     price: 'Price',
-    growthRate: 'Growth Rate (100%)',
-    withWeight: 'Growth Rate',
+    // growthRate: 'Growth Rate (100%)',
+    // withWeight: 'Growth Rate',
   };
 
   const [selectedColumn, setSelectedColumn] = useState('weight');

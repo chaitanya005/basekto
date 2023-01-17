@@ -1,7 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import Skeleton from '@mui/material/Skeleton';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import {
   LineChart,
   Line,
@@ -12,9 +9,16 @@ import {
   CartesianGrid,
   Legend,
 } from 'recharts';
-import TimeFrameBtns from './TimeFrameBtns';
-import { Box, Grid, Typography } from '@mui/material';
 import moment from 'moment';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import Skeleton from '@mui/material/Skeleton';
+import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import TimeFrameBtns from './TimeFrameBtns';
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
@@ -77,31 +81,31 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
       }}
     />
   ) : (
-    <>
-      <Box
-        sx={{
-          boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-          padding: '20px',
-          borderRadius: '10px',
-        }}
-      >
-        <Grid sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-          <Grid
-            sx={{
-              display: 'flex',
-              alignItems: 'baseline',
-              flexDirection: aspect ? 'column' : 'row',
-              gap: aspect ? '' : '0.5rem',
-            }}
-          >
-            <Grid
+    <Card
+      sx={{
+        boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+        borderRadius: '10px',
+      }}
+    >
+      <CardContent>
+        <Grid
+          container
+          spacing={2}
+          sx={{ mb: 2 }}
+        >
+          <Grid item xs={12} sm={8}>
+            <Box
               color={firstValue <= lastValue ? 'green' : 'red'}
               sx={{
                 fontSize: '1.5rem',
                 fontWeight: '600',
               }}
             >
-              <Typography variant="h6" color="secondary">
+              <Typography
+                variant="h6"
+                color="secondary"
+                fontSize="clamp(1rem, 0.9rem + 0.5vw, 1.25rem)"
+              >
                 Current value of $1000 invested is $
                 {activeValue ? (
                   <>{handleCurrentValue(activeValue)}</>
@@ -125,25 +129,34 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
                   at {activeDate ? <>{activeDate}</> : <>{lastDate}</>}
                 </Typography>
               </Typography>
-            </Grid>
+            </Box>
           </Grid>
 
-          <TimeFrameBtns
-            value={timeFrame}
-            setValue={setTimeFrame}
-            timeFrames={timeFrames}
-            totalAmount={totalAmount}
-            size="small"
-            color="primary"
-            btnStyles={{
-              p: '0.2rem 0.4rem',
-              fontWeight: 'bold',
-            }}
-            btnGroupStyles={{
-              display: 'flex',
-              height: '40px',
-            }}
-          />
+          <Grid item xs={12} sm={4}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'end',
+              }}
+            >
+              <TimeFrameBtns
+                value={timeFrame}
+                setValue={setTimeFrame}
+                timeFrames={timeFrames}
+                totalAmount={totalAmount}
+                size="small"
+                color="primary"
+                btnStyles={{
+                  p: '0.2rem 0.4rem',
+                  fontWeight: 'bold',
+                }}
+                btnGroupStyles={{
+                  display: 'flex',
+                  height: '40px',
+                }}
+              />
+            </Box>
+          </Grid>
         </Grid>
 
         <ResponsiveContainer width="100%" height="auto" aspect={aspect}>
@@ -151,9 +164,6 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
             width={500}
             height={300}
             data={data}
-            margin={{
-              left: aspect ? -24 : -16,
-            }}
             style={{
               fontSize: 'clamp(0.75rem, 0.6rem + 1vw, 1rem)',
             }}
@@ -197,12 +207,12 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
           </LineChart>
         </ResponsiveContainer>
         <style>{`
-        .recharts-legend-wrapper {
-          bottom: -10px !important;
-        }
-      `}</style>
-      </Box>
-    </>
+          .recharts-legend-wrapper {
+            bottom: -10px !important;
+          }
+        `}</style>
+      </CardContent>
+    </Card>
   );
 };
 

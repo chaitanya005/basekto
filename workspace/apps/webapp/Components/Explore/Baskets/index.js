@@ -53,7 +53,7 @@ const Baskets = ({ queryString }) => {
       <BasketList
         baskets={basketsData?.baskets}
         isLoading={isLoading || isFetching}
-        showFollow
+        // showFollow
         showGrowth
         showGraph
         showDescription

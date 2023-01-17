@@ -12,7 +12,7 @@ const index = () => {
   return (
     <>
       <Hero />
-      <TopBaskets />
+      {/* <TopBaskets /> */}
       {/* <TrendingManagers /> */}
       <Partners />
       <Steps />

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import DialogBox from '../DialogBox';
-import RequestingPopup from './RequestingPopup';
+import LoadingPopup from './LoadingPopup';
 
 const ConnectWalletPopup = ({ isOpen, onClose, connectWallet, onComplete }) => {
 
@@ -28,8 +28,10 @@ const ConnectWalletPopup = ({ isOpen, onClose, connectWallet, onComplete }) => {
     return (
 
         <>
-            <RequestingPopup
-                isOpen={ requesting }
+            <LoadingPopup
+                isOpen={requesting}
+                title="Requesting Wallet"
+                text="Waiting for your confirmation to connect to your wallet"
             />
 
             <DialogBox
