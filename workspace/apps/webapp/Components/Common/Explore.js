@@ -20,6 +20,7 @@ import BasketShareDialog from '../Explore/BasketInvest/BasketShareDialog';
 // import InvestReturns from '../Explore/InvestmentReturns';
 import TokensTable from '../Explore/TokensTable';
 import Investments from '../Explore/Investments';
+import Link from 'next/link';
 
 const Explore = ({
   basket,
@@ -30,9 +31,13 @@ const Explore = ({
   setDays,
   coins,
   isCoinsDataLoading,
+  tokens,
+  amount,
+  setAmount,
   handleStoreInvest,
   days,
   investments,
+  creatorDetails,
 }) => {
   const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
 
@@ -91,10 +96,16 @@ const Explore = ({
             />
           ) : (
             <Avatar
-              src={basket?.image || 'default img'}
-              alt={basket?.symbol + ' logo'}
-              sx={{ width: 48, height: 48 }}
-            />
+              // src={basket?.image || 'default img'}
+              // alt={basket?.symbol + ' logo'}
+              sx={{
+                width: 55,
+                height: 55,
+                bgcolor: '#637bfe',
+              }}
+            >
+              {basket?.symbol?.toUpperCase().slice(0, 2)}
+            </Avatar>
           )}
 
           {isLoading ? (
@@ -104,16 +115,46 @@ const Explore = ({
               sx={{ width: '90px', height: '20px' }}
             />
           ) : (
-            <Typography
-              variant="h3"
-              sx={{
-                fontSize: 'clamp(1.25rem, 1.25rem + 0.75vw, 1.75rem)',
-                fontWeight: 'bold',
-                textTransform: 'capitalize',
-              }}
-            >
-              {basket?.name}
-            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: 'clamp(1.25rem, 1.25rem + 0.75vw, 1.75rem)',
+                  fontWeight: 'bold',
+                  textTransform: 'capitalize',
+                }}
+              >
+                {basket?.name}
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '0.5rem',
+                  marginTop: '0.2rem',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography variant="body2">{basket?.symbol}</Typography> |{' '}
+                {creatorDetails && (
+                  <Link href={'/user/' + creatorDetails?.[0]?.userAddress}>
+                    <Button
+                      variant="text"
+                      sx={{ padding: '0' }}
+                      startIcon={
+                        <Avatar sx={{ width: '1em', height: '1em' }} />
+                      }
+                    >
+                      <Typography variant="body2">
+                        {creatorDetails?.[0].firstName.slice(0, 15)}{' '}
+                        {creatorDetails?.[0].firstName.length < 15
+                          ? creatorDetails?.[0].lastName
+                          : '...'}
+                      </Typography>
+                    </Button>
+                  </Link>
+                )}
+              </Box>
+            </Box>
           )}
         </Box>
 
@@ -152,7 +193,11 @@ const Explore = ({
                     </Button>
                   }
                 >
-                  <BasketInvest tokensData={coins} />
+                  <BasketInvest
+                    tokensData={tokens}
+                    amount={amount}
+                    setAmount={setAmount}
+                  />
                 </DialogBox>
               </>
             )}
@@ -228,8 +273,10 @@ const Explore = ({
         </Box>
       )} */}
 
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5">About</Typography>
+      <Box sx={{ mb: showDetails ? 28 : 4 }}>
+        <Typography variant="h5" fontWeight={'bold'}>
+          About
+        </Typography>
 
         <Divider sx={{ mt: 1, mb: 1 }} />
 

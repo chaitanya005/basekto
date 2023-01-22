@@ -1,24 +1,24 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
-import axios from 'axios';
-import { deleteAllTokens, getTokens } from '../../../features/selectTokens';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { ethers } from 'ethers';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Snackbar from '@mui/material/Snackbar';
+import Explore from '../../Common/Explore';
+import SwitchNetworkPopup from '../../Common/Popups/SwitchNetworkPopup';
+import LoadingPopup from '../../Common/Popups/LoadingPopup';
 import { BasketsABI } from '@basketo/contracts';
 import { getProvider, isValidNetwork } from '@basketo/web-utils';
 import {
   getBasketDetails,
   setBasketDetails,
 } from '../../../features/basketDetails';
-import Explore from '../../Common/Explore';
-import SwitchNetworkPopup from '../../Common/Popups/SwitchNetworkPopup';
-import RequestingPopup from '../../Common/Popups/RequestingPopup';
-import { useRouter } from 'next/router';
-import Confetti from 'react-confetti';
+import { deleteAllTokens, getTokens } from '../../../features/selectTokens';
+import { getUserAddress } from 'apps/webapp/features/userAddress';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -31,13 +31,19 @@ let account;
 const createNewBasket = async (basket) =>
   await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`, basket);
 
-const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
+const StepThree = ({
+  graphData,
+  setDays,
+  setActiveStep,
+  handleGraphdata,
+  isGraphLoading,
+}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { selectedTokens } = useSelector(getTokens);
   const { basketDetails } = useSelector(getBasketDetails);
 
-  const [userAddress, setUserAddress] = useState(null);
+  // const [userAddress, setUserAddress] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const [networkInvalid, setNetworkInvalid] = useState(false);
@@ -48,8 +54,8 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
     severity: '',
     message: '',
   });
-
-  const isWalletConnected = () => !!localStorage.getItem('address');
+  const { userAddress } = useSelector(getUserAddress);
+  const isWalletConnected = () => !!userAddress;
 
   // const createBasket = async () => {
   //   // check if wallet settings are valid
@@ -133,7 +139,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
     const basket = {
       ...basketDetails,
       coins: selectedTokens,
-      accountId: localStorage.getItem('address'),
+      accountId: userAddress,
     };
 
     try {
@@ -150,6 +156,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
           })
         );
         setIsBasketCreated(true);
+        return newBasket.data;
       }
     } catch (err) {
       console.log('error', err);
@@ -161,13 +168,19 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     setIsCreatingBasket(true);
-    createBasket().finally(() => setIsCreatingBasket(false));
+    const newBasket = await createBasket();
+    setIsCreatingBasket(false);
+    if (newBasket) {
+      router.push(
+        `/success?basketId=${newBasket._id}&basketName=${newBasket.name}`
+      );
+    }
   };
 
   useEffect(() => {
-    graphData === null && handleGraphdata();
+    !graphData && handleGraphdata();
   }, []);
 
   return (
@@ -194,7 +207,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
         </Alert>
       </Snackbar>
 
-      <RequestingPopup isOpen={isCreatingBasket} />
+      <LoadingPopup isOpen={isCreatingBasket} title="Creating Basket" />
 
       <SwitchNetworkPopup
         isOpen={networkInvalid}
@@ -214,6 +227,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
         }}
         coins={selectedTokens}
         graphDataWithGrowthRates={graphData}
+        isGraphLoading={isGraphLoading}
         setDays={setDays}
         showDetails={false}
       />
@@ -238,14 +252,6 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
           </Button>
         </Grid>
       </Box>
-      {typeof window !== undefined && basketCreated && (
-        <Confetti
-          width={window?.innerWidth}
-          height={window?.innerHeight}
-          recycle={false}
-          numberOfPieces={2000}
-        />
-      )}
     </Grid>
   );
 };

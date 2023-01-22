@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 9000;
 
 require('dotenv').config();
 const ohlcDataPts = require('./routes/ohlcDataPoints');
@@ -9,6 +9,7 @@ const basket = require('./routes/basket');
 const user = require('./routes/user');
 const coinData = require('./routes/coinData');
 const calculate = require('./routes/calculator');
+const admin = require('./routes/admin');
 const { storeOHLCDataToDB } = require('./controllers/graphDataPoints');
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api', ohlcDataPts);
 app.use('/api', coinData);
 app.use('/api', calculate);
+app.use('/api', admin);
 
 mongoose
   .connect(

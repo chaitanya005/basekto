@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { switchToMaticMainnet, switchToTestNetwork } from '@basketo/web-utils';
 import DialogBox from '../DialogBox';
-import RequestingPopup from './RequestingPopup';
+import LoadingPopup from './LoadingPopup';
 
 const SwitchNetworkPopup = ({ isOpen, onClose, onComplete }) => {
   const [requesting, setRequesting] = useState(false);
@@ -34,7 +34,11 @@ const SwitchNetworkPopup = ({ isOpen, onClose, onComplete }) => {
 
   return (
     <>
-      <RequestingPopup isOpen={requesting} />
+      <LoadingPopup
+        isOpen={requesting}
+        title="Requesting Wallet"
+        text="Waiting for your confirmation to switch to the Polygon network"
+      />
 
       <DialogBox
         title="Invalid Network"

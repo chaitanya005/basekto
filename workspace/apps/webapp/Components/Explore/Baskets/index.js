@@ -51,13 +51,12 @@ const Baskets = ({ queryString }) => {
       </Snackbar>
 
       <BasketList
-        baskets={basketsData?.baskets}
+        basketsData={basketsData?.baskets}
         isLoading={isLoading || isFetching}
-        showFollow
+        // showFollow
         showGrowth
-        showGraph
+        // showGraph
         showDescription
-        graph={<MiniGraph data={graphData} />}
       />
     </>
   );

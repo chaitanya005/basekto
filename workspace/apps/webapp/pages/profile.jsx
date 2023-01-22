@@ -3,35 +3,32 @@ import { useEffect, useState } from 'react';
 import { ethAddEventListener } from '@basketo/web-utils';
 import YourProfile from '../Components/Profile';
 import SideNavigationLayout from '../Components/Common/SideNavigationLayout';
+import { useSelector } from 'react-redux';
+import { getUserAddress } from '../features/userAddress';
 
 const Profile = () => {
+  const router = useRouter();
+  const { userAddress } = useSelector(getUserAddress);
 
-    const router = useRouter();
+  if (userAddress === null) {
+    router.push('/#connect-wallet');
+  }
 
-    const [userAddress, setUserAddress] = useState(undefined);
-    const getUserAddress = () => localStorage.getItem('address');
+  useEffect(() => {
+    const updateUserAddress = () => userAddress;
 
-    if (userAddress === null) {
-      router.push('/#connect-wallet');
-    }
+    updateUserAddress();
+    const cleanup = ethAddEventListener('accountsChanged', updateUserAddress);
+    return cleanup;
+  }, []);
 
-    useEffect(() => {
-
-        const updateUserAddress = () =>
-            setUserAddress(getUserAddress());
-
-        updateUserAddress();
-        const cleanup = ethAddEventListener('accountsChanged', updateUserAddress);
-        return cleanup;
-    }, []);
-
-
-    return userAddress && (
-
-        <SideNavigationLayout userAddress={ userAddress }>
-            <YourProfile userAddress={ userAddress } />
-        </SideNavigationLayout>
-    );
+  return (
+    userAddress && (
+      // <SideNavigationLayout userAddress={userAddress}>
+      <YourProfile userAddress={userAddress} />
+      // </SideNavigationLayout>
+    )
+  );
 };
 
 export default Profile;

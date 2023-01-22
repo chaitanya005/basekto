@@ -18,6 +18,8 @@ const validationSchema = yup.object({
     .required('Basket Name is required'),
   symbol: yup
     .string('Enter your Basket Symbol')
+    .min(3, 'Basket Symbol must be of 3-5 characters in length')
+    .max(5, 'Basket Symbol must be of 3-5 characters in length')
     .required('Basket Symbol is required'),
   // description: yup
   //   .string('Enter your Description')

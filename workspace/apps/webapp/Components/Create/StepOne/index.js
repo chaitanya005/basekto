@@ -1,19 +1,16 @@
-import styled from '@emotion/styled';
-import {
-  Alert,
-  Autocomplete,
-  Box,
-  Button,
-  Grid,
-  Snackbar,
-  TextField,
-  Typography,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { coinsList, supportingCoins, testNetCoins } from '../../../mocks/coins';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Alert from '@mui/material/Alert';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Snackbar from '@mui/material/Snackbar';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Tokens from './Tokens';
 import CommonModal from '../Modal';
 import Graph from '../../Common/Graph';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   addToken,
   updatedTokens,
@@ -22,10 +19,10 @@ import {
   handleIsEnable,
   getIsEnable,
 } from '../../../features/selectTokens';
-import Tokens from './Tokens';
+import { supportingCoins, testNetCoins } from '../../../mocks/coins';
 
-const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
-  const [modalOpen, setModalOpen] = React.useState(false);
+const StepOne = ({ handleGraphdata, setActiveStep, graphData, isGraphLoading, setDays }) => {
+  const [modalOpen, setModalOpen] = useState(false);
   const [alert, setAlert] = useState({
     open: false,
     message: '',
@@ -238,7 +235,11 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
           </Grid>
         )}
         <CommonModal setOpen={setModalOpen} open={modalOpen}>
-          <Graph data={graphData} setDays={setDays} />
+          <Graph
+            data={graphData}
+            setDays={setDays}
+            isLoading={isGraphLoading}
+          />
         </CommonModal>
       </Box>
     </>

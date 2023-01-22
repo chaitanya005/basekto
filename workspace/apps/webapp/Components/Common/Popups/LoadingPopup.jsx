@@ -3,7 +3,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import DialogBox from '../DialogBox';
 
-const RequestingPopup = ({ isOpen, onClose }) => {
+const LoadingPopup = ({ isOpen, onClose, title, text }) => {
 
     return (
 
@@ -13,12 +13,12 @@ const RequestingPopup = ({ isOpen, onClose }) => {
                     variant="h6"
                     textAlign="center"
                 >
-                    Requesting Wallet
+                    { title }
                 </Typography>
             }
             open={ isOpen }
             onClose={ onClose }
-            dividers
+            dividers={ !!text }
         >
             <Box textAlign="center">
                 <CircularProgress
@@ -28,10 +28,10 @@ const RequestingPopup = ({ isOpen, onClose }) => {
             </Box>
 
             <Typography textAlign="center">
-                Waiting for your confirmation
+                { text }
             </Typography>
         </DialogBox>
     );
 }
 
-export default RequestingPopup;
+export default LoadingPopup;

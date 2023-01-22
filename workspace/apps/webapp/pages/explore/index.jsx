@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import SearchBar from '../../Components/Explore/SearchBar';
 import Baskets from '../../Components/Explore/Baskets';
+import Head from 'next/head';
 
 const filters = {
   growthRate: 'any',
@@ -59,19 +60,24 @@ const Explore = () => {
   const [query, setQuery] = useState({ search: '', filters });
   const queryString = `?q=${query.search}&${query.filters.toString()}`;
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ mt: 2, mb: 2 }}>
-        <SearchBar
-          search={query.search}
-          setSearch={(val) => setQuery({ ...query, search: val })}
-          filters={query.filters}
-          setFilters={(val) => setQuery({ ...query, filters: val })}
-        />
-      </Box>
-      <Box sx={{ mt: 4, mb: 8 }}>
-        <Baskets queryString={queryString} />
-      </Box>
-    </Container>
+    <>
+      <Head>
+        <title>Basketo | Explore</title>
+      </Head>
+      <Container maxWidth="lg">
+        <Box sx={{ mt: 2, mb: 2 }}>
+          <SearchBar
+            search={query.search}
+            setSearch={(val) => setQuery({ ...query, search: val })}
+            filters={query.filters}
+            setFilters={(val) => setQuery({ ...query, filters: val })}
+          />
+        </Box>
+        <Box sx={{ mt: 4, mb: 8 }}>
+          <Baskets queryString={queryString} />
+        </Box>
+      </Container>
+    </>
   );
 };
 

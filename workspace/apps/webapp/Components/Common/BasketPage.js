@@ -19,6 +19,8 @@ import Confetti from 'react-confetti';
 import { getRequest } from '../../axios';
 import Explore from './Explore';
 import BasketInvest from '../Explore/BasketInvest';
+import { useSelector } from 'react-redux';
+import { getUserAddress } from 'apps/webapp/features/userAddress';
 
 const getBasketData = async (bid) =>
   await (
@@ -52,6 +54,7 @@ const BasketPage = () => {
   const [coinDetails, setCoinDetails] = useState(null);
   const [amount, setAmount] = useState('');
   const [transactionIsSuccess, setTransactionIsSuccess] = useState(false);
+  const { userAddress } = useSelector(getUserAddress);
 
   const {
     data: basket,
@@ -127,7 +130,7 @@ const BasketPage = () => {
   const handleInvest = async () => {
     const buyTokens = [];
     const sellAmounts = [];
-    const takerAddress = localStorage.getItem('address');
+    const takerAddress = userAddress;
     const sellToken = 'MATIC';
 
     for (let coin of basket?.coins) {
@@ -193,7 +196,7 @@ const BasketPage = () => {
     const data = {
       basketId: basket?._id,
       coins: filterInvestedCoins,
-      userAddress: localStorage.getItem('address'),
+      userAddress: userAddress,
       amount: parseInt('250'),
     };
 

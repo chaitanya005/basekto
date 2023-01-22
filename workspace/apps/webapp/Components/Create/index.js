@@ -1,26 +1,45 @@
 import { useEffect, useState } from 'react';
-import {
-  Box,
-  Step,
-  StepLabel,
-  Stepper,
-  Typography,
-  Paper,
-} from '@mui/material';
+import Box from '@mui/material/Box';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import Typography from '@mui/material/Typography';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import { useSelector } from 'react-redux';
 import { getTokens } from 'apps/webapp/features/selectTokens';
-import axios from 'axios';
+import { useQuery } from 'react-query';
+import { getGraphDataWithGrowthRates } from '@basketo/web-utils';
 
 const Create = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [graphData, setGraphData] = useState(null);
   const [days, setDays] = useState(1);
   const { selectedTokens } = useSelector(getTokens);
 
   const steps = ['Choose Tokens', 'Details', 'Review'];
+
+  const {
+    data: graphDataWithGrowthRates,
+    isLoading: isGraphLoading,
+    isFetching: isGraphFetching,
+    isStale: isGraphDataStale,
+    refetch: refetchGraphData,
+  } = useQuery(
+    ['createBasketGraph', selectedTokens, days],
+    () => getGraphDataWithGrowthRates(selectedTokens, days),
+    {
+      staleTime: 300000,
+      onError: () => console.log("Couldn't fetch Graph data."),
+      enabled: false,
+    }
+  );
+
+  const handleGraphdata = () => {
+    if (selectedTokens.length !== 0 && isGraphDataStale) {
+      refetchGraphData();
+    }
+  };
 
   const renderStep = () => {
     switch (activeStep) {
@@ -30,7 +49,8 @@ const Create = () => {
             <StepOne
               handleGraphdata={handleGraphdata}
               setActiveStep={setActiveStep}
-              graphData={graphData}
+              graphData={graphDataWithGrowthRates?.graphData}
+              isGraphLoading={isGraphLoading || isGraphFetching}
               setDays={setDays}
             />
           </>
@@ -41,7 +61,8 @@ const Create = () => {
         return (
           <StepThree
             handleGraphdata={handleGraphdata}
-            graphData={graphData}
+            graphData={graphDataWithGrowthRates?.graphData}
+            isGraphLoading={isGraphLoading || isGraphFetching}
             setDays={setDays}
             setActiveStep={setActiveStep}
           />
@@ -51,20 +72,8 @@ const Create = () => {
     }
   };
 
-  const handleGraphdata = async () => {
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`,
-        { basketData: selectedTokens, days: days }
-      );
-      setGraphData(res.data.graphData);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    if (selectedTokens.length !== 0) handleGraphdata();
+    handleGraphdata();
   }, [days]);
 
   return (

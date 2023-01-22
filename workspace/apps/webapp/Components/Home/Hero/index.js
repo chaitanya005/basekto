@@ -7,8 +7,10 @@ import {
   Typography,
 } from '@mui/material';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import { useTheme } from '@emotion/react';
 
 const Hero = () => {
+  const currentTheme = useTheme();
   return (
     <Container
       maxWidth="lg"
@@ -24,16 +26,16 @@ const Hero = () => {
         sx={{
           textAlign: 'center',
           fontSize: { xs: '42px', md: '75px' },
-          fontWeight: '400',
+          fontWeight: '800',
           lineHeight: '1.2em',
           mb: '30px',
+          fontFamily: 'Cinzel',
         }}
       >
         Invest in diversified crypto portfolios with&nbsp;
         <span
           style={{
-            borderBottom: '3px solid',
-            borderColor: 'secondary.main',
+            color: currentTheme.palette.mode == 'light' ? '#0B754E' : '#B0FFE2',
           }}
         >
           Basketo
