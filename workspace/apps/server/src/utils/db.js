@@ -175,7 +175,7 @@ switch (process.env.RAILGUN_ENV) {
       ]);
     findPublishRequestByBasketId = (basketId) =>
       publishedBasket.findOne({ basketId: basketId });
-    publishBasketsByUser = () =>
+    publishBasketsByUser = (userAddress) =>
       Basket.find({
         accountId: userAddress,
         publishedBasket: { $exists: true },
@@ -347,7 +347,7 @@ switch (process.env.RAILGUN_ENV) {
       ]);
     findPublishRequestByBasketId = (basketId) =>
       publishedBasket.findOne({ basketId: basketId });
-    publishBasketsByUser = () =>
+    publishBasketsByUser = (userAddress) =>
       Basket.find({
         accountId: userAddress,
         publishedBasket: { $exists: true },
