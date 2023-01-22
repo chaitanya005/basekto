@@ -42,7 +42,7 @@ const UserPublishedBaskets = () => {
   return (
     <>
       <Head>
-        <title>{['Basketo' | { uid }]}</title>
+        <title>{[`Basketo | ${uid.toString()}`]}</title>
       </Head>
       <Snackbar
         onClose={() => setAlert((prev) => ({ ...prev, open: false }))}

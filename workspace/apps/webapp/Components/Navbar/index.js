@@ -47,10 +47,13 @@ const pages = [
   // },
   {
     title:
-      process.env.NEXT_PUBLIC_ENV == 'testnet'
+      process.env.NEXT_PUBLIC_ENV === 'testnet'
         ? 'Switch To Mainnet'
         : 'Switch To Testnet',
-    path: '',
+    path:
+      process.env.NEXT_PUBLIC_ENV === 'testnet'
+        ? 'https://basketofinance.com/'
+        : 'https://testnet.basketofinance.com/',
     icon: <ChangeCircleIcon />,
   },
   {
