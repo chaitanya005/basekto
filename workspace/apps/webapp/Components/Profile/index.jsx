@@ -117,7 +117,7 @@ const YourProfile = ({ userAddress }) => {
           </Box>
         </Box>
 
-        {sm && (
+        {sm && loggedInUserAddres === userAddress && (
           <Button
             variant="contained"
             size="small"

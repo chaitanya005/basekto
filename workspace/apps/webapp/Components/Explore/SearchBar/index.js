@@ -13,7 +13,15 @@ import Filters from '../Filters';
 const SearchBar = ({ search, setSearch, filters, setFilters }) => {
   return (
     <>
-      <Typography variant="h3" sx={{ fontSize: '2.5rem', mb: 3 }}>
+      <Typography
+        variant="h3"
+        sx={{
+          fontSize: '2.5rem',
+          mb: 3,
+          fontFamily: 'Cinzel',
+          fontWeight: '800',
+        }}
+      >
         Discover, invest, & participate in Baskets
       </Typography>
 

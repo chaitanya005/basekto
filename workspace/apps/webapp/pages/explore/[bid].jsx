@@ -290,7 +290,9 @@ const BasketPage = () => {
   return (
     <>
       <Head>
-        <title>{['Basketo' | `${basketData?.basketDetails[0]?.name}`]}</title>
+        <title>
+          {[`Basketo | ${basketData?.basketDetails[0]?.name.toString()}`]}
+        </title>
       </Head>
       {typeof window !== 'undefined' && transactionIsSuccess && (
         <Confetti

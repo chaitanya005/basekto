@@ -64,7 +64,7 @@ const Investments = ({ investments }) => {
                   </AvatarGroup>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {investment?.amount}
+                  {investment?.amount} MATIC
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <InvestedDate date={investment?.created_at} />
