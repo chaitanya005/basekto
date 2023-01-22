@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { ethers, utils } from 'ethers';
+import { utils } from 'ethers';
 import axios from 'axios';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import ExploreIcon from '@mui/icons-material/Explore';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -24,17 +25,33 @@ import AccountBalanceWallet from '@mui/icons-material/AccountBalanceWallet';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { toggleTheme } from '@basketo/web-ui';
+import { ethAddEventListener, isValidNetwork } from '@basketo/web-utils';
 import CreateAccountDialog from './CreateAccountDialog';
-import UserAccountDialog from './UserAccountDialog';
+import UserAccountDropdown from './UserAccountDropdown';
+import SwitchNetworkPopup from '../Common/Popups/SwitchNetworkPopup';
+import ConnectWalletPopup from '../Common/Popups/ConnectWalletPopup';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addUserAddress,
+  getUserAddress,
+} from 'apps/webapp/features/userAddress';
 
 const pages = [
   { title: 'Explore', path: '/explore', icon: <ExploreIcon /> },
   { title: 'Create', path: '/create', icon: <AddCircleOutlineIcon /> },
   { title: 'Learn', path: '#', icon: <LightbulbIcon /> },
+  // {
+  //   title: 'Early Access',
+  //   path: 'https://t.me/basketofinance',
+  //   icon: <TelegramIcon />,
+  // },
   {
-    title: 'Early Access',
-    path: 'https://t.me/basketofinance',
-    icon: <TelegramIcon />,
+    title:
+      process.env.NEXT_PUBLIC_ENV == 'testnet'
+        ? 'Switch To Mainnet'
+        : 'Switch To Testnet',
+    path: '',
+    icon: <ChangeCircleIcon />,
   },
   {
     title: 'Theme',
@@ -60,36 +77,35 @@ const Navbar = () => {
   const router = useRouter();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const [userAddress, setUserAddress] = useState(null);
-  const [userBalance, setUserBalance] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
-
-  const [userAccountDialogOpen, setUserAccountDialogOpen] = useState(false);
+  const [switchNetworkPopupOpen, setSwitchNetworkPopupOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { userAddress } = useSelector(getUserAddress);
 
   const handleThemeToggle = () => {
     toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
   };
 
   const updateUserAddress = (address) => {
-    localStorage.setItem('address', address);
-    setUserAddress(localStorage.getItem('address'));
+    dispatch(addUserAddress({ userAddress: address }));
+    Router.reload();
   };
 
   const removeUserAddress = () => {
-    localStorage.removeItem('address');
-    setUserAddress(null);
-    router.push('/');
+    dispatch(addUserAddress({ userAddress: null }));
   };
 
   useEffect(() => {
-
     if (clientSide) {
       if (typeof window?.ethereum === 'undefined') {
         removeUserAddress();
-      } else {
-        setUserAddress(localStorage.getItem('address'));
       }
+
+      const cleanup = ethAddEventListener(
+        'accountsChanged',
+        accountChangedHandler
+      );
+      return cleanup;
     }
   }, []);
 
@@ -102,43 +118,38 @@ const Navbar = () => {
   }, [userAddress]);
 
   const connectWallet = async () => {
+    if (!(await isValidNetwork())) {
+      setSwitchNetworkPopupOpen(true);
+      return;
+    }
+
     if (clientSide && typeof window?.ethereum === 'undefined') {
       router.push({ hash: 'install-metamask' });
       return;
     }
+
     account = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
     });
-    accountChangedHandler(account);
+    await accountChangedHandler(account);
+
+    if (router.asPath.split('#')[1] === 'connect-wallet') {
+      router.push({ hash: '' });
+    }
   };
 
   const disconnectWallet = () => {
     accountChangedHandler([]);
-    setUserAccountDialogOpen(false);
+    Router.reload();
   };
 
   const accountChangedHandler = async (account) => {
-
     if (account[0]) {
       updateUserAddress(utils.getAddress(account[0]));
     } else {
       removeUserAddress();
     }
-    getAccountBalance(account);
   };
-
-  const getAccountBalance = async (account) => {
-    const balance = await window.ethereum?.request({
-      method: 'eth_getBalance',
-      params: [account, 'latest'],
-    });
-    setUserBalance(ethers.utils.formatEther(balance));
-  };
-
-  typeof window !== 'undefined' &&
-    window.ethereum?.on('accountsChanged', (account) =>
-      accountChangedHandler(account)
-    );
 
   return (
     <AppBar
@@ -182,6 +193,24 @@ const Navbar = () => {
             }}
             onClose={() => setIsDrawerOpen(false)}
           >
+            <Box
+              sx={{
+                fontSize: { xs: '14px', md: '20px' },
+                display: 'flex',
+                justifyContent: 'left',
+                margin: '1rem',
+              }}
+            >
+              <Link href="/">
+                <a style={{ display: 'flex' }}>
+                  <img
+                    src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
+                    alt="Basketo"
+                    style={{ maxWidth: '150px' }}
+                  />
+                </a>
+              </Link>
+            </Box>
             {pages.map((page) =>
               page.title != 'Theme' ? (
                 <Link href={page.path} key={page.title}>
@@ -232,7 +261,7 @@ const Navbar = () => {
           <Box
             sx={{
               fontSize: { xs: '14px', md: '20px' },
-              display: 'flex',
+              display: { md: 'flex', xs: 'none' },
               alignItems: 'center',
             }}
           >
@@ -277,31 +306,41 @@ const Navbar = () => {
               </Button>
             ) : (
               <Grid display={'flex'} gap={'1rem'} alignItems={'center'}>
-                <Button
-                  sx={{ fontSize: { xs: '10px', md: '14px' } }}
-                  variant="outlined"
-                  onClick={() => setUserAccountDialogOpen(true)}
-                >
-                  <Typography>
-                    {userBalance}
-                    {'     '}
-                    {userAddress.slice(0, 4)}...
-                    {userAddress.slice(34, 42)}
-                  </Typography>
-                </Button>
-
-                <UserAccountDialog
-                  open={userAccountDialogOpen}
-                  onClose={() => setUserAccountDialogOpen(false)}
-                  userAddress={`${userAddress.slice(
-                    0,
-                    4
-                  )}...${userAddress.slice(38, 42)}`}
+                <UserAccountDropdown
+                  button={{
+                    children: (
+                      <Typography>
+                        {userAddress?.slice(0, 4)}...
+                        {userAddress?.slice(34, 42)}
+                      </Typography>
+                    ),
+                    props: {
+                      sx: {
+                        fontSize: {
+                          xs: '10px',
+                          md: '14px',
+                        },
+                      },
+                      variant: 'outlined',
+                    },
+                  }}
+                  userAddress={userAddress}
                   disconnectWallet={disconnectWallet}
-                  changeAccount={connectWallet}
                 />
               </Grid>
             )}
+
+            <SwitchNetworkPopup
+              isOpen={switchNetworkPopupOpen}
+              onClose={() => setSwitchNetworkPopupOpen(false)}
+              onComplete={async () => {
+                if (await isValidNetwork()) {
+                  setSwitchNetworkPopupOpen(false);
+                  connectWallet();
+                }
+              }}
+            />
+
             {/* <a
               href="https://t.me/basketofinance"
               target="_blank"
@@ -339,6 +378,13 @@ const Navbar = () => {
                 </Button>
               </Box>
             </Dialog>
+
+            <ConnectWalletPopup
+              isOpen={router.asPath.split('#')[1] === 'connect-wallet'}
+              onClose={() => router.push({ hash: '' })}
+              connectWallet={connectWallet}
+              onComplete={() => router.push({ hash: '' })}
+            />
 
             {userAddress && (
               <CreateAccountDialog

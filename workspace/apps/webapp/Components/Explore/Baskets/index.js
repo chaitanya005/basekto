@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import axios from 'axios';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import BasketList from '../../Common/BasketList';
-
-const getBasketData = async (queryString = '') =>
-  (
-    await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/baskets` + queryString
-    )
-  ).data;
+import MiniGraph from '../../Common/MiniGraph';
+import { demoData as graphData } from '../../../mocks/demoData';
+import { getPublishedBaskets } from '@basketo/web-utils';
 
 const Baskets = ({ queryString }) => {
   const [alert, setAlert] = useState({
@@ -23,7 +18,9 @@ const Baskets = ({ queryString }) => {
     data: basketsData,
     isLoading,
     isFetching,
-  } = useQuery('exploreBaskets', () => getBasketData(queryString), {
+    isStale,
+    refetch,
+  } = useQuery('exploreBaskets', () => getPublishedBaskets(), {
     onError: () => {
       setAlert({
         open: true,
@@ -31,7 +28,10 @@ const Baskets = ({ queryString }) => {
         message: 'Something went wrong.',
       });
     },
+    staleTime: 60000,
   });
+
+  if (isStale) refetch();
 
   return (
     <>
@@ -51,11 +51,12 @@ const Baskets = ({ queryString }) => {
       </Snackbar>
 
       <BasketList
-        baskets={ basketsData?.baskets }
-        isLoading={ isLoading || isFetching }
-        showDescription
-        showFollow
+        basketsData={basketsData?.baskets}
+        isLoading={isLoading || isFetching}
+        // showFollow
         showGrowth
+        // showGraph
+        showDescription
       />
     </>
   );

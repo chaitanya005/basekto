@@ -1,13 +1,13 @@
-import {
-  Avatar,
-  Card,
-  Chip,
-  Typography,
-  Button,
-  CardContent,
-  AvatarGroup,
-} from '@mui/material';
-import { Box } from '@mui/system';
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
+import Link from 'next/link';
+// import { deepOrange, deepPurple, deepGreen } from '@mui/material/colors';
 
 //this is a presentational component for an individual basket card
 //TODO: implement graph component
@@ -18,6 +18,7 @@ export function BasketCard({
   showGrowth, // Boolean
   showDescription, // Boolean
   showGraph, // Boolean
+  graph,
   hideChip,
   showFollow,
   ...props
@@ -30,26 +31,26 @@ export function BasketCard({
     return html.replace(regX, '').slice(0, 120);
   };
 
-  // // TO extract only p tag from data
-  // const firstParagraph = '';
-  // const ptag = (desc) => {
-  //   const matches = [];
+  const avatarColors = ['#637bfe', '#00e676', '#00b0ff', '#ff3d00', '#00e5ff'];
 
-  //   desc.replace(/<p>(.*?)<\/p>/g, function () {
-  //     matches.push(arguments[1]);
-  //     console.log('p :', matches);
-  //   });
-
-  //   if (!matches[0]?.length) {
-  //     desc.replace(/<h2>(.*?)<\/h2>/g, function () {
-  //       matches.push(arguments[1]);
-  //     });
-  //     console.log('h2 :', matches);
-  //   }
-
-  //   firstParagraph = matches.length ? matches[0] : '';
-  //   return RemoveHTMLTags(firstParagraph);
-  // };
+  const stringAvatar = (bsktSymbol) => {
+    const randomColor = Math.floor(Math.random() * avatarColors.length);
+    return {
+      sx: {
+        width: '3rem',
+        height: '3rem',
+        gridColumn: '1/2',
+        gridRow: '1/3',
+        alignSelf: 'center',
+        justifySelf: 'center',
+        bgcolor: avatarColors[randomColor],
+        fontSize: '18px',
+      },
+      children: `${bsktSymbol?.split(' ')[0][0]}${
+        bsktSymbol?.split(' ')[0][1]
+      }`,
+    };
+  };
 
   return (
     <Card
@@ -96,19 +97,8 @@ export function BasketCard({
             }}
             variant="h6"
           >
-            <Avatar
-              sx={{
-                width: '3rem',
-                height: '3rem',
-                gridColumn: '1/2',
-                gridRow: '1/3',
-                alignSelf: 'center',
-                justifySelf: 'center',
-              }}
-              alt="web-3 Icon"
-              src="https://set-core.s3.amazonaws.com/img/coin-icons/usdc.svg"
-            />
-            {(data?.title.length > 15
+            <Avatar {...stringAvatar(data?.symbol?.toUpperCase())} />
+            {(data?.title?.length > 15
               ? data.title.slice(0, 15).concat('...')
               : data.title) || 'No title'}
             {showFollow && (
@@ -135,7 +125,7 @@ export function BasketCard({
                   gridRow: '2/3',
                 }}
               >
-                {data?.symbol || 'SYMBOL'}&nbsp;|&nbsp;
+                {data?.symbol || 'SYMBOL'} |{' '}
                 {!hideChip && (
                   <Chip
                     label={data?.basketGrowth?.toFixed(2) + '%'}
@@ -163,27 +153,52 @@ export function BasketCard({
       </Box>
 
       {showDescription && (
-        <>
-          <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
-            {data?.description && RemoveHTMLTags(data?.description)}
-            {/* {data?.description && ptag(data?.description)} */}
-          </Typography>
-        </>
+        <Typography sx={{ margin: '10px 20px', fontSize: '14px' }}>
+          {data?.description && RemoveHTMLTags(data?.description)}
+        </Typography>
+      )}
+
+      {showGraph && (
+        <Box
+          sx={{
+            margin: '20px',
+            padding: '20px',
+            background: '#aaa1',
+            borderRadius: '1rem',
+          }}
+        >
+          {graph}
+        </Box>
       )}
 
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
-          padding: '10px 20px',
+          padding: '10px 20px 10px 15px',
           gap: '0.5rem',
         }}
       >
-        <Avatar sx={{ width: '1.3em', height: '1.3em' }} />
-        <Typography>
-          {data?.basketeer?.slice(0, 4) || 'Basketeer'}...
-          {data?.basketeer?.slice(34, 42)}
-        </Typography>
+        {data?.creator && (
+          <Link href={'/user/' + data?.basketeer}>
+            <Button variant="text" sx={{ padding: '0' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '0.3rem',
+                  alignItems: 'center',
+                }}
+              >
+                <Avatar sx={{ width: '1.3em', height: '1.3em' }} />
+                <Typography variant="body2" sx={{ color: 'secondary' }}>
+                  {/* {data?.basketeer?.slice(0, 4) || 'Basketeer'}... */}
+                  {/* {data?.basketeer?.slice(34, 42)} */}
+                  {data?.creator}
+                </Typography>
+              </Box>
+            </Button>
+          </Link>
+        )}
 
         <AvatarGroup
           sx={{ justifyContent: 'center', marginLeft: 'auto' }}
@@ -191,6 +206,7 @@ export function BasketCard({
         >
           {data?.coins?.map((coin) => (
             <Avatar
+              key={coin.img}
               sx={{
                 width: 30,
                 height: 30,

@@ -1,27 +1,34 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { onAccountsChanged } from '@basketo/web-utils';
+import { ethAddEventListener } from '@basketo/web-utils';
 import YourProfile from '../Components/Profile';
 import SideNavigationLayout from '../Components/Common/SideNavigationLayout';
+import { useSelector } from 'react-redux';
+import { getUserAddress } from '../features/userAddress';
 
 const Profile = () => {
+  const router = useRouter();
+  const { userAddress } = useSelector(getUserAddress);
 
-    const [userAddress, setUserAddress] = useState(undefined);
-    const getUserAddress = () => localStorage.getItem('address');
+  if (userAddress === null) {
+    router.push('/#connect-wallet');
+  }
 
-    useEffect(() => {
-      setUserAddress(getUserAddress());
-    }, []);
+  useEffect(() => {
+    const updateUserAddress = () => userAddress;
 
-    onAccountsChanged(() =>
-        setUserAddress(getUserAddress())
-    );
+    updateUserAddress();
+    const cleanup = ethAddEventListener('accountsChanged', updateUserAddress);
+    return cleanup;
+  }, []);
 
-    return (
-
-        <SideNavigationLayout userAddress={ userAddress }>
-            <YourProfile userAddress={ userAddress } />
-        </SideNavigationLayout>
-    );
+  return (
+    userAddress && (
+      // <SideNavigationLayout userAddress={userAddress}>
+      <YourProfile userAddress={userAddress} />
+      // </SideNavigationLayout>
+    )
+  );
 };
 
 export default Profile;

@@ -1,19 +1,16 @@
-import styled from '@emotion/styled';
-import {
-  Alert,
-  Autocomplete,
-  Box,
-  Button,
-  Grid,
-  Snackbar,
-  TextField,
-  Typography,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { coinsList } from '../../../mocks/coins';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Alert from '@mui/material/Alert';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Snackbar from '@mui/material/Snackbar';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Tokens from './Tokens';
 import CommonModal from '../Modal';
 import Graph from '../../Common/Graph';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   addToken,
   updatedTokens,
@@ -22,10 +19,10 @@ import {
   handleIsEnable,
   getIsEnable,
 } from '../../../features/selectTokens';
-import Tokens from './Tokens';
+import { supportingCoins, testNetCoins } from '../../../mocks/coins';
 
-const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
-  const [modalOpen, setModalOpen] = React.useState(false);
+const StepOne = ({ handleGraphdata, setActiveStep, graphData, isGraphLoading, setDays }) => {
+  const [modalOpen, setModalOpen] = useState(false);
   const [alert, setAlert] = useState({
     open: false,
     message: '',
@@ -35,23 +32,65 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
   const dispatch = useDispatch();
   const { selectedTokens } = useSelector(getTokens);
   const isEnabled = useSelector(getIsEnable);
+  const allCoins =
+    process.env.NEXT_PUBLIC_ENV === 'testnet' ? testNetCoins : supportingCoins;
 
   const handleTokens = (e, val) => {
+    if (selectedTokens.length >= 5) {
+      setAlert({
+        open: true,
+        message: "Sorry! You've reached the Basket limit!",
+        severity: 'error',
+      });
+      return;
+    }
     if (val !== null && !selectedTokens.some((item) => item.name == val)) {
       dispatch(
         handleIsEnable({
           value: false,
         })
       );
-      const symbol = coinsList.filter((item) =>
+      const symbol = allCoins.filter((item) =>
         val == item.name ? { ...item } : ''
       );
+      // if (
+      //   process.env.VERCEL_ENV !== 'production' &&
+      //   (symbol[0].address || symbol[0].polyAddress)
+      // ) {
+      //   setAlert({
+      //     open: true,
+      //     message: 'Sorry! In Test Net we are not supporting this coin',
+      //     severity: 'error',
+      //   });
+      //   return;
+      // } else if (
+      //   process.env.VERCEL_ENV === 'production' &&
+      //   (symbol[0].address || symbol[0].mumbaiAddress)
+      // ) {
+      //   setAlert({
+      //     open: true,
+      //     message: 'Sorry! Currently, We are not supporting this coin',
+      //     severity: 'error',
+      //   });
+      //   return;
+      // }
+
+      // if (symbol[0].address || symbol[0].mumbaiAddress) {
+      //   setAlert({
+      //     open: true,
+      //     message: 'Sorry! Currently, We are not supporting this coin',
+      //     severity: 'error',
+      //   });
+      //   return;
+      // }
       const token = {
         id: symbol[0].id,
         name: val,
         symbol: symbol[0].symbol,
         weight: '',
-        img: symbol[0].image_url,
+        img: symbol[0].image_url || symbol[0].img,
+        coinAddress:
+          symbol[0].address || symbol[0].polyAddress || symbol[0].mumbaiAddress,
       };
       dispatch(addToken({ token }));
     }
@@ -61,7 +100,6 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
     const val = 100 - ratioSum(selectedTokens);
 
     if (Number(e.target.value) >= 0) {
-
       if (Number(e.target.value) <= val + token.weight) {
         const updateTokens = selectedTokens.map((item) =>
           item.name == token.name
@@ -96,7 +134,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
     } else {
       setAlert({
         open: true,
-        message: 'Percentage can\'t be negative.',
+        message: "Percentage can't be negative.",
         severity: 'error',
       });
     }
@@ -145,7 +183,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
           id="free-solo-demo"
           freeSolo
           onChange={handleTokens}
-          options={coinsList.map((option) => option.name)}
+          options={allCoins.map((option) => option.name)}
           sx={{ marginTop: '20px' }}
           renderInput={(params) => (
             <TextField {...params} label="Select Tokens" />
@@ -197,7 +235,11 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, setDays }) => {
           </Grid>
         )}
         <CommonModal setOpen={setModalOpen} open={modalOpen}>
-          <Graph data={graphData} setDays={setDays} />
+          <Graph
+            data={graphData}
+            setDays={setDays}
+            isLoading={isGraphLoading}
+          />
         </CommonModal>
       </Box>
     </>

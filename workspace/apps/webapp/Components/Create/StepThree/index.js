@@ -1,15 +1,24 @@
-import { Alert, Box, Button, Grid, Snackbar, Typography } from '@mui/material';
-import { getTokens } from '../../../features/selectTokens';
-import { useSelector } from 'react-redux';
-import Explore from '../../Common/Explore';
-import { getBasketDetails } from '../../../features/basketDetails';
-import { useEffect, useState } from 'react';
-import { BasketsABI } from '@basketo/contracts';
-import { ethers } from 'ethers';
-import axios from 'axios';
 import { useRouter } from 'next/router';
-import { getNetwork, getProvider, switchNetwork } from '@basketo/web-utils';
-import DialogBox from '../../Common/DialogBox';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { ethers } from 'ethers';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Snackbar from '@mui/material/Snackbar';
+import Explore from '../../Common/Explore';
+import SwitchNetworkPopup from '../../Common/Popups/SwitchNetworkPopup';
+import LoadingPopup from '../../Common/Popups/LoadingPopup';
+import { BasketsABI } from '@basketo/contracts';
+import { getProvider, isValidNetwork } from '@basketo/web-utils';
+import {
+  getBasketDetails,
+  setBasketDetails,
+} from '../../../features/basketDetails';
+import { deleteAllTokens, getTokens } from '../../../features/selectTokens';
+import { getUserAddress } from 'apps/webapp/features/userAddress';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -22,99 +31,194 @@ let account;
 const createNewBasket = async (basket) =>
   await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`, basket);
 
-const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
-
+const StepThree = ({
+  graphData,
+  setDays,
+  setActiveStep,
+  handleGraphdata,
+  isGraphLoading,
+}) => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { selectedTokens } = useSelector(getTokens);
   const { basketDetails } = useSelector(getBasketDetails);
 
-  const [userAddress, setUserAddress] = useState(null);
+  // const [userAddress, setUserAddress] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  // console.log(basketDetails, selectedTokens);
-  // const {mutate:createBasket} = useMutation()
+  const [errMsg, setErrMsg] = useState('');
+  const [networkInvalid, setNetworkInvalid] = useState(false);
+  const [isCreatingBasket, setIsCreatingBasket] = useState(false);
+  const [basketCreated, setIsBasketCreated] = useState(false);
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: '',
+    message: '',
+  });
+  const { userAddress } = useSelector(getUserAddress);
+  const isWalletConnected = () => !!userAddress;
 
-  const isWalletConnected = () => !!localStorage.getItem('address');
+  // const createBasket = async () => {
+  //   // check if wallet settings are valid
+  //   if (!isWalletConnected()) {
+  //     setAlert({
+  //       open: true,
+  //       message: 'Please connect your wallet and try again!',
+  //       severity: 'error',
+  //     });
+  //     return;
+  //   }
+  //   // if (!(await isValidNetwork())) {
+  //   //   setNetworkInvalid(true);
+  //   //   return;
+  //   // }
 
-  const handleCreate = async () => {
+  //   // // wallet setup
+  //   // [account] =
+  //   //   (await window?.ethereum?.request({
+  //   //     method: 'eth_requestAccounts',
+  //   //   })) || [];
+  //   // const signer = getProvider().getSigner();
+  //   // setUserAddress(await signer.getAddress());
+  //   // try {
+  //   //   contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
+  //   //   contract?.on('BasketCreated', (tokenId, uri) =>
+  //   //     console.log('Event emitted this:', parseInt(tokenId), uri)
+  //   //   );
+  //   // } catch (err) {
+  //   //   console.log('err', err);
+  //   //   setAlert({
+  //   //     open: true,
+  //   //     message: 'Something went wrong! Please Try again',
+  //   //     severity: 'error',
+  //   //   });
+  //   // }
 
+  //   // create basket
+  //   const basket = {
+  //     ...basketDetails,
+  //     coins: selectedTokens,
+  //     accountId: localStorage.getItem('address'),
+  //   };
+  //   try {
+  //     // const tokenId = await contract.createBasket(account, 'teststring');
+  //     const newBasket = await createNewBasket(basket);
+  //     if (newBasket) {
+  //       dispatch(
+  //         setBasketDetails({
+  //           basketData: [],
+  //         })
+  //       );
+  //       dispatch(
+  //         deleteAllTokens({
+  //           emptyData: [],
+  //         })
+  //       );
+  //       setIsBasketCreated(true);
+  //     }
+  //   } catch (err) {
+  //     console.log('error', err);
+  //     setAlert({
+  //       open: true,
+  //       message: 'Something went wrong! Please Try again',
+  //       severity: 'error',
+  //     });
+  //   }
+  // };
+
+  const createBasket = async () => {
     // check if wallet settings are valid
     if (!isWalletConnected()) {
-      setSnackbarOpen(true);
-      return;
-    }
-    if (getNetwork().name !== 'maticmum') {
-      setDialogOpen(true);
+      setAlert({
+        open: true,
+        message: 'Please connect your wallet and try again!',
+        severity: 'error',
+      });
       return;
     }
 
-    // wallet setup
-    [account] = await window?.ethereum?.request({
-      method: 'eth_requestAccounts',
-    }) || [];
-    const signer = getProvider().getSigner();
-    setUserAddress(await signer.getAddress());
-    contract = new ethers.Contract(contractAddress, BasketsABI.abi, signer);
-    contract?.on('BasketCreated', (tokenId, uri) =>
-      console.log('Event emitted this:', parseInt(tokenId), uri)
-    );
-
-    // create basket
     const basket = {
       ...basketDetails,
       coins: selectedTokens,
       accountId: userAddress,
     };
-    const tokenId = await contract.createBasket(account, 'teststring');
-    console.log(tokenId);
-    const newBasket = await createNewBasket(basket);
-    newBasket ? router.push('/explore') : console.log('Not creating');
+
+    try {
+      const newBasket = await createNewBasket(basket);
+      if (newBasket) {
+        dispatch(
+          setBasketDetails({
+            basketData: [],
+          })
+        );
+        dispatch(
+          deleteAllTokens({
+            emptyData: [],
+          })
+        );
+        setIsBasketCreated(true);
+        return newBasket.data;
+      }
+    } catch (err) {
+      console.log('error', err);
+      setAlert({
+        open: true,
+        message: 'Something went wrong! Please Try again',
+        severity: 'error',
+      });
+    }
+  };
+
+  const handleCreate = async () => {
+    setIsCreatingBasket(true);
+    const newBasket = await createBasket();
+    setIsCreatingBasket(false);
+    if (newBasket) {
+      router.push(
+        `/success?basketId=${newBasket._id}&basketName=${newBasket.name}`
+      );
+    }
   };
 
   useEffect(() => {
-    graphData === null && handleGraphdata();
+    !graphData && handleGraphdata();
   }, []);
 
   return (
-    <>
+    <Grid>
       <Snackbar
-        open={snackbarOpen}
+        open={alert.open}
         autoHideDuration={6000}
-        onClose={ () => setSnackbarOpen(false) }
+        onClose={() => {
+          setSnackbarOpen(false);
+          setErrMsg('');
+        }}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert
-          onClose={ () => setSnackbarOpen(false) }
-          severity="error"
+          onClose={() => {
+            setSnackbarOpen(false);
+            setErrMsg('');
+          }}
+          severity={alert.severity}
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Please connect your wallet and try again!
+          {alert.message}
         </Alert>
       </Snackbar>
 
-      <DialogBox
-        title="Invalid Network"
-        open={ dialogOpen }
-        onClose={ () => setDialogOpen(false) }
-        dividers
-      >
-        <Typography marginBottom={ 2 }>
-          In order to create a basket, { 'you\'ll' } need to switch to the Polygon { '(Mumbai)' } network
-        </Typography>
+      <LoadingPopup isOpen={isCreatingBasket} title="Creating Basket" />
 
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={ () => {
-            switchNetwork();
-            setDialogOpen(false);
-          }}
-          fullWidth
-        >
-          Switch to Polygon { '(Mumbai)' }
-        </Button>
-      </DialogBox>
+      <SwitchNetworkPopup
+        isOpen={networkInvalid}
+        onClose={() => setNetworkInvalid(false)}
+        onComplete={async () => {
+          if (await isValidNetwork()) {
+            setNetworkInvalid(false);
+            handleCreate();
+          }
+        }}
+      />
 
       <Explore
         basket={{
@@ -122,7 +226,8 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
           accountId: userAddress,
         }}
         coins={selectedTokens}
-        graphData={graphData}
+        graphDataWithGrowthRates={graphData}
+        isGraphLoading={isGraphLoading}
         setDays={setDays}
         showDetails={false}
       />
@@ -147,7 +252,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata }) => {
           </Button>
         </Grid>
       </Box>
-    </>
+    </Grid>
   );
 };
 
