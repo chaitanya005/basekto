@@ -16,10 +16,15 @@ let createNewBasket,
   userInvestedBaskets,
   userInvestmentsInBasket,
   createNewInvestment,
-  createPublishBasket,
+  createPublishBasketRequest,
   findBasketById,
   updateBasketWithPublishId,
-  readPublishedBaskets;
+  readPublishedBaskets,
+  findPublishRequestByBasketId,
+  publishBasketsByUser,
+  readPublishedBasketRequests,
+  readPublishedBasketRequestsData,
+  userTotalInvestments;
 
 switch (process.env.RAILGUN_ENV) {
   case 'production':
@@ -31,7 +36,22 @@ switch (process.env.RAILGUN_ENV) {
         symbol: symbol,
         coins: coins,
       });
-    singleBasket = (_id) => Basket.findOne({ _id });
+    singleBasket = (_id) =>
+      Basket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            _id: ObjectId(_id),
+          },
+        },
+      ]);
     user = (userAddress) => User.findOne({ userAddress });
     findUserById = (userAddress) => User.findOne({ userAddress });
     userBaskets = (userAddress) => Basket.find({ accountId: userAddress });
@@ -116,7 +136,7 @@ switch (process.env.RAILGUN_ENV) {
         amount: amount,
         coins: coins,
       });
-    createPublishBasket = (userAddress, basketId) =>
+    createPublishBasketRequest = (userAddress, basketId) =>
       new publishedBasket({
         userAddress: userAddress,
         basketId: basketId,
@@ -140,6 +160,41 @@ switch (process.env.RAILGUN_ENV) {
         },
         {
           $unwind: '$publishedBaskets',
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'publishedBaskets.userAddress',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $unwind: '$creator',
+        },
+      ]);
+    findPublishRequestByBasketId = (basketId) =>
+      publishedBasket.findOne({ basketId: basketId });
+    publishBasketsByUser = () =>
+      Basket.find({
+        accountId: userAddress,
+        publishedBasket: { $exists: true },
+      });
+    readPublishedBasketRequests = () => publishedBasket.find();
+    readPublishedBasketRequestsData = (basketIds) =>
+      Basket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            _id: { $in: basketIds },
+          },
         },
       ]);
     break;
@@ -153,7 +208,22 @@ switch (process.env.RAILGUN_ENV) {
         symbol: symbol,
         coins: coins,
       });
-    singleBasket = (_id) => Basket.findOne({ _id });
+    singleBasket = (_id) =>
+      Basket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            _id: ObjectId(_id),
+          },
+        },
+      ]);
     user = (userAddress) => User.findOne({ userAddress });
     findUserById = (userAddress) => User.findOne({ userAddress });
     userBaskets = (userAddress) => Basket.find({ accountId: userAddress });
@@ -238,7 +308,7 @@ switch (process.env.RAILGUN_ENV) {
         amount: amount,
         coins: coins,
       });
-    createPublishBasket = (userAddress, basketId) =>
+    createPublishBasketRequest = (userAddress, basketId) =>
       new publishedBasket({
         userAddress: userAddress,
         basketId: basketId,
@@ -263,6 +333,41 @@ switch (process.env.RAILGUN_ENV) {
         {
           $unwind: '$publishedBaskets',
         },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'publishedBaskets.userAddress',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $unwind: '$creator',
+        },
+      ]);
+    findPublishRequestByBasketId = (basketId) =>
+      publishedBasket.findOne({ basketId: basketId });
+    publishBasketsByUser = () =>
+      Basket.find({
+        accountId: userAddress,
+        publishedBasket: { $exists: true },
+      });
+    readPublishedBasketRequests = () => publishedBasket.find();
+    readPublishedBasketRequestsData = (basketIds) =>
+      Basket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            _id: { $in: basketIds },
+          },
+        },
       ]);
     break;
 
@@ -275,7 +380,22 @@ switch (process.env.RAILGUN_ENV) {
         symbol: symbol,
         coins: coins,
       });
-    singleBasket = (_id) => DevBasket.findOne({ _id });
+    singleBasket = (_id) =>
+      DevBasket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            _id: ObjectId(_id),
+          },
+        },
+      ]);
     user = (userAddress) => User.findOne({ userAddress });
     findUserById = (userAddress) => User.findOne({ userAddress });
     userBaskets = (userAddress) => DevBasket.find({ accountId: userAddress });
@@ -289,6 +409,9 @@ switch (process.env.RAILGUN_ENV) {
             foreignField: 'userAddress',
             as: 'creator',
           },
+        },
+        {
+          $unwind: '$creator',
         },
         {
           $lookup: {
@@ -360,7 +483,7 @@ switch (process.env.RAILGUN_ENV) {
         amount: amount,
         coins: coins,
       });
-    createPublishBasket = (userAddress, basketId) =>
+    createPublishBasketRequest = (userAddress, basketId) =>
       new devPublishedBasket({
         userAddress: userAddress,
         basketId: basketId,
@@ -385,7 +508,66 @@ switch (process.env.RAILGUN_ENV) {
         {
           $unwind: '$publishedBaskets',
         },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'publishedBaskets.userAddress',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $unwind: '$creator',
+        },
       ]);
+    findPublishRequestByBasketId = (basketId) =>
+      devPublishedBasket.findOne({ basketId: basketId });
+    publishBasketsByUser = (userAddress) =>
+      DevBasket.find({
+        accountId: userAddress,
+        publishedBasket: { $exists: true },
+      });
+    readPublishedBasketRequests = () => devPublishedBasket.find();
+    readPublishedBasketRequestsData = (basketIds) =>
+      DevBasket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            _id: { $in: basketIds },
+          },
+        },
+      ]);
+
+    // userTotalInvestments = (userAddress) => {
+    //   DevInvest.aggregate([
+    //     {
+    //       $lookup: {
+    //         from: 'users',
+    //         localField: 'userAddress',
+    //         foreignField: 'userAddress',
+    //         as: 'user',
+    //       },
+    //     },
+    //     {
+    //       $group: {
+    //         _id: '$userAddress',
+    //         totalAmount: {
+    //           $sum: 'amount',
+    //         },
+    //       },
+    //     },
+    //     {
+    //       $match: { 'user.userAddress': userAddress },
+    //     },
+    //   ]);
+    // };
     break;
 
   default:
@@ -397,7 +579,22 @@ switch (process.env.RAILGUN_ENV) {
         symbol: symbol,
         coins: coins,
       });
-    singleBasket = (_id) => DevBasket.findOne({ _id });
+    singleBasket = (_id) =>
+      DevBasket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            _id: ObjectId(_id),
+          },
+        },
+      ]);
     user = (userAddress) => User.findOne({ userAddress });
     findUserById = (userAddress) => User.findOne({ userAddress });
     userBaskets = (userAddress) => DevBasket.find({ accountId: userAddress });
@@ -482,7 +679,7 @@ switch (process.env.RAILGUN_ENV) {
         amount: amount,
         coins: coins,
       });
-    createPublishBasket = (userAddress, basketId) =>
+    createPublishBasketRequest = (userAddress, basketId) =>
       new devPublishedBasket({
         userAddress: userAddress,
         basketId: basketId,
@@ -506,6 +703,41 @@ switch (process.env.RAILGUN_ENV) {
         },
         {
           $unwind: '$publishedBaskets',
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'publishedBaskets.userAddress',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $unwind: '$creator',
+        },
+      ]);
+    findPublishRequestByBasketId = (basketId) =>
+      devPublishedBasket.findOne({ basketId: basketId });
+    publishBasketsByUser = (userAddress) =>
+      DevBasket.find({
+        accountId: userAddress,
+        publishedBasket: { $exists: true },
+      });
+    readPublishedBasketRequests = () => devPublishedBasket.find();
+    readPublishedBasketRequestsData = (basketIds) =>
+      DevBasket.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'accountId',
+            foreignField: 'userAddress',
+            as: 'creator',
+          },
+        },
+        {
+          $match: {
+            _id: { $in: basketIds },
+          },
         },
       ]);
     break;
@@ -521,8 +753,12 @@ module.exports = {
   userInvestedBaskets,
   userInvestmentsInBasket,
   createNewInvestment,
-  createPublishBasket,
+  createPublishBasketRequest,
   findBasketById,
   updateBasketWithPublishId,
   readPublishedBaskets,
+  findPublishRequestByBasketId,
+  publishBasketsByUser,
+  readPublishedBasketRequests,
+  readPublishedBasketRequestsData,
 };

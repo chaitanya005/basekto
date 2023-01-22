@@ -88,11 +88,7 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
       }}
     >
       <CardContent>
-        <Grid
-          container
-          spacing={2}
-          sx={{ mb: 2 }}
-        >
+        <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid item xs={12} sm={8}>
             <Box
               color={firstValue <= lastValue ? 'green' : 'red'}
@@ -172,31 +168,17 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
             <YAxis hide={true} domain={['auto', 'auto']} tickCount={4} />
             <CartesianGrid strokeDasharray="3" vertical={true} />
             <Tooltip content={<CustomizedToolTip />} />
-            {firstValue <= lastValue ? (
-              <Legend
-                verticalAlign={'bottom'}
-                payload={[
-                  {
-                    dataKey: 'Growth Rate',
-                    value: 'Performance of Basket',
-                    color: 'green',
-                    type: 'line',
-                  },
-                ]}
-              />
-            ) : (
-              <Legend
-                verticalAlign={'bottom'}
-                payload={[
-                  {
-                    dataKey: 'Growth Rate',
-                    value: 'Performance of Basket',
-                    color: 'red',
-                    type: 'line',
-                  },
-                ]}
-              />
-            )}
+            <Legend
+              verticalAlign={'bottom'}
+              payload={[
+                {
+                  dataKey: 'Growth Rate',
+                  value: 'Performance of Basket',
+                  color: theme.palette.mode == 'light' ? '#000' : '#fff',
+                  type: 'line',
+                },
+              ]}
+            />
             <Line
               dot={false}
               type="monotone"

@@ -24,10 +24,10 @@ const Overview = () => {
           marginTop: '20px',
           gap: '20px',
           overflowX: 'auto',
-          maxWidth:'100%',
+          maxWidth: '100%',
         }}
       >
-        {['NET WORTH', 'TOTAL HOLDINGS', 'PROFIT/LOSS'].map((text, i) => (
+        {['TOTAL INVESTMENTS'].map((text, i) => (
           <Paper
             variant="section"
             color="primary"
@@ -36,13 +36,13 @@ const Overview = () => {
               padding: '20px',
               borderRadius: '12px',
               height: 'max-content',
-              width:'max-content'
+              width: 'max-content',
             }}
           >
             <Typography variant="h3">
               000.00
               <Typography component="span" variant="caption">
-                USDT
+                MATIC
               </Typography>
             </Typography>
             <Typography variant="caption" fontSize={'12px'}>

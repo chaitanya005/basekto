@@ -3,6 +3,10 @@ import Box from '@mui/material/Box';
 import Overview from '../../Components/dashboard/Overview';
 import YourPortfolio from '../../Components/dashboard/YourPortfolio';
 import SideNavigationLayout from '../../Components/Common/SideNavigationLayout';
+import { useSelector } from 'react-redux';
+import { getUserAddress } from 'apps/webapp/features/userAddress';
+import Profile from '../profile';
+import Head from 'next/head';
 
 const data = [
   { pv: 2400 },
@@ -15,25 +19,33 @@ const data = [
 ];
 
 const Dashboard = () => {
-  const [userAddress, setUserAddress] = useState(undefined);
-  const getUserAddress = () => localStorage.getItem('address');
+  // const [userAddress, setUserAddress] = useState(undefined);
+  const { userAddress } = useSelector(getUserAddress);
+  // const getUserAddress = () => userAddress;
 
-  useEffect(() => {
-    setUserAddress(getUserAddress);
-  }, []);
+  // useEffect(() => {
+  //   setUserAddress(getUserAddress);
+  // }, []);
 
   return (
-    <SideNavigationLayout userAddress={userAddress}>
-      <Box
-        sx={{
-          maxWidth: '100%',
-          overflowX: 'auto',
-        }}
-      >
-        {/* <Overview /> */}
-        <YourPortfolio userAddress={userAddress} />
-      </Box>
-    </SideNavigationLayout>
+    <>
+      <Head>
+        <title>Basketo | Dashboard</title>
+      </Head>
+      <SideNavigationLayout userAddress={userAddress}>
+        <Profile />
+        <Box
+          sx={{
+            maxWidth: '100%',
+            overflowX: 'auto',
+          }}
+        >
+          {/* <Profile /> */}
+          {/* <Overview /> */}
+          <YourPortfolio userAddress={userAddress} />
+        </Box>
+      </SideNavigationLayout>
+    </>
   );
 };
 

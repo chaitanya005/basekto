@@ -18,6 +18,7 @@ import {
   setBasketDetails,
 } from '../../../features/basketDetails';
 import { deleteAllTokens, getTokens } from '../../../features/selectTokens';
+import { getUserAddress } from 'apps/webapp/features/userAddress';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -30,13 +31,19 @@ let account;
 const createNewBasket = async (basket) =>
   await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/basket/new`, basket);
 
-const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata, isGraphLoading }) => {
+const StepThree = ({
+  graphData,
+  setDays,
+  setActiveStep,
+  handleGraphdata,
+  isGraphLoading,
+}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { selectedTokens } = useSelector(getTokens);
   const { basketDetails } = useSelector(getBasketDetails);
 
-  const [userAddress, setUserAddress] = useState(null);
+  // const [userAddress, setUserAddress] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const [networkInvalid, setNetworkInvalid] = useState(false);
@@ -47,8 +54,8 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata, isGraph
     severity: '',
     message: '',
   });
-
-  const isWalletConnected = () => !!localStorage.getItem('address');
+  const { userAddress } = useSelector(getUserAddress);
+  const isWalletConnected = () => !!userAddress;
 
   // const createBasket = async () => {
   //   // check if wallet settings are valid
@@ -132,7 +139,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata, isGraph
     const basket = {
       ...basketDetails,
       coins: selectedTokens,
-      accountId: localStorage.getItem('address'),
+      accountId: userAddress,
     };
 
     try {
@@ -162,13 +169,12 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata, isGraph
   };
 
   const handleCreate = async () => {
-
     setIsCreatingBasket(true);
     const newBasket = await createBasket();
     setIsCreatingBasket(false);
     if (newBasket) {
       router.push(
-        `/success?basketId=${ newBasket._id }&basketName=${ newBasket.name }`
+        `/success?basketId=${newBasket._id}&basketName=${newBasket.name}`
       );
     }
   };
@@ -201,10 +207,7 @@ const StepThree = ({ graphData, setDays, setActiveStep, handleGraphdata, isGraph
         </Alert>
       </Snackbar>
 
-      <LoadingPopup
-        isOpen={isCreatingBasket}
-        title="Creating Basket"
-      />
+      <LoadingPopup isOpen={isCreatingBasket} title="Creating Basket" />
 
       <SwitchNetworkPopup
         isOpen={networkInvalid}

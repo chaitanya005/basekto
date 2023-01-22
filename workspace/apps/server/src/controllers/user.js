@@ -25,6 +25,7 @@ const getUser = async (req, res) => {
     const user = await findUserById(req.params.id);
     res.send(user);
   } catch (err) {
+    console.log(err);
     res.status(400).json(err);
   }
 };
@@ -37,8 +38,8 @@ const updateUser = async (req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        description: req.body.description
-      }
+        description: req.body.description,
+      },
     };
     const result = await User.updateOne(filter, updates);
     res.json({ success: result.acknowledged });

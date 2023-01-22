@@ -1,8 +1,14 @@
+import Head from 'next/head';
 import Create from '../Components/Create';
 
 const create = () => {
   return (
-    <Create />
+    <>
+      <Head>
+        <title>Basketo | Create</title>
+      </Head>
+      <Create />
+    </>
   );
 };
 

@@ -37,11 +37,7 @@ const SideSection = (props) => {
         top: '90px',
       }}
     >
-      <Grid
-        container
-        spacing={2}
-        sx={{ mb: 2.5 }}
-      >
+      <Grid container spacing={2} sx={{ mb: 2.5 }}>
         <Grid item xs={12} lg={6}>
           <BasketPerformance
             title={'Basket Growth'}

@@ -2,7 +2,7 @@ import './styles.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider } from '@basketo/web-ui';
 import { Provider } from 'react-redux';
-import { store } from '../app/store';
+import { store, persistor } from '../app/store';
 import Script from 'next/script';
 import Layout from '../Components/Layout';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -39,7 +39,7 @@ persistQueryClient({
 function App({ Component, pageProps }) {
   return (
     <ThemeProvider>
-      <Provider store={store}>
+      <Provider store={store} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
           <Script
             strategy="lazyOnload"
@@ -55,6 +55,12 @@ function App({ Component, pageProps }) {
               });
             `}
           </Script>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Cinzel&family=Poppins:ital,wght@0,700;1,700&display=swap"
+            rel="stylesheet"
+          ></link>
           <Layout>
             <Component {...pageProps} />
           </Layout>
@@ -64,5 +70,11 @@ function App({ Component, pageProps }) {
     </ThemeProvider>
   );
 }
+
+App.getInitialProps = async (appContext) => {
+  // ...
+  persistor.persist();
+  return { persistor };
+};
 
 export default App;

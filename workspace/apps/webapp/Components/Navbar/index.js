@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import ExploreIcon from '@mui/icons-material/Explore';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -29,15 +30,28 @@ import CreateAccountDialog from './CreateAccountDialog';
 import UserAccountDropdown from './UserAccountDropdown';
 import SwitchNetworkPopup from '../Common/Popups/SwitchNetworkPopup';
 import ConnectWalletPopup from '../Common/Popups/ConnectWalletPopup';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addUserAddress,
+  getUserAddress,
+} from 'apps/webapp/features/userAddress';
 
 const pages = [
   { title: 'Explore', path: '/explore', icon: <ExploreIcon /> },
   { title: 'Create', path: '/create', icon: <AddCircleOutlineIcon /> },
   { title: 'Learn', path: '#', icon: <LightbulbIcon /> },
+  // {
+  //   title: 'Early Access',
+  //   path: 'https://t.me/basketofinance',
+  //   icon: <TelegramIcon />,
+  // },
   {
-    title: 'Early Access',
-    path: 'https://t.me/basketofinance',
-    icon: <TelegramIcon />,
+    title:
+      process.env.NEXT_PUBLIC_ENV == 'testnet'
+        ? 'Switch To Mainnet'
+        : 'Switch To Testnet',
+    path: '',
+    icon: <ChangeCircleIcon />,
   },
   {
     title: 'Theme',
@@ -63,32 +77,28 @@ const Navbar = () => {
   const router = useRouter();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const [userAddress, setUserAddress] = useState(null);
   const [isUserExist, setIsUserExist] = useState(true);
   const [switchNetworkPopupOpen, setSwitchNetworkPopupOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { userAddress } = useSelector(getUserAddress);
 
   const handleThemeToggle = () => {
     toggleTheme({ to: currentTheme.palette.mode == 'dark' ? 'light' : 'dark' });
   };
 
   const updateUserAddress = (address) => {
-    localStorage.setItem('address', address);
-    setUserAddress(localStorage.getItem('address'));
+    dispatch(addUserAddress({ userAddress: address }));
+    Router.reload();
   };
 
   const removeUserAddress = () => {
-    localStorage.removeItem('address');
-    setUserAddress(null);
+    dispatch(addUserAddress({ userAddress: null }));
   };
 
   useEffect(() => {
     if (clientSide) {
-
       if (typeof window?.ethereum === 'undefined') {
         removeUserAddress();
-      } else {
-        setUserAddress(localStorage.getItem('address'));
       }
 
       const cleanup = ethAddEventListener(
@@ -108,7 +118,6 @@ const Navbar = () => {
   }, [userAddress]);
 
   const connectWallet = async () => {
-
     if (!(await isValidNetwork())) {
       setSwitchNetworkPopupOpen(true);
       return;
@@ -122,12 +131,11 @@ const Navbar = () => {
     account = await window?.ethereum?.request({
       method: 'eth_requestAccounts',
     });
-    accountChangedHandler(account);
+    await accountChangedHandler(account);
 
     if (router.asPath.split('#')[1] === 'connect-wallet') {
       router.push({ hash: '' });
     }
-    Router.reload();
   };
 
   const disconnectWallet = () => {
@@ -185,6 +193,24 @@ const Navbar = () => {
             }}
             onClose={() => setIsDrawerOpen(false)}
           >
+            <Box
+              sx={{
+                fontSize: { xs: '14px', md: '20px' },
+                display: 'flex',
+                justifyContent: 'left',
+                margin: '1rem',
+              }}
+            >
+              <Link href="/">
+                <a style={{ display: 'flex' }}>
+                  <img
+                    src={`/images${mode == 'dark' ? 'D' : ''}/logo.png`}
+                    alt="Basketo"
+                    style={{ maxWidth: '150px' }}
+                  />
+                </a>
+              </Link>
+            </Box>
             {pages.map((page) =>
               page.title != 'Theme' ? (
                 <Link href={page.path} key={page.title}>
@@ -235,7 +261,7 @@ const Navbar = () => {
           <Box
             sx={{
               fontSize: { xs: '14px', md: '20px' },
-              display: 'flex',
+              display: { md: 'flex', xs: 'none' },
               alignItems: 'center',
             }}
           >
@@ -284,30 +310,30 @@ const Navbar = () => {
                   button={{
                     children: (
                       <Typography>
-                        {userAddress.slice(0, 4)}...
-                        {userAddress.slice(34, 42)}
+                        {userAddress?.slice(0, 4)}...
+                        {userAddress?.slice(34, 42)}
                       </Typography>
                     ),
                     props: {
                       sx: {
                         fontSize: {
                           xs: '10px',
-                          md: '14px'
-                        }
+                          md: '14px',
+                        },
                       },
-                      variant: 'outlined'
-                    }
+                      variant: 'outlined',
+                    },
                   }}
-                  userAddress={ userAddress }
+                  userAddress={userAddress}
                   disconnectWallet={disconnectWallet}
                 />
               </Grid>
             )}
 
             <SwitchNetworkPopup
-              isOpen={ switchNetworkPopupOpen }
-              onClose={ () => setSwitchNetworkPopupOpen(false) }
-              onComplete={ async () => {
+              isOpen={switchNetworkPopupOpen}
+              onClose={() => setSwitchNetworkPopupOpen(false)}
+              onComplete={async () => {
                 if (await isValidNetwork()) {
                   setSwitchNetworkPopupOpen(false);
                   connectWallet();
@@ -356,7 +382,7 @@ const Navbar = () => {
             <ConnectWalletPopup
               isOpen={router.asPath.split('#')[1] === 'connect-wallet'}
               onClose={() => router.push({ hash: '' })}
-              connectWallet={ connectWallet }
+              connectWallet={connectWallet}
               onComplete={() => router.push({ hash: '' })}
             />
 

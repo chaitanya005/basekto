@@ -8,9 +8,13 @@ const {
   userInvestmentsInBasket,
   createNewInvestment,
   findBasketById,
-  createPublishBasket,
   updateBasketWithPublishId,
   readPublishedBaskets,
+  createPublishBasketRequest,
+  findPublishRequestByBasketId,
+  publishBasketsByUser,
+  readPublishedBasketRequests,
+  readPublishedBasketRequestsData,
 } = require('../utils/db');
 
 const createBasket = async (req, res) => {
@@ -47,8 +51,7 @@ const investInBasket = async (req, res) => {
 const getBasket = async (req, res) => {
   try {
     const basket = await singleBasket(req.params.id);
-    const growthRateForEachCoin = await getGrowthRatePercentages(basket.coins);
-    res.send(basket);
+    res.send({ basketDetails: basket });
   } catch (err) {
     console.log(err);
     res.status(400).json(err);
@@ -124,23 +127,31 @@ const getBaskets = async (req, res) => {
   }
 };
 
-const publishBasket = async (req, res) => {
+const publishBasketRequest = async (req, res) => {
   try {
     const { userAddress, basketId } = req.body;
     const basket = await findBasketById(basketId);
-    if (!basket.publishedBasket) {
+    const publishRequest = await findPublishRequestByBasketId(basketId);
+    if (!publishRequest?.basketId) {
       if (userAddress == basket.accountId) {
-        const newPublishedBasket = createPublishBasket(userAddress, basketId);
+        const newPublishedBasket = createPublishBasketRequest(
+          userAddress,
+          basketId
+        );
         await newPublishedBasket.save();
-        await updateBasketWithPublishId(basketId, newPublishedBasket);
-        res.send(newPublishedBasket);
+        res.json({
+          message:
+            'Thank you for raising a request. Please be patient until we process!',
+        });
       } else {
         res
           .status(400)
           .json({ status: 'failure', msg: 'Invalid UserAddress!' });
       }
     } else {
-      res.send({ message: 'This Basket is already Published!' });
+      res.status(400).send({
+        message: "We've processing your request! Thanks for your patience",
+      });
     }
   } catch (err) {
     console.log(err);
@@ -170,6 +181,49 @@ const getPublishedBaskets = async (req, res) => {
   }
 };
 
+const getPublishedBasketsByUser = async (req, res) => {
+  try {
+    const { userAddress } = req.params;
+    const publishedBasketsByUser = await publishBasketsByUser(userAddress);
+    res.send(publishedBasketsByUser);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
+};
+
+const publishBasket = async (req, res) => {
+  try {
+    const { basketId } = req.body;
+    const publishRequest = await findPublishRequestByBasketId(basketId);
+    const basket = await findBasketById(basketId);
+    if (!basket.publishedBasket) {
+      await updateBasketWithPublishId(basketId, publishRequest);
+      res.json({ message: 'Successfully Published!' });
+    } else {
+      res.status(400).send({ message: 'This Basket is already Published!' });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
+};
+
+const getPublishBasketsRequest = async (req, res) => {
+  try {
+    const publishRequests = await readPublishedBasketRequests();
+    const basketIds = [];
+    for (let i of publishRequests) {
+      basketIds.push(i.basketId);
+    }
+    const baskets = await readPublishedBasketRequestsData(basketIds);
+    res.json(baskets);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
+};
+
 const getGrowthRatePercentages = async (coins) => {
   const growthPercentageOfCoins = [];
   for (let i = 0; i < coins.length; i++) {
@@ -188,6 +242,50 @@ const getGrowthRatePercentages = async (coins) => {
   return growthPercentageOfCoins;
 };
 
+const getGraphDataOfBasket = async (coins) => {
+  let growthRatePercentage = [],
+    timeStamp;
+  for (let i = 0; i < coins.length; i++) {
+    const growthRateOfCoin = await Ohlc.findOne({ coin: coins[i].id });
+    let coinsObj = {
+      [coins[i].name]: growthRateOfCoin.data.map((item) => ({ ...item })),
+    };
+
+    let growthRate = coinsObj[coins[i].name].map(
+      (item) =>
+        ((((item['4'] - item['1']) * 100) / item['1']) * [coins[i].weight]) /
+        100
+    );
+    let timeStamps = coinsObj[coins[i].name].map((item) => item['0']);
+    timeStamp = timeStamps;
+    growthRatePercentage.push(growthRate);
+  }
+
+  let sum = (r, a) =>
+    r.map((b, i) => {
+      let num = a[i] + b;
+      return Number(num.toFixed(5));
+    });
+  let totalGrowthRates = growthRatePercentage.reduce(sum);
+  let formattedGrowthRatesWithTimeStamp = [];
+  const data = (a1, a2) =>
+    a1.map((a, i) => {
+      let obj = {
+        'Growth Rate': a,
+        // timeStamp: moment(a2[i]).format('MMM Do YY - hh:mm a'),
+        timeStamp: a2[i],
+      };
+      formattedGrowthRatesWithTimeStamp.push(obj);
+    });
+  data(totalGrowthRates, timeStamp);
+  formattedGrowthRatesWithTimeStamp.pop();
+  const totalGrowthRateOfbasket =
+    formattedGrowthRatesWithTimeStamp[
+      formattedGrowthRatesWithTimeStamp.length - 1
+    ]['Growth Rate'] - formattedGrowthRatesWithTimeStamp[0]['Growth Rate'];
+  return { formattedGrowthRatesWithTimeStamp, totalGrowthRateOfbasket };
+};
+
 module.exports = {
   createBasket,
   getBasket,
@@ -198,4 +296,7 @@ module.exports = {
   getInvesmentsInBasketByUser,
   publishBasket,
   getPublishedBaskets,
+  getPublishedBasketsByUser,
+  publishBasketRequest,
+  getPublishBasketsRequest,
 };

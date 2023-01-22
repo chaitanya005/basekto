@@ -126,12 +126,10 @@ const getCoinPrices = async (coins) =>
     await getRequest(`/price?coins=${JSON.stringify(coins)}`)
   ).data;
 
-const getInvestmentsData = async (id) =>
+const getInvestmentsData = async (id, userAddress) =>
   await (
     await getRequest(
-      `/investments/basket?userAddress=${localStorage.getItem(
-        'address'
-      )}&basketId=${id}`
+      `/investments/basket?userAddress=${userAddress}&basketId=${id}`
     )
   ).data;
 
@@ -147,6 +145,31 @@ const getInvestedBaskets = async (userAddress) =>
 
 const getPublishedBaskets = async () =>
   (await getRequest(`/published/baskets`)).data;
+
+const getPublishedBasketsByUser = async (userAddress) =>
+  await (
+    await getRequest(`/published/baskets/${userAddress}`)
+  ).data;
+
+const publishBasketRequest = async (userAddress, basketId) =>
+  await axios.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/publish/request/new`,
+    {
+      userAddress,
+      basketId,
+    }
+  );
+
+const publishBasket = async (basketId) =>
+  await axios.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_API}/publish/basket/new`,
+    { basketId }
+  );
+
+const getPublishmentRequests = async (bid) =>
+  await (
+    await getRequest(`/publish/requests`)
+  ).data;
 
 export {
   ethAddEventListener,
@@ -164,4 +187,8 @@ export {
   getInvestedBaskets,
   switchToMaticMainnet,
   getPublishedBaskets,
+  getPublishedBasketsByUser,
+  publishBasketRequest,
+  publishBasket,
+  getPublishmentRequests,
 };

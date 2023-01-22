@@ -6,6 +6,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
+import Link from 'next/link';
 // import { deepOrange, deepPurple, deepGreen } from '@mui/material/colors';
 
 //this is a presentational component for an individual basket card
@@ -97,7 +98,7 @@ export function BasketCard({
             variant="h6"
           >
             <Avatar {...stringAvatar(data?.symbol?.toUpperCase())} />
-            {(data?.title.length > 15
+            {(data?.title?.length > 15
               ? data.title.slice(0, 15).concat('...')
               : data.title) || 'No title'}
             {showFollow && (
@@ -157,7 +158,7 @@ export function BasketCard({
         </Typography>
       )}
 
-      {/* {showGraph && (
+      {showGraph && (
         <Box
           sx={{
             margin: '20px',
@@ -168,21 +169,36 @@ export function BasketCard({
         >
           {graph}
         </Box>
-      )} */}
+      )}
 
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
-          padding: '10px 20px',
+          padding: '10px 20px 10px 15px',
           gap: '0.5rem',
         }}
       >
-        <Avatar sx={{ width: '1.3em', height: '1.3em' }} />
-        <Typography>
-          {data?.basketeer?.slice(0, 4) || 'Basketeer'}...
-          {data?.basketeer?.slice(34, 42)}
-        </Typography>
+        {data?.creator && (
+          <Link href={'/user/' + data?.basketeer}>
+            <Button variant="text" sx={{ padding: '0' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '0.3rem',
+                  alignItems: 'center',
+                }}
+              >
+                <Avatar sx={{ width: '1.3em', height: '1.3em' }} />
+                <Typography variant="body2" sx={{ color: 'secondary' }}>
+                  {/* {data?.basketeer?.slice(0, 4) || 'Basketeer'}... */}
+                  {/* {data?.basketeer?.slice(34, 42)} */}
+                  {data?.creator}
+                </Typography>
+              </Box>
+            </Button>
+          </Link>
+        )}
 
         <AvatarGroup
           sx={{ justifyContent: 'center', marginLeft: 'auto' }}
@@ -190,6 +206,7 @@ export function BasketCard({
         >
           {data?.coins?.map((coin) => (
             <Avatar
+              key={coin.img}
               sx={{
                 width: 30,
                 height: 30,

@@ -1,7 +1,6 @@
 import moment from 'moment';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
-import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -9,18 +8,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import styled from '@emotion/styled';
+import { Card, Typography } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    // backgroundColor: theme.palette.background.default,
-    color: '#0B754E',
-    fontSize: '0.9rem',
+    fontSize: '1rem',
     fontWeight: 'bold',
   },
   [`&.${tableCellClasses.body}`]: {
-    // backgroundColor: theme.palette.background.default,
-    fontSize: '1rem',
-    fontWeight: 'bold',
+    fontSize: '0.9rem',
   },
 }));
 
@@ -31,28 +27,32 @@ const TableHeadRow = styled(TableRow)(({ theme }) => ({
 const Investments = ({ investments }) => {
   return (
     <>
-      <TableContainer component={Paper}>
+      <Typography variant="h5" fontWeight={'bold'}>
+        Investments
+      </Typography>
+      <TableContainer
+        component={Card}
+        sx={{ borderRadius: '10px', marginTop: '1rem' }}
+      >
         <Table sx={{ minWidth: { sm: 650 } }}>
           <TableHead>
             <TableHeadRow>
-              <StyledTableCell>Invested In</StyledTableCell>
-              <StyledTableCell>Invested Amount</StyledTableCell>
-              <StyledTableCell sx={{ color: '#0B754E' }}>
-                Invested Date
-              </StyledTableCell>
+              <StyledTableCell>Tokens</StyledTableCell>
+              <StyledTableCell align="center">Amount</StyledTableCell>
+              <StyledTableCell align="center">Date</StyledTableCell>
             </TableHeadRow>
           </TableHead>
           <TableBody>
             {investments?.map((investment, i) => (
               <TableRow
-                key={ i }
+                key={i}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <StyledTableCell component="th" scope="row">
                   <AvatarGroup sx={{ justifyContent: 'left' }} max={3}>
                     {investment?.coins.map((coin, i) => (
                       <Avatar
-                        key={ i }
+                        key={i}
                         alt={coin?.symbol}
                         src={coin?.img}
                         sx={{
@@ -63,8 +63,10 @@ const Investments = ({ investments }) => {
                     ))}
                   </AvatarGroup>
                 </StyledTableCell>
-                <StyledTableCell>{investment?.amount}</StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell align="center">
+                  {investment?.amount}
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   <InvestedDate date={investment?.created_at} />
                 </StyledTableCell>
               </TableRow>
