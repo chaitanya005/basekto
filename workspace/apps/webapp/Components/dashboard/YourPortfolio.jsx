@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -39,43 +39,35 @@ const YourPortfolio = ({ userAddress, showEdit }) => {
     message: '',
   });
 
+  const [userCreatedBaskets, setUserCreatedBaskets] = useState([]);
+  const [userInvestedBaskets, setUserInvestedBaskets] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const handleChange = (event, newValue) => {
     setTabIndex(newValue);
   };
 
-  const { data: userCreatedBaskets, isLoading: isCreatedBasketsLoading } =
-    useQuery(
-      ['createdBaskets', userAddress],
-      () => getCreatedBaskets(userAddress),
-      {
-        staleTime: 60000,
-        onError: () => {
-          setAlert({
-            open: true,
-            severity: 'error',
-            message: 'Something went wrong.',
-          });
-        },
-        enabled: !!userAddress,
+  useEffect(() => {
+    async function getUserBaskets() {
+      setIsLoading(true);
+      try {
+        const [userCreatedBaskets, userInvestedBaskets] = await Promise.all([
+          getCreatedBaskets(userAddress),
+          getInvestedBaskets(userAddress),
+        ]);
+        setUserCreatedBaskets(userCreatedBaskets);
+        setUserInvestedBaskets(userInvestedBaskets);
+      } catch (error) {
+        console.log(error);
+        setAlert({
+          open: true,
+          severity: 'error',
+          message: 'Something went wrong.',
+        });
       }
-    );
-
-  const { data: userInvestedBaskets, isLoading: isInvestedBasketsLoading } =
-    useQuery(
-      ['investedBaskets', userAddress],
-      () => getInvestedBaskets(userAddress),
-      {
-        staleTime: 60000,
-        onError: () => {
-          setAlert({
-            open: true,
-            severity: 'error',
-            message: 'Something went wrong.',
-          });
-        },
-        enabled: !!userAddress,
-      }
-    );
+      setIsLoading(false);
+    }
+    getUserBaskets();
+  }, []);
 
   return (
     <>
@@ -127,10 +119,10 @@ const YourPortfolio = ({ userAddress, showEdit }) => {
         </Box>
 
         <TabPanel value={tabIndex} index={0}>
-          {isCreatedBasketsLoading || userCreatedBaskets?.baskets?.length ? (
+          {userCreatedBaskets?.baskets?.length ? (
             <BasketList
               basketsData={userCreatedBaskets?.baskets}
-              isLoading={isCreatedBasketsLoading}
+              isLoading={isLoading}
               showGrowth
               showDescription
               // showGraph
@@ -142,10 +134,10 @@ const YourPortfolio = ({ userAddress, showEdit }) => {
         </TabPanel>
 
         <TabPanel value={tabIndex} index={1}>
-          {isInvestedBasketsLoading || userInvestedBaskets?.length ? (
+          {userInvestedBaskets?.length ? (
             <BasketList
               basketsData={userInvestedBaskets}
-              isLoading={isInvestedBasketsLoading}
+              isLoading={isLoading}
               showDescription
             />
           ) : (
