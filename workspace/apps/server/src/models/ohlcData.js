@@ -9,6 +9,14 @@ const ohlcSchema = new mongoose.Schema({
     type: Array,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Ohlc = mongoose.model('Ohlc', ohlcSchema);

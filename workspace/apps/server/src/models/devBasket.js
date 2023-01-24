@@ -48,6 +48,14 @@ const DevBasketSchema = new mongoose.Schema({
       },
     },
   ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const DevBasket = mongoose.model('dev-basket', DevBasketSchema);
