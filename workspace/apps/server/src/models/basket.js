@@ -48,6 +48,14 @@ const BasketSchema = new mongoose.Schema({
       },
     },
   ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Basket = mongoose.model('Basket', BasketSchema);

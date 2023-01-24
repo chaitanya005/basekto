@@ -14,6 +14,10 @@ const AdminSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Admin = mongoose.model('Admin', AdminSchema);
