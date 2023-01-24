@@ -12,49 +12,37 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-const CreateAccountDialog = ({
+const CreatePublicUrlDialog = ({
   isOpen,
   userAddress,
-  onAccountCreation,
+  onCreation,
 }) => {
-  const mutation = useMutation((accountDetails) => {
-    return axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_API}/user/new`,
-      accountDetails
-    );
+  const mutation = useMutation((publicUrl) => {
+    return axios.put(
+				`${process.env.NEXT_PUBLIC_BACKEND_API}/user/${userAddress}`,
+				{ publicUrl }
+			);
   });
 
-  const [accountDetails, setAccountDetails] = useState({
-    userAddress: userAddress,
-    firstName: '',
-    lastName: '',
-    email: '',
-    publicUrl: '',
-  });
+	const [publicUrl, setPublicUrl] = useState('');
   const [error, setError] = useState('');
-
-  const onChange = (e, key) => {
-    setAccountDetails({
-      ...accountDetails,
-      [key]: e.target.value,
-    });
-  };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    mutation.mutate(accountDetails);
+    mutation.mutate(publicUrl);
   };
 
   useEffect(() => {
 
     if (mutation.isError) {
+
       if (mutation.error.response.status === 400) {
         setError('Public URL already exists!');
       } else {
-        setError('Account creation failed!');
+        setError('Something went wrong');
       }
-    }else if (mutation.data?.status == 200) {
-      onAccountCreation();
+    } else if (mutation.data?.data.success) {
+      onCreation();
     }
   }, [mutation.status]);
 
@@ -63,7 +51,7 @@ const CreateAccountDialog = ({
       <form onSubmit={onSubmit}>
         <DialogTitle>
           <Typography variant="h5" component="div" textAlign="center">
-            Create New Account
+            Add Public URL
           </Typography>
         </DialogTitle>
 
@@ -84,37 +72,6 @@ const CreateAccountDialog = ({
           )}
 
           <Paper elevation={0} sx={{ background: 'transparent' }}>
-            <TextField
-              fullWidth
-              variant="standard"
-              label="First Name"
-              value={accountDetails.firstName}
-              onChange={(e) => onChange(e, 'firstName')}
-              required
-              sx={{ mb: 2 }}
-            />
-
-            <TextField
-              fullWidth
-              variant="standard"
-              label="Last Name"
-              value={accountDetails.lastName}
-              onChange={(e) => onChange(e, 'lastName')}
-              required
-              sx={{ mb: 2 }}
-            />
-
-            <TextField
-              fullWidth
-              variant="standard"
-              label="Email"
-              type="email"
-              value={accountDetails.email}
-              onChange={(e) => onChange(e, 'email')}
-              required
-              sx={{ mb: 2 }}
-            />
-
             <TextField
               fullWidth
               variant="standard"
@@ -145,8 +102,8 @@ const CreateAccountDialog = ({
                 ),
                 sx: { mb: 1 },
               }}
-              value={accountDetails.publicUrl}
-              onChange={(e) => onChange(e, 'publicUrl')}
+              value={publicUrl}
+              onChange={(e) => setPublicUrl(e.target.value)}
               required
             />
           </Paper>
@@ -159,7 +116,7 @@ const CreateAccountDialog = ({
             type="submit"
             disabled={mutation.isLoading}
           >
-            {mutation.isLoading ? 'Creating Account...' : 'Create Account'}
+            {mutation.isLoading ? 'Creating...' : 'Create'}
           </Button>
         </DialogActions>
       </form>
@@ -167,4 +124,4 @@ const CreateAccountDialog = ({
   );
 };
 
-export default CreateAccountDialog;
+export default CreatePublicUrlDialog;

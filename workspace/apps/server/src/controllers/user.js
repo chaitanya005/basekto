@@ -9,6 +9,7 @@ const createUser = async (req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
+        publicUrl: req.body.publicUrl,
       });
       await user.save();
       res.send(user);
@@ -39,6 +40,7 @@ const updateUser = async (req, res) => {
         lastName: req.body.lastName,
         email: req.body.email,
         description: req.body.description,
+        publicUrl: req.body.publicUrl,
       },
     };
     const result = await User.updateOne(filter, updates);
@@ -50,8 +52,9 @@ const updateUser = async (req, res) => {
 
 const isExist = async (req, res) => {
   try {
-    if (await findUserById(req.query.userAddress)) {
-      res.send({ isExist: true });
+    const user = await findUserById(req.query.userAddress);
+    if (user) {
+      res.send({ isExist: true, hasPublicUrl: user.publicUrl !== user.userAddress });
     } else {
       res.send({ isExist: false });
     }
