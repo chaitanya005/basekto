@@ -31,6 +31,16 @@ const getUser = async (req, res) => {
   }
 };
 
+const getUserAddressByPublicUrl = async (req, res) => {
+  try {
+    const user = await User.findOne({ publicUrl: req.query.publicUrl });
+    res.send({ userAddress: user.userAddress });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
+};
+
 const updateUser = async (req, res) => {
   try {
     const filter = { userAddress: req.params.id };
@@ -66,6 +76,7 @@ const isExist = async (req, res) => {
 module.exports = {
   createUser,
   getUser,
+  getUserAddressByPublicUrl,
   updateUser,
   isExist,
 };

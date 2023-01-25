@@ -1,20 +1,28 @@
-import { getPublishedBasketsByUser } from '@basketo/web-utils';
-import { Alert, Container, Snackbar } from '@mui/material';
-import BasketList from 'apps/webapp/Components/Common/BasketList';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import YourProfile from '../../Components/Profile';
+import Alert from '@mui/material/Alert';
+import Container from '@mui/material/Container';
+import Snackbar from '@mui/material/Snackbar';
+import BasketList from '../Components/Common/BasketList';
+import YourProfile from '../Components/Profile';
+import { getPublishedBasketsByUser, getUserAddressByPublicUrl } from '@basketo/web-utils';
 
 const UserPublishedBaskets = () => {
   const router = useRouter();
-  const { uid } = router.query;
+  const { uid: publicUrl } = router.query;
   const [alert, setAlert] = useState({
     open: false,
     severity: 'success',
     message: '',
   });
+
+  const { data: userAddress } = useQuery(
+    ['userAddress', publicUrl],
+    () => getUserAddressByPublicUrl(publicUrl),
+    { enabled: !!publicUrl }
+  );
 
   const {
     data: userPublishedBaskets,
@@ -22,8 +30,8 @@ const UserPublishedBaskets = () => {
     isStale: isBasketsStale,
     refetch: refetchBaskets,
   } = useQuery(
-    ['publishedBaskets', uid],
-    () => getPublishedBasketsByUser(uid),
+    ['publishedBaskets', userAddress],
+    () => getPublishedBasketsByUser(userAddress),
     {
       staleTime: 60000,
       onError: () => {
@@ -33,16 +41,16 @@ const UserPublishedBaskets = () => {
           message: 'Something went wrong.',
         });
       },
-      enabled: !!uid,
+      enabled: !!userAddress,
     }
   );
 
   if (isBasketsStale) refetchBaskets();
 
-  return (
+  return userAddress && (
     <>
       <Head>
-        <title>{[`Basketo | ${uid.toString()}`]}</title>
+        <title>{[`Basketo | ${publicUrl.toString()}`]}</title>
       </Head>
       <Snackbar
         onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
@@ -60,7 +68,7 @@ const UserPublishedBaskets = () => {
       </Snackbar>
 
       <Container maxWidth="lg">
-        <YourProfile userAddress={uid} />
+        <YourProfile userAddress={userAddress} />
         <BasketList
           basketsData={userPublishedBaskets}
           isLoading={isBasketsLoading}

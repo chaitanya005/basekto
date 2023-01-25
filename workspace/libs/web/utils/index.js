@@ -171,6 +171,11 @@ const getPublishmentRequests = async (bid) =>
     await getRequest(`/publish/requests`)
   ).data;
 
+const getUserAddressByPublicUrl = async (publicUrl) =>
+  await (
+    await getRequest(`/user?publicUrl=${publicUrl}`)
+  ).data.userAddress;
+
 export {
   ethAddEventListener,
   getBalance,
@@ -191,4 +196,5 @@ export {
   publishBasketRequest,
   publishBasket,
   getPublishmentRequests,
+  getUserAddressByPublicUrl,
 };
