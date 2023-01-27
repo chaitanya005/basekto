@@ -64,7 +64,7 @@ const BasketInvest = ({ tokensData, amount, setAmount }) => {
 
         <TextField
           label="Amount to Invest"
-          type="number"
+          type="numeric"
           value={amount}
           onChange={(e) => {
             const val = e.target.value;
