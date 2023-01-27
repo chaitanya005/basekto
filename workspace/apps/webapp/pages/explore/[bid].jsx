@@ -219,15 +219,23 @@ const BasketPage = () => {
         severity: 'error',
         message: 'Please connect your wallet and try again!',
       });
-      setIsInvesting(false);
       return;
     }
 
     if (!(await isValidNetwork())) {
       setNetworkInvalid(true);
-      setIsInvesting(false);
       return;
     }
+
+    if (process.env.NEXT_PUBLIC_ENV !== 'testnet' && amount < 10) {
+      setAlert({
+        open: true,
+        severity: 'error',
+        message: 'Minimum amount to invest is 10 MATIC!',
+      });
+      return;
+    }
+
     setIsInvesting(true);
     const investedCoins = await handleInvest();
     const filterInvestedCoins = Object.values(
