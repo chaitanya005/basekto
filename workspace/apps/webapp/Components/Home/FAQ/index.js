@@ -34,22 +34,37 @@ const faqs = [
   {
     id: 1,
     que: "What is Basketo?",
-    ans: "Basketois user friendly investment interface that builds well researched and diversified crypto portfolios for investors. Its primary objective is to increase the probability of portfolio success and control risk by allocating funds to promising crypto projects spread across different crypto industries, themes and ideas.",
+    ans: "Basketo is a decentralized marketplace for investing, tracking, and managing crypto baskets. It is a one-stop-shop for retail crypto investors who want to easily access a range of professional investment strategies and diversify their portfolio with minimal effort.",
   },
   {
     id: 2,
-    que: "How does Basketohelp investors make the right investment decision?",
-    ans: "There are close to 10,000 crypto assets listed on various crypto exchanges. Picking the right set of cryptos isn’t easy, unless you have a reliable fiduciary friend by your side. At Basketo, we believe, well-researched diversified investing for the long term is the way forward to creating wealth peacefully. The engine behind Basketoacts as a reliable fiduciary that collates complex crypto data, analyses it in view of the current market trends, past performance and valuation, and finally prepares ready-to-invest diversified crypto baskets that match an individual’s risk appetite, budget and investment philosophy.",
+    que: "How does Basketo work?",
+    ans: "On Basketo, users can discover and explore a wide variety of crypto baskets that are tailored to different investment goals and risk profiles. These baskets are created and backed by investment DAOs (Decentralized Autonomous Organizations), which are decentralized, transparent, and governed by smart contracts. Users can easily invest in a variety of crypto baskets, track their performance in real-time, and have full control over their funds.",
   },
   {
     id: 3,
-    que: "How do I track the performance of the baskets I purchased?",
-    ans: "Once the baskets are bought, they are saved under “My portfolios” section of the dashboard. Investors will get real-time updates of their investment performance like overall Portfolio P/L, crypto-wise P/L, latest prevailing prices etc.",
+    que: "Is Basketo secure?",
+    ans: "Yes, Basketo is built on top of multiple blockchains, which ensures that all transactions are secure, transparent, and immutable. In addition, Basketo provides a self-custodian wallet for secure storage of funds.",
   },
   {
     id: 4,
-    que: "Is there any fee to buy baskets?",
-    ans: "Its free for now, Enjoy the services",
+    que: "What types of crypto baskets are available on Basketo?",
+    ans: "Basketo offers a wide variety of crypto baskets, tailored to different investment goals and risk profiles. Users can explore different options and choose the ones that best align with their investment strategy.",
+  },
+  {
+    id: 5,
+    que: "Can I create my own crypto baskets on Basketo?",
+    ans: "Yes, Basketo provides a range of tools and services for creators and investors, including support for multiple blockchains and marketplace analytics. This allows users to create and manage their own crypto baskets on the platform.",
+  },
+  {
+    id: 6,
+    que: "Is Basketo only for experienced investors?",
+    ans: "No, Basketo is designed to be accessible and user-friendly for retail crypto investors of all levels. Whether you are a seasoned pro or just starting out in the world of cryptocurrency, Basketo has something to offer.",
+  },
+  {
+    id: 7,
+    que: "How do I get started with Basketo?",
+    ans: "Getting started with Basketo is easy! Simply visit our website and connect your crypto wallet . From there, you can explore the different crypto baskets available on the platform and choose the ones that best align with your investment goals. Is there a minimum investment amount? There may be minimum investment amounts for certain crypto baskets on the platform. Please refer to the individual offerings for more information.",
   },
 ];
 
