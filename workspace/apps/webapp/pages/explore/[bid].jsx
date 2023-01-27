@@ -13,6 +13,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Explore from '../../Components/Common/Explore';
+import BasketNotFound from '../../Components/Explore/BasketNotFound';
 import SideSection from '../../Components/Explore/SideSection';
 import SwitchNetworkPopup from '../../Components/Common/Popups/SwitchNetworkPopup';
 import LoadingPopup from '../../Components/Common/Popups/LoadingPopup';
@@ -57,6 +58,7 @@ const BasketPage = () => {
     data: basketData,
     isLoading,
     isFetching,
+    isFetched,
   } = useQuery(['basketPage', bid], () => getBasketData(bid), {
     onError: () => {
       setAlert({
@@ -294,6 +296,15 @@ const BasketPage = () => {
       });
     }
   };
+
+  if (
+    isFetched && !basketData ||
+    !(isLoading || isFetching) &&
+    !basketData.basketDetails[0].publishedBasket &&
+    basketData.basketDetails[0].accountId !== userAddress
+  ) {
+    return <BasketNotFound />;
+  }
 
   return (
     <>
