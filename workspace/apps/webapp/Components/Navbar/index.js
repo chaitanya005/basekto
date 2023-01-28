@@ -27,6 +27,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import { toggleTheme } from '@basketo/web-ui';
 import { ethAddEventListener, isValidNetwork } from '@basketo/web-utils';
 import CreateAccountDialog from './CreateAccountDialog';
+import CreatePublicUrlDialog from './CreatePublicUrlDialog';
 import UserAccountDropdown from './UserAccountDropdown';
 import SwitchNetworkPopup from '../Common/Popups/SwitchNetworkPopup';
 import ConnectWalletPopup from '../Common/Popups/ConnectWalletPopup';
@@ -70,7 +71,7 @@ const checkIsUserExist = async (userAddress) =>
     await axios.get(
       `${process.env.NEXT_PUBLIC_BACKEND_API}/user/exist?userAddress=${userAddress}`
     )
-  ).data.isExist;
+  ).data;
 
 const Navbar = () => {
   const {
@@ -81,6 +82,7 @@ const Navbar = () => {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isUserExist, setIsUserExist] = useState(true);
+  const [hasPublicUrl, setHasPublicUrl] = useState(true);
   const [switchNetworkPopupOpen, setSwitchNetworkPopupOpen] = useState(false);
   const dispatch = useDispatch();
   const { userAddress } = useSelector(getUserAddress);
@@ -113,21 +115,23 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    userAddress
-      ? (async () => {
-          setIsUserExist(await checkIsUserExist(userAddress));
-        })()
-      : setIsUserExist(true);
+    if (userAddress) {
+      checkIsUserExist(userAddress).then((res) => {
+        setIsUserExist(res.isExist);
+        setHasPublicUrl(res.hasPublicUrl);
+      });
+    }
   }, [userAddress]);
 
   const connectWallet = async () => {
-    if (!(await isValidNetwork())) {
-      setSwitchNetworkPopupOpen(true);
-      return;
-    }
 
     if (clientSide && typeof window?.ethereum === 'undefined') {
       router.push({ hash: 'install-metamask' });
+      return;
+    }
+
+    if (!(await isValidNetwork())) {
+      setSwitchNetworkPopupOpen(true);
       return;
     }
 
@@ -395,10 +399,22 @@ const Navbar = () => {
                 userAddress={userAddress}
                 onAccountCreation={() => {
                   setIsUserExist(true);
+                  setHasPublicUrl(true);
                   router.push('/explore');
                 }}
               />
             )}
+
+            {userAddress && isUserExist && (
+              <CreatePublicUrlDialog
+                isOpen={!hasPublicUrl}
+                userAddress={userAddress}
+                onCreation={() => {
+                  setHasPublicUrl(true);
+                }}
+              />
+            )}
+
             {!router.pathname.includes('dashboard') ? (
               <Button
                 // variant="outlined"
