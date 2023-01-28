@@ -9,6 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import styled from '@emotion/styled';
 import { Card, Typography } from '@mui/material';
+import FormatDate from '../../Common/FormatDate';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -67,7 +68,10 @@ const Investments = ({ investments }) => {
                   {investment?.amount} MATIC
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <InvestedDate date={investment?.created_at} />
+                  <FormatDate
+                    date={investment?.createdAt || investment?.created_at}
+                    format={'hh:mma DD/MM YYYY'}
+                  />
                 </StyledTableCell>
               </TableRow>
             ))}
@@ -76,11 +80,6 @@ const Investments = ({ investments }) => {
       </TableContainer>
     </>
   );
-};
-
-const InvestedDate = ({ date }) => {
-  const investedDate = moment(date).format('hh:mm DD/MM YYYY');
-  return <div>{investedDate}</div>;
 };
 
 export default Investments;

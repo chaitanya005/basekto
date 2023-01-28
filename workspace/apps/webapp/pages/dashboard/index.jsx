@@ -7,6 +7,11 @@ import { useSelector } from 'react-redux';
 import { getUserAddress } from 'apps/webapp/features/userAddress';
 import Profile from '../profile';
 import Head from 'next/head';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import DashboardRounded from '@mui/icons-material/DashboardRounded';
+import Explore from '@mui/icons-material/Explore';
+import Notifications from '@mui/icons-material/Notifications';
+import { useRouter } from 'next/router';
 
 const data = [
   { pv: 2400 },
@@ -19,20 +24,44 @@ const data = [
 ];
 
 const Dashboard = () => {
-  // const [userAddress, setUserAddress] = useState(undefined);
   const { userAddress } = useSelector(getUserAddress);
-  // const getUserAddress = () => userAddress;
-
-  // useEffect(() => {
-  //   setUserAddress(getUserAddress);
-  // }, []);
+  const router = useRouter();
+  const navigationInfo = [
+    {
+      route: '/dashboard',
+      onClick: () => router.push({ pathname: '/dashboard' }),
+      label: 'Overview',
+      icon: <DashboardRounded />,
+    },
+    // {
+    //     route: '/dashboard#notifications',
+    //     onClick: () => router.push({ hash: '#notifications' }),
+    //     label: 'Notifications',
+    //     icon: <Notifications />,
+    // },
+    // {
+    //     route: '/profile',
+    //     onClick: () => router.push({ pathname: '/profile' }),
+    //     label: 'Profile',
+    //     icon: <AccountCircle />,
+    // },
+    {
+      route: '/explore',
+      onClick: () => router.push({ pathname: '/explore' }),
+      label: 'Explore',
+      icon: <Explore />,
+    },
+  ];
 
   return (
     <>
       <Head>
         <title>Basketo | Dashboard</title>
       </Head>
-      <SideNavigationLayout userAddress={userAddress}>
+      <SideNavigationLayout
+        userAddress={userAddress}
+        navigationInfo={navigationInfo}
+      >
         <Profile />
         <Box
           sx={{

@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import {
-  Snackbar,
-  Alert,
   Grid,
   useMediaQuery,
   useTheme,
@@ -21,6 +19,7 @@ import Explore from './Explore';
 import BasketInvest from '../Explore/BasketInvest';
 import { useSelector } from 'react-redux';
 import { getUserAddress } from 'apps/webapp/features/userAddress';
+import AlertBox from './AlertBox';
 
 const getBasketData = async (bid) =>
   await (
@@ -229,20 +228,7 @@ const BasketPage = () => {
           numberOfPieces={2000}
         />
       )}
-      <Snackbar
-        onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
-        open={alert.open}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          severity={alert?.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {alert?.message}
-        </Alert>
-      </Snackbar>
+      <AlertBox alert={alert} setAlert={setAlert} />
 
       <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
         <Button
