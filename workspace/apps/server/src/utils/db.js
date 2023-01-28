@@ -24,6 +24,7 @@ let createNewBasket,
   publishBasketsByUser,
   readPublishedBasketRequests,
   readPublishedBasketRequestsData,
+  collectionsForActivity,
   userTotalInvestments;
 
 switch (process.env.RAILGUN_ENV) {
@@ -200,6 +201,12 @@ switch (process.env.RAILGUN_ENV) {
           },
         },
       ]);
+    collectionsForActivity = [
+      { name: 'Basket', model: Basket },
+      { name: 'publishedBasket', model: publishedBasket },
+      { name: 'User', model: User },
+      { name: 'Invest', model: Invest },
+    ];
     break;
 
   case 'staging':
@@ -372,6 +379,12 @@ switch (process.env.RAILGUN_ENV) {
           },
         },
       ]);
+    collectionsForActivity = [
+      { name: 'Basket', model: Basket },
+      { name: 'publishedBasket', model: publishedBasket },
+      { name: 'User', model: User },
+      { name: 'Invest', model: Invest },
+    ];
     break;
 
   case 'testnet':
@@ -552,6 +565,12 @@ switch (process.env.RAILGUN_ENV) {
           },
         },
       ]);
+    collectionsForActivity = [
+      { name: 'DevBasket', model: DevBasket },
+      { name: 'DevPublishedBasket', model: devPublishedBasket },
+      { name: 'User', model: User },
+      { name: 'DevInvest', model: DevInvest },
+    ];
 
     // userTotalInvestments = (userAddress) => {
     //   DevInvest.aggregate([
@@ -748,6 +767,12 @@ switch (process.env.RAILGUN_ENV) {
           },
         },
       ]);
+    collectionsForActivity = [
+      { name: 'DevBasket', model: DevBasket },
+      { name: 'DevPublishedBasket', model: devPublishedBasket },
+      { name: 'User', model: User },
+      { name: 'DevInvest', model: DevInvest },
+    ];
     break;
 }
 
@@ -769,4 +794,5 @@ module.exports = {
   publishBasketsByUser,
   readPublishedBasketRequests,
   readPublishedBasketRequestsData,
+  collectionsForActivity,
 };

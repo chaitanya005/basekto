@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Alert from '@mui/material/Alert';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Tokens from './Tokens';
@@ -20,8 +18,15 @@ import {
   getIsEnable,
 } from '../../../features/selectTokens';
 import { supportingCoins, testNetCoins } from '../../../mocks/coins';
+import AlertBox from '../../Common/AlertBox';
 
-const StepOne = ({ handleGraphdata, setActiveStep, graphData, isGraphLoading, setDays }) => {
+const StepOne = ({
+  handleGraphdata,
+  setActiveStep,
+  graphData,
+  isGraphLoading,
+  setDays,
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [alert, setAlert] = useState({
     open: false,
@@ -164,20 +169,7 @@ const StepOne = ({ handleGraphdata, setActiveStep, graphData, isGraphLoading, se
 
   return (
     <>
-      <Snackbar
-        onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
-        open={alert.open}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          severity={alert?.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {alert?.message}
-        </Alert>
-      </Snackbar>
+      <AlertBox alert={alert} setAlert={setAlert} />
       <Box>
         <Autocomplete
           id="free-solo-demo"

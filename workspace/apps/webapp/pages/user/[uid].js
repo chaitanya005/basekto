@@ -1,5 +1,6 @@
 import { getPublishedBasketsByUser } from '@basketo/web-utils';
-import { Alert, Container, Snackbar } from '@mui/material';
+import { Container } from '@mui/material';
+import AlertBox from 'apps/webapp/Components/Common/AlertBox';
 import BasketList from 'apps/webapp/Components/Common/BasketList';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -44,20 +45,7 @@ const UserPublishedBaskets = () => {
       <Head>
         <title>{[`Basketo | ${uid.toString()}`]}</title>
       </Head>
-      <Snackbar
-        onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
-        open={alert.open}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          severity={alert?.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {alert?.message}
-        </Alert>
-      </Snackbar>
+      <AlertBox alert={alert} setAlert={setAlert} />
 
       <Container maxWidth="lg">
         <YourProfile userAddress={uid} />

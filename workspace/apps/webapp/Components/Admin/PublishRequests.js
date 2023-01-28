@@ -1,17 +1,15 @@
 import styled from '@emotion/styled';
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { getRequest } from 'apps/webapp/axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { getPublishmentRequests, publishBasket } from '@basketo/web-utils';
+import AlertBox from '../Common/AlertBox';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -63,20 +61,7 @@ const PublishRequests = () => {
 
   return (
     <>
-      <Snackbar
-        onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
-        open={alert.open}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          severity={alert?.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {alert?.message}
-        </Alert>
-      </Snackbar>
+      <AlertBox alert={alert} setAlert={setAlert} />
       <TableContainer>
         <Table sx={{ minWidth: { sm: 650 }, margin: '1rem' }}>
           <TableHead>
