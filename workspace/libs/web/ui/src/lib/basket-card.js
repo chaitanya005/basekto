@@ -180,7 +180,7 @@ export function BasketCard({
         }}
       >
         {data?.creator && (
-          <Link href={'/' + data?.basketeer}>
+          <Link href={'/user/' + data?.basketeer}>
             <Button variant="text" sx={{ padding: '0' }}>
               <Box
                 sx={{
