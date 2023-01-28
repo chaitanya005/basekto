@@ -23,7 +23,7 @@ const AdminLogin = () => {
             adminToken: res.data.token,
           })
         );
-        Router.push('/admin/dashboard');
+        Router.push('/admin/dashboard/publish-requests');
       }
     } catch (err) {
       console.error(err);

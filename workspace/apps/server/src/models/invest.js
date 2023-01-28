@@ -42,7 +42,7 @@ const InvestSchema = new mongoose.Schema({
       },
     },
   ],
-  created_at: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now },
   updatedAt: {
     type: Date,
     default: Date.now,

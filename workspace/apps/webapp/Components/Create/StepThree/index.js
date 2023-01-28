@@ -2,12 +2,9 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { ethers } from 'ethers';
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Snackbar from '@mui/material/Snackbar';
 import Explore from '../../Common/Explore';
 import SwitchNetworkPopup from '../../Common/Popups/SwitchNetworkPopup';
 import LoadingPopup from '../../Common/Popups/LoadingPopup';
@@ -19,6 +16,7 @@ import {
 } from '../../../features/basketDetails';
 import { deleteAllTokens, getTokens } from '../../../features/selectTokens';
 import { getUserAddress } from 'apps/webapp/features/userAddress';
+import AlertBox from '../../Common/AlertBox';
 
 //the contract address is of polygon mumbai testnet on alchemy
 const contractAddress = '0xB5286eA8157e5c1b40B440E3be0F5B251F790931';
@@ -44,8 +42,6 @@ const StepThree = ({
   const { basketDetails } = useSelector(getBasketDetails);
 
   // const [userAddress, setUserAddress] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
   const [networkInvalid, setNetworkInvalid] = useState(false);
   const [isCreatingBasket, setIsCreatingBasket] = useState(false);
   const [basketCreated, setIsBasketCreated] = useState(false);
@@ -185,27 +181,7 @@ const StepThree = ({
 
   return (
     <Grid>
-      <Snackbar
-        open={alert.open}
-        autoHideDuration={6000}
-        onClose={() => {
-          setSnackbarOpen(false);
-          setErrMsg('');
-        }}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          onClose={() => {
-            setSnackbarOpen(false);
-            setErrMsg('');
-          }}
-          severity={alert.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {alert.message}
-        </Alert>
-      </Snackbar>
+      <AlertBox alert={alert} setAlert={setAlert} />
 
       <LoadingPopup isOpen={isCreatingBasket} title="Creating Basket" />
 

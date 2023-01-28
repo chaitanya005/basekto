@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
@@ -10,10 +8,10 @@ import InfoRounded from '@mui/icons-material/InfoRounded';
 import BasketList from '../Common/BasketList';
 import MiniGraph from '../Common/MiniGraph';
 import { demoData as graphData } from '../../mocks/demoData';
-import { useQuery } from 'react-query';
-import { Alert, Snackbar } from '@mui/material';
 import { getCreatedBaskets, getInvestedBaskets } from '@basketo/web-utils';
 import Overview from './Overview';
+import CommonTabs from '../Common/CommonTabs';
+import AlertBox from '../Common/AlertBox';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -71,22 +69,8 @@ const YourPortfolio = ({ userAddress, showEdit }) => {
 
   return (
     <>
-      {/* <Overview /> */}
       <Box sx={{ mt: '20px' }}>
-        <Snackbar
-          onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
-          open={alert.open}
-          autoHideDuration={6000}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-          <Alert
-            severity={alert?.severity}
-            variant="filled"
-            sx={{ width: '100%' }}
-          >
-            {alert?.message}
-          </Alert>
-        </Snackbar>
+        <AlertBox alert={alert} setAlert={setAlert} />
 
         <Typography
           variant="subtitle2"
@@ -101,49 +85,35 @@ const YourPortfolio = ({ userAddress, showEdit }) => {
           </Tooltip>
         </Typography>
 
-        <Box
-          sx={{
-            mt: 2,
-            borderBottom: 1,
-            borderColor: 'divider',
-          }}
-        >
-          <Tabs
-            variant={sm ? 'fullWidth' : 'standard'}
-            value={tabIndex}
-            onChange={handleChange}
-          >
-            <Tab label="Created Baskets" />
-            <Tab label="Invested Baskets" />
-          </Tabs>
-        </Box>
-
-        <TabPanel value={tabIndex} index={0}>
-          {userCreatedBaskets?.baskets?.length ? (
-            <BasketList
-              basketsData={userCreatedBaskets?.baskets}
-              isLoading={isLoading}
-              showGrowth
-              showDescription
-              // showGraph
-              graph={<MiniGraph data={graphData} />}
-            />
-          ) : (
-            <p>You haven&apos;t created any baskets yet!</p>
-          )}
-        </TabPanel>
-
-        <TabPanel value={tabIndex} index={1}>
-          {userInvestedBaskets?.length ? (
-            <BasketList
-              basketsData={userInvestedBaskets}
-              isLoading={isLoading}
-              showDescription
-            />
-          ) : (
-            <p>You haven&apos;t invested in any baskets yet!</p>
-          )}
-        </TabPanel>
+        <CommonTabs
+          tabIndex={tabIndex}
+          tabLabels={['Created Baskets', 'Invested Baskets']}
+          handleChange={handleChange}
+          variant={sm ? 'fullWidth' : 'standard'}
+          tabPanels={[
+            userCreatedBaskets?.baskets?.length ? (
+              <BasketList
+                basketsData={userCreatedBaskets?.baskets}
+                isLoading={isLoading}
+                showGrowth
+                showDescription
+                // showGraph
+                graph={<MiniGraph data={graphData} />}
+              />
+            ) : (
+              <p>You haven&apos;t created any baskets yet!</p>
+            ),
+            userInvestedBaskets?.length ? (
+              <BasketList
+                basketsData={userInvestedBaskets}
+                isLoading={isLoading}
+                showDescription
+              />
+            ) : (
+              <p>You haven&apos;t invested in any baskets yet!</p>
+            ),
+          ]}
+        />
       </Box>
     </>
   );

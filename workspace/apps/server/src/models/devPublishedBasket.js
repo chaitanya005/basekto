@@ -10,7 +10,7 @@ const devPublishedBasketSchema = new mongoose.Schema({
     ref: 'devBaskets',
     required: true,
   },
-  created_at: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/admin');
+const { collectionsForActivity } = require('../utils/db');
 
 const adminSignUp = async (req, res) => {
   try {
@@ -55,4 +56,31 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = { adminLogin, adminSignUp, authMiddleware };
+const getUserActivity = async (req, res) => {
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  try {
+    const results = await Promise.all(
+      collectionsForActivity.map(async (collection) => {
+        return await collection.model.aggregate([
+          {
+            $match: {
+              createdAt: {
+                $gt: oneDayAgo,
+                $lt: new Date(),
+              },
+            },
+          },
+        ]);
+      })
+    );
+
+    const [baskets, publishedBaskets, users, invests] = results;
+    res.json({ baskets, publishedBaskets, users, invests });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err);
+  }
+};
+
+module.exports = { adminLogin, adminSignUp, authMiddleware, getUserActivity };
