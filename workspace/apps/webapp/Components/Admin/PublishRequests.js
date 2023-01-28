@@ -29,7 +29,7 @@ const PublishRequests = () => {
   const [publishRequests, setPublishRequests] = useState(null);
   const [alert, setAlert] = useState({
     open: false,
-    severity: '',
+    severity: 'info',
     message: '',
   });
 

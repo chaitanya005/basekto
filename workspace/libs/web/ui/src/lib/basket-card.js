@@ -112,7 +112,7 @@ export function BasketCard({
                 }}
                 variant="contained"
               >
-                Follow
+                Invest
               </Button>
             )}
             {showGrowth && (
@@ -208,16 +208,12 @@ export function BasketCard({
               width: '30px !important',
               height: '30px !important',
               fontSize: '1rem !important',
-            }
+            },
           }}
           max={3}
         >
           {data?.coins?.map((coin) => (
-            <Avatar
-              key={coin.img}
-              alt={coin?.symbol}
-              src={coin?.img}
-            />
+            <Avatar key={coin.img} alt={coin?.symbol} src={coin?.img} />
           ))}
         </AvatarGroup>
       </Box>
