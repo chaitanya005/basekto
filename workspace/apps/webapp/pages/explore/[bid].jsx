@@ -385,6 +385,7 @@ const BasketPage = () => {
                 basket={basketData?.basketDetails[0]}
                 userAddress={userAddress}
                 handlePublish={handlePublishRequest}
+                isFetching={isFetching}
               />
             )}
           </Grid>
