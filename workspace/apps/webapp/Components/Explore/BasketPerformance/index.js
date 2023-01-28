@@ -28,7 +28,7 @@ const BasketPerformance = (props) => {
             variant="h4"
             color={color}
           >
-            {value !== 'NaN' ? (
+            {value !== 'NaN' || value !== undefined ? (
               <>
                 {value}
                 <ArrowDownwardIcon

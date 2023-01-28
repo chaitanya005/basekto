@@ -495,7 +495,12 @@ switch (process.env.RAILGUN_ENV) {
     updateBasketWithPublishId = (basketId, newPublishedBasket) =>
       DevBasket.findByIdAndUpdate(
         basketId,
-        { $set: { publishedBasket: newPublishedBasket._id } },
+        {
+          $set: {
+            publishedBasket: newPublishedBasket._id,
+            updatedAt: Date.now(),
+          },
+        },
         { new: true }
       );
     readPublishedBaskets = () =>
