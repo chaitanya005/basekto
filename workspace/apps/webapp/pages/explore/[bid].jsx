@@ -131,7 +131,11 @@ const BasketPage = () => {
     }
   }, [isCoinPriceFetching, coinPrices, graphDataWithGrowthRates]);
 
-  const { data: investments, refetch: refetchInvestments } = useQuery(
+  const {
+    data: investments,
+    isLoading: isInvestmentsLoading,
+    refetch: refetchInvestments
+  } = useQuery(
     ['investment', basketData?.basketDetails[0]?._id, userAddress],
     () => getInvestmentsData(basketData?.basketDetails[0]?._id, userAddress),
     {
@@ -384,6 +388,7 @@ const BasketPage = () => {
               amount={amount}
               setAmount={setAmount}
               investments={investments}
+              isInvestmentsLoading={isInvestmentsLoading}
               refetchInvestments={refetchInvestments}
               handleStoreInvest={handleStoreInvest}
               isCoinsDataLoading={
