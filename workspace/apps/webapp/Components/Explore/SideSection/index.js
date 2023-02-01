@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import BasketInvest from '../BasketInvest';
 import BasketPerformance from '../BasketPerformance';
+import { Skeleton } from '@mui/material';
 
 const SideSection = (props) => {
   const {
@@ -19,6 +20,7 @@ const SideSection = (props) => {
     handleStoreInvest,
     userAddress,
     handlePublish,
+    isFetching,
   } = props;
 
   const handleTotalPositions = () => {
@@ -39,45 +41,63 @@ const SideSection = (props) => {
     >
       <Grid container spacing={2} sx={{ mb: 2.5 }}>
         <Grid item xs={12} lg={6}>
-          <BasketPerformance
-            title={'Basket Growth'}
-            color={
-              graphDataWithGrowthRates?.growthRateOfbasket >= 0
-                ? 'green'
-                : 'red'
-            }
-            arrowDirection={
-              graphDataWithGrowthRates?.growthRateOfbasket >= 0
-                ? 'rotate(180deg)'
-                : 'rotate(360deg)'
-            }
-            timeFrame={timeFrame}
-            value={`${graphDataWithGrowthRates?.growthRateOfbasket?.toFixed(
-              2
-            )}%`}
-          />
+          {isFetching ? (
+            <Skeleton
+              variant="rectangular"
+              sx={{ width: 150, height: 100 }}
+              animation="wave"
+            />
+          ) : (
+            <BasketPerformance
+              title={'Basket Growth'}
+              color={
+                graphDataWithGrowthRates?.growthRateOfbasket >= 0
+                  ? 'green'
+                  : 'red'
+              }
+              arrowDirection={
+                graphDataWithGrowthRates?.growthRateOfbasket >= 0
+                  ? 'rotate(180deg)'
+                  : 'rotate(360deg)'
+              }
+              timeFrame={timeFrame}
+              value={`${graphDataWithGrowthRates?.growthRateOfbasket.toFixed(
+                2
+              )}%`}
+            />
+          )}
         </Grid>
 
         <Grid item xs={12} lg={6}>
-          <BasketPerformance
-            title={
-              investments?.[0] ? 'Your Positions' : "You haven't invested yet!"
-            }
-            color={
-              investments?.[0]
-                ? graphDataWithGrowthRates?.growthRateOfbasket >= 0
-                  ? 'green'
-                  : 'red'
-                : 'secondary'
-            }
-            arrowDirection={
-              graphDataWithGrowthRates?.growthRateOfbasket >= 0
-                ? 'rotate(180deg)'
-                : 'rotate(360deg)'
-            }
-            timeFrame={timeFrame}
-            value={`${handleTotalPositions()}`}
-          />
+          {isFetching ? (
+            <Skeleton
+              variant="rectangular"
+              sx={{ width: 150, height: 100 }}
+              animation="wave"
+            />
+          ) : (
+            <BasketPerformance
+              title={
+                investments?.[0]
+                  ? 'Your Positions'
+                  : "You haven't invested yet!"
+              }
+              color={
+                investments?.[0]
+                  ? graphDataWithGrowthRates?.growthRateOfbasket >= 0
+                    ? 'green'
+                    : 'red'
+                  : 'secondary'
+              }
+              arrowDirection={
+                graphDataWithGrowthRates?.growthRateOfbasket >= 0
+                  ? 'rotate(180deg)'
+                  : 'rotate(360deg)'
+              }
+              timeFrame={timeFrame}
+              value={`${handleTotalPositions()}`}
+            />
+          )}
         </Grid>
       </Grid>
 

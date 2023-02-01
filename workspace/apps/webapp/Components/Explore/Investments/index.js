@@ -1,10 +1,10 @@
-import moment from 'moment';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import LoadingAnimation, { LoadingText } from '../../Common/LoadingAnimation';
 import Table from '../../Common/Table';
+import FormatDate from '../../Common/FormatDate';
 
 const TokenGroup = ({ tokens, isLoading }) => (
   <AvatarGroup
@@ -62,7 +62,10 @@ const Investments = ({ investments, isLoading }) => {
         textAlign={textAlign}
         isLoading={isLoading}
       >
-        <InvestedDate date={investment?.created_at} />
+        <FormatDate
+          date={investment?.createdAt || investment?.created_at}
+          format={'hh:mma DD/MM YYYY'}
+        />
       </LoadingText>
     ),
   };
@@ -82,11 +85,6 @@ const Investments = ({ investments, isLoading }) => {
 			style={{ minWidth: { sm: 650 } }}
     />
   );
-};
-
-const InvestedDate = ({ date }) => {
-  const investedDate = moment(date).format('hh:mm DD/MM YYYY');
-  return <div>{investedDate}</div>;
 };
 
 export default Investments;

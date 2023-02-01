@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { getTokens } from 'apps/webapp/features/selectTokens';
 import { useQuery } from 'react-query';
 import { getGraphDataWithGrowthRates } from '@basketo/web-utils';
+import { Divider } from '@mui/material';
 
 const Create = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -84,7 +85,10 @@ const Create = () => {
       }}
     >
       <Box sx={{ maxWidth: 'md', width: '100%', padding: '15px' }}>
-        <Typography variant="h3">Create a Basket</Typography>
+        <Typography variant="h3" sx={{ fontFamily: 'Cinzel' }}>
+          Create a Basket
+        </Typography>
+        <Divider />
         <Box
           sx={{
             width: '100%',
@@ -92,6 +96,7 @@ const Create = () => {
             borderRadius: '8px',
             padding: '15px',
             margin: '15px 0px',
+            marginTop: '2rem',
           }}
         >
           <Stepper activeStep={activeStep} alternativeLabel>

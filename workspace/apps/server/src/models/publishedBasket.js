@@ -10,7 +10,11 @@ const publishedBasketSchema = new mongoose.Schema({
     ref: 'Basket',
     required: true,
   },
-  created_at: {
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
     type: Date,
     default: Date.now,
   },

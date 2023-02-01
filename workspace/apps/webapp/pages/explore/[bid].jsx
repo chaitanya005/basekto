@@ -4,11 +4,9 @@ import { useQuery } from 'react-query';
 import Web3 from 'web3';
 import axios from 'axios';
 import Confetti from 'react-confetti';
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Snackbar from '@mui/material/Snackbar';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -28,6 +26,7 @@ import {
 import { useSelector } from 'react-redux';
 import { getUserAddress } from 'apps/webapp/features/userAddress';
 import Head from 'next/head';
+import AlertBox from 'apps/webapp/Components/Common/AlertBox';
 
 const BasketPage = () => {
   const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
@@ -60,6 +59,7 @@ const BasketPage = () => {
     isFetching,
     isFetched,
   } = useQuery(['basketPage', bid], () => getBasketData(bid), {
+    refetchOnWindowFocus: true,
     onError: () => {
       setAlert({
         open: true,
@@ -331,20 +331,7 @@ const BasketPage = () => {
           numberOfPieces={2000}
         />
       )}
-      <Snackbar
-        onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
-        open={alert.open}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          severity={alert?.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {alert?.message}
-        </Alert>
-      </Snackbar>
+      <AlertBox alert={alert} setAlert={setAlert} />
 
       <LoadingPopup
         isOpen={isInvesting}
@@ -409,6 +396,7 @@ const BasketPage = () => {
                 basket={basketData?.basketDetails[0]}
                 userAddress={userAddress}
                 handlePublish={handlePublishRequest}
+                isFetching={isFetching}
               />
             )}
           </Grid>

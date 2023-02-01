@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ethAddEventListener } from '@basketo/web-utils';
 import YourProfile from '../Components/Profile';
-import SideNavigationLayout from '../Components/Common/SideNavigationLayout';
 import { useSelector } from 'react-redux';
 import { getUserAddress } from '../features/userAddress';
 
@@ -22,13 +21,7 @@ const Profile = () => {
     return cleanup;
   }, []);
 
-  return (
-    userAddress && (
-      // <SideNavigationLayout userAddress={userAddress}>
-      <YourProfile userAddress={userAddress} />
-      // </SideNavigationLayout>
-    )
-  );
+  return userAddress && <YourProfile userAddress={userAddress} />;
 };
 
 export default Profile;

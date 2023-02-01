@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
 import BasketList from '../../Common/BasketList';
 import MiniGraph from '../../Common/MiniGraph';
 import { demoData as graphData } from '../../../mocks/demoData';
 import { getPublishedBaskets } from '@basketo/web-utils';
+import AlertBox from '../../Common/AlertBox';
 
 const Baskets = ({ queryString }) => {
   const [alert, setAlert] = useState({
@@ -35,25 +34,12 @@ const Baskets = ({ queryString }) => {
 
   return (
     <>
-      <Snackbar
-        onClose={() => setAlert((prev) => ({ ...prev, open: false }))}
-        open={alert.open}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          severity={alert?.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {alert?.message}
-        </Alert>
-      </Snackbar>
+      <AlertBox alert={alert} setAlert={setAlert} />
 
       <BasketList
         basketsData={basketsData?.baskets}
         isLoading={isLoading || isFetching}
-        // showFollow
+        showFollow
         showGrowth
         // showGraph
         showDescription

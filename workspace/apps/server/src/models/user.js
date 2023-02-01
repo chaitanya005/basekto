@@ -17,13 +17,16 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  publicUrl: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   description: {
     type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

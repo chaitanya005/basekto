@@ -5,9 +5,11 @@ import {
   CardActions,
   CardContent,
   Typography,
+  Box,
 } from '@mui/material';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import { useTheme } from '@emotion/react';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const Hero = () => {
   const currentTheme = useTheme();
@@ -42,21 +44,59 @@ const Hero = () => {
         </span>
       </Typography>
 
-      <Link href="/explore">
-        <a>
-          <Button
-            variant="contained"
-            sx={{ fontSize: '18px' }}
-            startIcon={
-              <ArrowCircleUpIcon
-                style={{ transform: 'rotate(90deg)', fontSize: '25px' }}
-              />
-            }
-          >
-            Explore Baskets
-          </Button>
-        </a>
-      </Link>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '0.5rem',
+        }}
+      >
+        <Link href="/explore">
+          <a>
+            <Button
+              variant="contained"
+              sx={{ fontSize: '16px' }}
+              startIcon={
+                <ArrowCircleUpIcon
+                  style={{ transform: 'rotate(90deg)', fontSize: '25px' }}
+                />
+              }
+            >
+              Explore{' '}
+              <Typography
+                sx={{
+                  display: { xs: 'none', md: 'block' },
+                  marginLeft: '5px',
+                }}
+                variant="span"
+              >
+                {' '}
+                Baskets
+              </Typography>
+            </Button>
+          </a>
+        </Link>
+        <Link href="/create">
+          <a>
+            <Button
+              variant="outlined"
+              sx={{ fontSize: '16px' }}
+              startIcon={<AddCircleOutlineIcon style={{ fontSize: '25px' }} />}
+            >
+              Create{' '}
+              <Typography
+                sx={{
+                  display: { xs: 'none', md: 'block' },
+                  marginLeft: '5px',
+                }}
+                variant="span"
+              >
+                {' '}
+                a Basket
+              </Typography>
+            </Button>
+          </a>
+        </Link>
+      </Box>
     </Container>
   );
 };
