@@ -97,17 +97,17 @@ const YourPortfolio = ({ userAddress, showEdit }) => {
                 isLoading={isLoading}
                 showGrowth
                 showDescription
-                // showGraph
-                graph={<MiniGraph data={graphData} />}
+                showGraph
               />
             ) : (
               <p>You haven&apos;t created any baskets yet!</p>
             ),
-            userInvestedBaskets?.length ? (
+            userInvestedBaskets?.baskets?.length ? (
               <BasketList
-                basketsData={userInvestedBaskets}
+                basketsData={userInvestedBaskets?.baskets}
                 isLoading={isLoading}
                 showDescription
+                showGraph
               />
             ) : (
               <p>You haven&apos;t invested in any baskets yet!</p>

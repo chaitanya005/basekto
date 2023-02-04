@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import LoadingAnimation, { LoadingText } from '../../Common/LoadingAnimation';
 import Table from '../../Common/Table';
 import FormatDate from '../../Common/FormatDate';
+import { createTableData } from '@basketo/web-utils';
 
 const TokenGroup = ({ tokens, isLoading }) => (
   <AvatarGroup
@@ -14,7 +15,7 @@ const TokenGroup = ({ tokens, isLoading }) => (
         width: '30px !important',
         height: '30px !important',
         fontSize: '1rem !important',
-      }
+      },
     }}
     max={3}
   >
@@ -43,25 +44,16 @@ const Investments = ({ investments, isLoading }) => {
   const textAlign = smDown ? 'end' : 'center';
 
   const columns = {
-    'Tokens': (investment) => (
-      <TokenGroup
-        tokens={investment?.coins}
-        isLoading={isLoading}
-      />
+    Tokens: (investment) => (
+      <TokenGroup tokens={investment?.coins} isLoading={isLoading} />
     ),
-    'Amount': (investment) => (
-      <LoadingText
-        textAlign={textAlign}
-        isLoading={isLoading}
-      >
+    Amount: (investment) => (
+      <LoadingText textAlign={textAlign} isLoading={isLoading}>
         {investment?.amount} MATIC
       </LoadingText>
     ),
-    'Date': (investment) => (
-      <LoadingText
-        textAlign={textAlign}
-        isLoading={isLoading}
-      >
+    Date: (investment) => (
+      <LoadingText textAlign={textAlign} isLoading={isLoading}>
         <FormatDate
           date={investment?.createdAt || investment?.created_at}
           format={'hh:mma DD/MM YYYY'}
@@ -70,19 +62,14 @@ const Investments = ({ investments, isLoading }) => {
     ),
   };
 
-  const tableData = {
-    headings: Object.keys(columns),
-    rows: (isLoading ? Array.from({ length: 3 }) : investments)?.map(investment =>
-      Object.keys(columns).map(col => columns[col](investment))
-    ),
-  };
+  const tableData = createTableData(columns, investments);
 
   return (
     <Table
       title="Investments"
       data={tableData}
       defaultColumnIndex="1"
-			style={{ minWidth: { sm: 650 } }}
+      style={{ minWidth: { sm: 650 } }}
     />
   );
 };

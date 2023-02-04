@@ -61,7 +61,7 @@ const SideSection = (props) => {
                   : 'rotate(360deg)'
               }
               timeFrame={timeFrame}
-              value={`${graphDataWithGrowthRates?.growthRateOfbasket.toFixed(
+              value={`${graphDataWithGrowthRates?.growthRateOfbasket?.toFixed(
                 2
               )}%`}
             />

@@ -26,7 +26,7 @@ const BasketList = ({ basketsData, isLoading, ...props }) => {
       ) : (
         <>
           {basketsData?.map((basket, i) => (
-            <Grid item key={i} xs={12} sm={6} md={4} lg={4}>
+            <Grid item key={i} xs={12} sm={6} md={4} lg={4} mb={4}>
               <Link href={'/explore/' + basket?._id}>
                 <a>
                   <BasketCard
@@ -43,7 +43,7 @@ const BasketList = ({ basketsData, isLoading, ...props }) => {
                           ' ' +
                           basket?.creator?.lastName,
                     }}
-                    // graph={<MiniGraph data={basketsData?.basketGraphData[i]} />}
+                    graph={<MiniGraph data={basket?.graphData} />}
                     {...props}
                   />
                 </a>

@@ -1,4 +1,5 @@
 const Ohlc = require('../models/ohlcData');
+const { getGraphDataPts } = require('../utils/api');
 const {
   singleBasket,
   userBaskets,
@@ -63,13 +64,14 @@ const getBasketsByUsers = async (req, res) => {
     const baskets = await userBaskets(req.params.userAddress);
     const basketsWithGrowthRates = [];
     for (let basket of baskets) {
-      const basketGrowthRate = await getGrowthRatePercentages(basket.coins);
-      const addGrowthRates = basketGrowthRate.reduce(
-        (a, b) => a + b.growthRate,
-        0
-      );
+      const { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket } =
+        await getGraphDataPts(basket.coins, '', (isDBdata = true));
       const eachBasketWithGrowthRate = [
-        { ...basket._doc, growthRate: addGrowthRates },
+        {
+          ...basket._doc,
+          growthRate: totalGrowthRateOfbasket,
+          graphData: formattedBasketPricesWithTimeStamp,
+        },
       ];
       basketsWithGrowthRates.push(eachBasketWithGrowthRate);
     }
@@ -84,7 +86,20 @@ const getInvestedBasketsByUser = async (req, res) => {
   try {
     const { userAddress } = req.params;
     const investedBaskets = await userInvestedBaskets(userAddress);
-    res.json(investedBaskets);
+    const basketsWithGrowthRates = [];
+    for (let basket of investedBaskets) {
+      const { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket } =
+        await getGraphDataPts(basket.coins, '', (isDBdata = true));
+      const eachBasketWithGrowthRate = [
+        {
+          ...basket,
+          growthRate: totalGrowthRateOfbasket,
+          graphData: formattedBasketPricesWithTimeStamp,
+        },
+      ];
+      basketsWithGrowthRates.push(eachBasketWithGrowthRate);
+    }
+    res.json({ baskets: basketsWithGrowthRates.flat() });
   } catch (err) {
     console.log(err);
     res.json(err);
@@ -110,13 +125,14 @@ const getBaskets = async (req, res) => {
     const baskets = await readBaskets();
     const basketsWithGrowthRates = [];
     for (let basket of baskets) {
-      const basketGrowthRate = await getGrowthRatePercentages(basket.coins);
-      const addGrowthRates = basketGrowthRate.reduce(
-        (a, b) => a + b.growthRate,
-        0
-      );
+      const { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket } =
+        await getGraphDataPts(basket.coins, '', (isDBdata = true));
       const eachBasketWithGrowthRate = [
-        { ...basket._doc, growthRate: addGrowthRates },
+        {
+          ...basket._doc,
+          growthRate: totalGrowthRateOfbasket,
+          graphData: formattedBasketPricesWithTimeStamp,
+        },
       ];
       basketsWithGrowthRates.push(eachBasketWithGrowthRate);
     }
@@ -164,19 +180,20 @@ const getPublishedBaskets = async (req, res) => {
     const publishedBaskets = await readPublishedBaskets();
     const basketsWithGrowthRates = [];
     for (let basket of publishedBaskets) {
-      const basketGrowthRate = await getGrowthRatePercentages(basket.coins);
-      const addGrowthRates = basketGrowthRate.reduce(
-        (a, b) => a + b.growthRate,
-        0
-      );
+      const { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket } =
+        await getGraphDataPts(basket.coins, '', (isDBdata = true));
       const eachBasketWithGrowthRate = [
-        { ...basket, growthRate: addGrowthRates },
+        {
+          ...basket,
+          growthRate: totalGrowthRateOfbasket,
+          graphData: formattedBasketPricesWithTimeStamp,
+        },
       ];
       basketsWithGrowthRates.push(eachBasketWithGrowthRate);
     }
     res.send({ baskets: basketsWithGrowthRates.flat() });
   } catch (err) {
-    console.log(err);
+    console.log('/getPublishedBaskets', err);
     res.status(400).json(err);
   }
 };
@@ -185,7 +202,20 @@ const getPublishedBasketsByUser = async (req, res) => {
   try {
     const { userAddress } = req.params;
     const publishedBasketsByUser = await publishBasketsByUser(userAddress);
-    res.send(publishedBasketsByUser);
+    const basketsWithGrowthRates = [];
+    for (let basket of publishedBasketsByUser) {
+      const { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket } =
+        await getGraphDataPts(basket.coins, '', (isDBdata = true));
+      const eachBasketWithGrowthRate = [
+        {
+          ...basket._doc,
+          growthRate: totalGrowthRateOfbasket,
+          graphData: formattedBasketPricesWithTimeStamp,
+        },
+      ];
+      basketsWithGrowthRates.push(eachBasketWithGrowthRate);
+    }
+    res.send({ baskets: basketsWithGrowthRates.flat() });
   } catch (err) {
     console.log(err);
     res.status(400).json(err);
@@ -224,22 +254,45 @@ const getPublishBasketsRequest = async (req, res) => {
   }
 };
 
+// const getGrowthRatePercentages = async (coins) => {
+//   const growthPercentageOfCoins = [];
+//   for (let i = 0; i < coins.length; i++) {
+//     const growthRateOfCoin = await Ohlc.findOne({ coin: coins[i].id });
+//     const firstVal = growthRateOfCoin?.data[0];
+//     const lastVal = growthRateOfCoin?.data[growthRateOfCoin?.data.length - 1];
+
+//     const growthRate =
+//       ((lastVal?.['4'] - firstVal?.['1']) * 100) / firstVal?.['1'];
+
+//     growthPercentageOfCoins.push({
+//       growthRate: (growthRate * coins[i].weight) / 100,
+//     });
+//   }
+
+//   return growthPercentageOfCoins;
+// };
+
 const getGrowthRatePercentages = async (coins) => {
-  const growthPercentageOfCoins = [];
+  const basketCoinsPrice = [];
   for (let i = 0; i < coins.length; i++) {
-    const growthRateOfCoin = await Ohlc.findOne({ coin: coins[i].id });
-    const firstVal = growthRateOfCoin?.data[0];
-    const lastVal = growthRateOfCoin?.data[growthRateOfCoin?.data.length - 1];
-
-    const growthRate =
-      ((lastVal?.['4'] - firstVal?.['1']) * 100) / firstVal?.['1'];
-
-    growthPercentageOfCoins.push({
-      growthRate: (growthRate * coins[i].weight) / 100,
-    });
+    const coinPrices = await Ohlc.findOne({ coin: coins[i].id });
+    const pastValWithWeight = (coinPrices?.data[0][4] * coins[i].weight) / 100;
+    const currValWithWeight =
+      (coinPrices?.data[coinPrices?.data.length - 2][4] * coins[i].weight) /
+      100;
+    basketCoinsPrice.push([pastValWithWeight, currValWithWeight]);
   }
 
-  return growthPercentageOfCoins;
+  const SumOfPrices = basketCoinsPrice.reduce((arr, arr2) =>
+    arr.map((a, i) => {
+      let num = arr2[i] + a;
+      return Number(num.toFixed(5));
+    })
+  );
+
+  const totalGrowthRateOfBasket =
+    ((SumOfPrices[1] - SumOfPrices[0]) / SumOfPrices[0]) * 100;
+  return totalGrowthRateOfBasket;
 };
 
 const getGraphDataOfBasket = async (coins) => {

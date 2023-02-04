@@ -115,7 +115,7 @@ const getBasketData = async (bid) =>
 
 const getGraphDataWithGrowthRates = async (basketData, days) =>
   (
-    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/graph_data`, {
+    await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API}/graph/prices`, {
       basketData,
       days,
     })
@@ -171,6 +171,15 @@ const getPublishmentRequests = async (bid) =>
     await getRequest(`/publish/requests`)
   ).data;
 
+const createTableData = (columns, data) => {
+  return {
+    headings: Object.keys(columns),
+    rows: data?.map((item) =>
+      Object.keys(columns).map((col) => columns[col](item))
+    ),
+  };
+};
+
 export {
   ethAddEventListener,
   getBalance,
@@ -191,4 +200,5 @@ export {
   publishBasketRequest,
   publishBasket,
   getPublishmentRequests,
+  createTableData,
 };

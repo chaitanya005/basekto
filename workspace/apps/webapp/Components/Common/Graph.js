@@ -22,7 +22,7 @@ import TimeFrameBtns from './TimeFrameBtns';
 
 const timeFrames = { '1D': 1, '1W': 7, '1M': 30, '1Y': 365 };
 
-const Graph = ({ data, setDays, isLoading, totalAmount }) => {
+const Graph = ({ data, setDays, isLoading, totalAmount, basketGrowthRate }) => {
   const theme = useTheme();
   const aspect = useMediaQuery(theme.breakpoints.down('sm')) ? 1.25 : 2.25;
 
@@ -46,14 +46,14 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
 
   useEffect(() => {
     const timeStamp = data?.[data?.length - 1]?.timeStamp;
-    setFirstValue(data?.[0]?.['Growth Rate']);
-    setLastValue(data?.[data?.length - 1]?.['Growth Rate']);
+    setFirstValue(data?.[0]?.['price']);
+    setLastValue(data?.[data?.length - 1]?.['price']);
     setLastDate(moment(timeStamp).format('MMM Do YY - hh:mm a'));
   }, [data]);
 
   const CustomizedToolTip = (props) => {
     const { active, payload } = props;
-    const growthRate = payload?.[0]?.payload['Growth Rate'];
+    const growthRate = payload?.[0]?.payload['price'];
     const timeStamp = payload?.[0]?.payload?.timeStamp;
     if (active) {
       setActiveValue(growthRate);
@@ -65,8 +65,8 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
   };
 
   const handleCurrentValue = (value) => {
-    const currentValue = (value / 100) * 1000 + 1000;
-    return currentValue.toFixed(2);
+    const growthRate = (lastValue * basketGrowthRate) / 100 + 1000;
+    return growthRate.toFixed(2);
   };
 
   return isLoading ? (
@@ -110,18 +110,18 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
                 )}{' '}
               </Typography>
               <Typography
-                variant="body1"
+                variant="h6"
                 sx={{ display: 'flex', gap: '0.5rem', alignItems: 'baseline' }}
               >
                 <b>
+                  $
                   {activeValue ? (
                     activeValue.toFixed(2)
                   ) : (
                     <>{parseFloat(parseFloat(lastValue)?.toFixed(2))}</>
                   )}
-                  %
                 </b>{' '}
-                <Typography color="secondary" variant="caption">
+                <Typography color="secondary" variant="body2">
                   at {activeDate ? <>{activeDate}</> : <>{lastDate}</>}
                 </Typography>
               </Typography>
@@ -172,8 +172,8 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
               verticalAlign={'bottom'}
               payload={[
                 {
-                  dataKey: 'Growth Rate',
-                  value: 'Performance of Basket',
+                  dataKey: 'price',
+                  value: 'Growth Rate of Basket',
                   color: theme.palette.mode == 'light' ? '#000' : '#fff',
                   type: 'line',
                 },
@@ -182,7 +182,7 @@ const Graph = ({ data, setDays, isLoading, totalAmount }) => {
             <Line
               dot={false}
               type="monotone"
-              dataKey="Growth Rate"
+              dataKey="price"
               stroke={firstValue <= lastValue ? 'green' : 'red'}
               strokeWidth={2}
             />

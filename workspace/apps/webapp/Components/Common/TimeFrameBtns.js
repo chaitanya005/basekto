@@ -10,6 +10,7 @@ const TimeFrameBtns = ({
   color,
   btnStyles,
   btnGroupStyles,
+  disableOnClick,
 }) => {
   const handleChange = (e, newValue) => {
     newValue && setValue(newValue);
@@ -21,7 +22,7 @@ const TimeFrameBtns = ({
         size={size}
         value={value}
         exclusive
-        onChange={handleChange}
+        onChange={!disableOnClick && handleChange}
         sx={btnGroupStyles}
       >
         {Object.keys(timeFrames).map((timeFrame) => (

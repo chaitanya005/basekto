@@ -59,7 +59,7 @@ const BasketPage = () => {
     isFetching,
     isFetched,
   } = useQuery(['basketPage', bid], () => getBasketData(bid), {
-    refetchOnWindowFocus: true,
+    // refetchOnWindowFocus: true,
     onError: () => {
       setAlert({
         open: true,
@@ -85,7 +85,7 @@ const BasketPage = () => {
   } = useQuery(
     ['basketGraph', bid, days],
     () =>
-      getGraphDataWithGrowthRates(basketData?.basketDetails?.[0].coins, days),
+      getGraphDataWithGrowthRates(basketData?.basketDetails?.[0]?.coins, days),
     {
       staleTime: 300000,
       onError: () => {
@@ -101,7 +101,7 @@ const BasketPage = () => {
 
   const { data: coinPrices, isFetching: isCoinPriceFetching } = useQuery(
     ['coinPrices', bid],
-    () => getCoinPrices(basketData?.basketDetails?.[0].coins),
+    () => getCoinPrices(basketData?.basketDetails?.[0]?.coins),
     {
       staleTime: 300000,
       onError: () => {
@@ -117,7 +117,7 @@ const BasketPage = () => {
 
   useEffect(() => {
     if (!isCoinPriceFetching && coinPrices) {
-      const formattingCoins = basketData?.basketDetails?.[0].coins?.map(
+      const formattingCoins = basketData?.basketDetails?.[0]?.coins?.map(
         (coin, i) => [
           {
             ...coin,
@@ -366,6 +366,7 @@ const BasketPage = () => {
               basket={basketData?.basketDetails[0]}
               creatorDetails={basketData?.basketDetails[0]?.creator}
               graphDataWithGrowthRates={graphDataWithGrowthRates?.graphData}
+              basketGrowthRate={graphDataWithGrowthRates?.growthRateOfbasket}
               isGraphLoading={isGraphLoading || isGraphFetching}
               setDays={setDays}
               days={days}

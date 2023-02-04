@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Table from '../../Common/Table';
 import {
+  createTableData,
   ethAddEventListener,
   getBalance,
   getNetwork,
@@ -31,12 +32,7 @@ const BasketInvest = ({ tokensData, amount, setAmount }) => {
     Amount: (token) => `${(amount * token.weight) / 100} ${currencySymbol}`,
   };
 
-  const tableData = {
-    headings: Object.keys(columns),
-    rows: tokensData?.map((token) =>
-      Object.keys(columns).map((col) => columns[col](token))
-    ),
-  };
+  const tableData = createTableData(columns, tokensData);
 
   useEffect(() => {
     function updateBalance() {

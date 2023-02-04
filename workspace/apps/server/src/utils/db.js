@@ -249,6 +249,9 @@ switch (process.env.RAILGUN_ENV) {
           },
         },
         {
+          $unwind: '$creator',
+        },
+        {
           $lookup: {
             from: 'invests',
             localField: '_id',
