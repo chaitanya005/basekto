@@ -262,7 +262,7 @@ const Explore = ({
         />
       </Box>
 
-      {showDetails && (
+      {showDetails && investments.length > 0 && (
         <Box sx={{ mb: 2 }}>
           <Investments
             investments={investments?.[0]?.invested_basket}
