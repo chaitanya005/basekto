@@ -1,84 +1,76 @@
-import moment from 'moment';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import styled from '@emotion/styled';
-import { Card, Typography } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import LoadingAnimation, { LoadingText } from '../../Common/LoadingAnimation';
+import Table from '../../Common/Table';
 import FormatDate from '../../Common/FormatDate';
+import { createTableData } from '@basketo/web-utils';
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    fontSize: '1rem',
-    fontWeight: 'bold',
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: '0.9rem',
-  },
-}));
-
-const TableHeadRow = styled(TableRow)(({ theme }) => ({
-  borderBottom: '1.1px solid #777',
-}));
-
-const Investments = ({ investments }) => {
-  return (
-    <>
-      <Typography variant="h5" fontWeight={'bold'}>
-        Investments
-      </Typography>
-      <TableContainer
-        component={Card}
-        sx={{ borderRadius: '10px', marginTop: '1rem' }}
+const TokenGroup = ({ tokens, isLoading }) => (
+  <AvatarGroup
+    sx={{
+      justifyContent: 'left',
+      '& *': {
+        width: '30px !important',
+        height: '30px !important',
+        fontSize: '1rem !important',
+      },
+    }}
+    max={3}
+  >
+    {(isLoading ? Array.from({ length: 2 }) : tokens)?.map((coin, i) => (
+      <LoadingAnimation
+        key={i}
+        variant="circular"
+        size="28px"
+        isLoading={isLoading}
       >
-        <Table sx={{ minWidth: { sm: 650 } }}>
-          <TableHead>
-            <TableHeadRow>
-              <StyledTableCell>Tokens</StyledTableCell>
-              <StyledTableCell align="center">Amount</StyledTableCell>
-              <StyledTableCell align="center">Date</StyledTableCell>
-            </TableHeadRow>
-          </TableHead>
-          <TableBody>
-            {investments?.map((investment, i) => (
-              <TableRow
-                key={i}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <StyledTableCell component="th" scope="row">
-                  <AvatarGroup sx={{ justifyContent: 'left' }} max={3}>
-                    {investment?.coins.map((coin, i) => (
-                      <Avatar
-                        key={i}
-                        alt={coin?.symbol}
-                        src={coin?.img}
-                        sx={{
-                          width: 30,
-                          height: 30,
-                        }}
-                      />
-                    ))}
-                  </AvatarGroup>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {investment?.amount} MATIC
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <FormatDate
-                    date={investment?.createdAt || investment?.created_at}
-                    format={'hh:mma DD/MM YYYY'}
-                  />
-                </StyledTableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+        <Avatar
+          alt={coin?.symbol}
+          src={coin?.img}
+          sx={{
+            width: 30,
+            height: 30,
+          }}
+        />
+      </LoadingAnimation>
+    ))}
+  </AvatarGroup>
+);
+
+const Investments = ({ investments, isLoading }) => {
+  const smDown = useMediaQuery(useTheme().breakpoints.down('sm'));
+  const textAlign = smDown ? 'end' : 'center';
+
+  const columns = {
+    Tokens: (investment) => (
+      <TokenGroup tokens={investment?.coins} isLoading={isLoading} />
+    ),
+    Amount: (investment) => (
+      <LoadingText textAlign={textAlign} isLoading={isLoading}>
+        {investment?.amount} MATIC
+      </LoadingText>
+    ),
+    Date: (investment) => (
+      <LoadingText textAlign={textAlign} isLoading={isLoading}>
+        <FormatDate
+          date={investment?.createdAt || investment?.created_at}
+          format={'hh:mma DD/MM YYYY'}
+        />
+      </LoadingText>
+    ),
+  };
+
+  const tableData = createTableData(columns, investments);
+
+  return (
+    <Table
+      title="Investments"
+      data={tableData}
+      defaultColumnIndex="1"
+      style={{ minWidth: { sm: 650 } }}
+    />
   );
 };
 

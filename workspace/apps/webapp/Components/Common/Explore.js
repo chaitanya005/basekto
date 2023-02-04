@@ -27,6 +27,7 @@ const Explore = ({
   showDetails,
   isLoading,
   graphDataWithGrowthRates,
+  basketGrowthRate,
   isGraphLoading,
   setDays,
   coins,
@@ -37,6 +38,7 @@ const Explore = ({
   handleStoreInvest,
   days,
   investments,
+  isInvestmentsLoading,
   creatorDetails,
 }) => {
   const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
@@ -250,6 +252,7 @@ const Explore = ({
           setDays={setDays}
           totalAmount={investments?.[0]?.totalAmount}
           isLoading={isGraphLoading}
+          basketGrowthRate={basketGrowthRate}
         />
       </Box>
 
@@ -261,9 +264,12 @@ const Explore = ({
         />
       </Box>
 
-      {investments?.[0]?.invested_basket && (
+      {showDetails && investments?.length > 0 && (
         <Box sx={{ mb: 2 }}>
-          <Investments investments={investments?.[0]?.invested_basket} />
+          <Investments
+            investments={investments?.[0]?.invested_basket}
+            isLoading={isInvestmentsLoading}
+          />
         </Box>
       )}
 
