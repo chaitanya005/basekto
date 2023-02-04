@@ -1,273 +1,75 @@
-import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Skeleton from '@mui/material/Skeleton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { styled, useTheme } from '@mui/material/styles';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Card, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import LoadingAnimation, { LoadingText } from '../../Common/LoadingAnimation';
+import Table from '../../Common/Table';
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    // backgroundColor: theme.palette.background.default,
-    color: theme.palette.primary,
-    fontSize: '1rem',
-    fontWeight: 'bold',
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: '0.9rem',
-  },
-}));
+const Token = ({token, isLoading}) => (
+  <Box display="flex" alignItems="center" gap={2.25}>
+    <LoadingAnimation
+      variant="circular"
+      size="28px"
+      isLoading={isLoading}
+    >
+      <Avatar
+        src={token?.img}
+        alt={token?.name + ' logo'}
+        sx={{ width: 28, height: 28 }}
+      />
+    </LoadingAnimation>
 
-const TableHeadRow = styled(TableRow)(({ theme }) => ({
-  borderBottom: '1.1px solid #777',
-}));
-
-const LoadingAnimation = ({ isLoading, variant, size, children }) => {
-  const styles = {
-    circular: {
-      width: size,
-      height: size,
-    },
-    text: {
-      width: size,
-    },
-  };
-
-  return isLoading ? (
-    <Skeleton variant={variant} sx={styles[variant]} animation="wave" />
-  ) : (
-    children
-  );
-};
-
-function getTokenRow(
-  { name, price, growthRate, withWeight, weight, img },
-  showDetails
-) {
-  let row = { name, weight, img };
-  if (showDetails) {
-    row = { ...row, price, growthRate, withWeight };
-  }
-  return row;
-}
+    <LoadingText isLoading={isLoading}>
+      {token?.name}
+    </LoadingText>
+  </Box>
+);
 
 const TokensTable = ({ tokensData, showDetails, isLoading }) => {
   const smDown = useMediaQuery(useTheme().breakpoints.down('sm'));
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  const textAlign = smDown ? 'end' : 'center';
 
   const columns = {
-    weight: 'Weight (%)',
-    price: 'Price',
-    // growthRate: 'Growth Rate (100%)',
-    // withWeight: 'Growth Rate',
+    'Tokens': (token) => (
+      <Token
+        token={token}
+        isLoading={isLoading}
+      />
+    ),
+    ...(showDetails ? {
+      'Current Price': (token) => (
+        <LoadingText
+          textAlign={textAlign}
+          isLoading={isLoading}
+        >
+          ${token?.price.toFixed(2)}
+        </LoadingText>
+      ),
+    } : {}),
+    'Weight (%)': (token) => (
+      <LoadingText
+        textAlign={textAlign}
+        isLoading={isLoading}
+      >
+        {token?.weight}%
+      </LoadingText>
+    ),
   };
 
-  const [selectedColumn, setSelectedColumn] = useState('weight');
-
-  const tokens = tokensData?.map((token) => getTokenRow(token, showDetails));
-
-  const getFormattedValue = (column, value) => {
-    switch (column) {
-      case 'price': {
-        return '$' + value.toFixed(2);
-      }
-      case 'growthRate':
-      case 'withWeight':
-      case 'weight': {
-        return value?.toFixed(2) + '%';
-      }
-      default: {
-        return value;
-      }
-    }
+  const tableData = {
+    headings: Object.keys(columns),
+    rows: (isLoading ? Array.from({ length: 3 }) : tokensData)?.map(token =>
+      Object.keys(columns).map(col => columns[col](token))
+    ),
   };
-
-  // const getDetailedFormattedValues = (token) => {
-  //   const detailedColumns = ['price', 'growthRate', 'withWeight'];
-  //   return detailedColumns.map((column) =>
-  //     getFormattedValue(column, token[column])
-  //   );
-  // };
 
   return (
-    <>
-      <Typography variant="h5" fontWeight={'bold'}>
-        Allocations
-      </Typography>
-      <TableContainer
-        component={Card}
-        sx={{ borderRadius: '10px', marginTop: '1rem' }}
-      >
-        <Table sx={{ minWidth: { sm: 650 } }}>
-          <TableHead>
-            <TableHeadRow>
-              <StyledTableCell>Tokens</StyledTableCell>
-              {showDetails && smDown ? (
-                <StyledTableCell>
-                  <Box
-                    display="flex"
-                    justifyContent="flex-end"
-                    alignItems="center"
-                    onClick={handleClick}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    {columns[selectedColumn]}
-                    <KeyboardArrowDownIcon />
-                  </Box>
-
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                  >
-                    {Object.keys(columns).map((column) => (
-                      <MenuItem
-                        key={column}
-                        selected={column === selectedColumn}
-                        onClick={() => {
-                          setSelectedColumn(column);
-                          handleClose();
-                        }}
-                      >
-                        {columns[column]}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </StyledTableCell>
-              ) : (
-                <>
-                  {showDetails && (
-                    <>
-                      <StyledTableCell align="center">
-                        Current Price
-                      </StyledTableCell>
-                      {/* <StyledTableCell align="right">
-                      Growth Rate {'(100%)'}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">Growth Rate</StyledTableCell> */}
-                    </>
-                  )}
-                  <StyledTableCell align="center">
-                    Weight {'(%)'}
-                  </StyledTableCell>
-                </>
-              )}
-            </TableHeadRow>
-          </TableHead>
-
-          <TableBody>
-            {(isLoading ? Array.from({ length: 3 }) : tokens)?.map(
-              (token, i) => (
-                <TableRow
-                  key={i}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <StyledTableCell component="th" scope="row">
-                    <Box display="flex" alignItems="center" gap={2.25}>
-                      <LoadingAnimation
-                        variant="circular"
-                        size="28px"
-                        isLoading={isLoading}
-                      >
-                        <Avatar
-                          src={token?.img}
-                          alt={token?.name + ' logo'}
-                          sx={{ width: 28, height: 28 }}
-                        />
-                      </LoadingAnimation>
-
-                      <LoadingAnimation
-                        variant="text"
-                        size="60px"
-                        isLoading={isLoading}
-                      >
-                        {token?.name}
-                      </LoadingAnimation>
-                    </Box>
-                  </StyledTableCell>
-
-                  {showDetails && smDown ? (
-                    <StyledTableCell>
-                      <Box display="flex" justifyContent="center">
-                        <LoadingAnimation
-                          variant="text"
-                          size="30px"
-                          isLoading={isLoading}
-                        >
-                          {token &&
-                            getFormattedValue(
-                              selectedColumn,
-                              token[selectedColumn]
-                            )}
-                        </LoadingAnimation>
-                      </Box>
-                    </StyledTableCell>
-                  ) : (
-                    <>
-                      {/* {showDetails &&
-                    (token
-                      ? getDetailedFormattedValues(token)
-                      : Array.from({ length: 3 })
-                    ).map((value, i) => (
-                      <StyledTableCell key={i}>
-                        <Box display="flex" justifyContent="right">
-                          <LoadingAnimation
-                            variant="text"
-                            size="30px"
-                            isLoading={isLoading}
-                          >
-                            {value}
-                          </LoadingAnimation>
-                        </Box>
-                      </StyledTableCell>
-                    ))} */}
-
-                      {showDetails && (
-                        <StyledTableCell key={i}>
-                          <Box display="flex" justifyContent="center">
-                            <LoadingAnimation
-                              variant="text"
-                              size="30px"
-                              isLoading={isLoading}
-                            >
-                              ${token?.price?.toFixed(2)}
-                            </LoadingAnimation>
-                          </Box>
-                        </StyledTableCell>
-                      )}
-                      <StyledTableCell>
-                        <Box display="flex" justifyContent="center">
-                          <LoadingAnimation
-                            variant="text"
-                            size="30px"
-                            isLoading={isLoading}
-                          >
-                            {/* {token && getFormattedValue('weight', token.weight)} */}
-                            {token?.weight}%
-                          </LoadingAnimation>
-                        </Box>
-                      </StyledTableCell>
-                    </>
-                  )}
-                </TableRow>
-              )
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+    <Table
+      title="Allocations"
+      data={tableData}
+      defaultColumnIndex="2"
+			style={{ minWidth: { sm: 650 } }}
+    />
   );
 };
 

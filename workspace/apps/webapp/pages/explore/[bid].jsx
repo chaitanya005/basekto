@@ -11,6 +11,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Explore from '../../Components/Common/Explore';
+import BasketNotFound from '../../Components/Explore/BasketNotFound';
 import SideSection from '../../Components/Explore/SideSection';
 import SwitchNetworkPopup from '../../Components/Common/Popups/SwitchNetworkPopup';
 import LoadingPopup from '../../Components/Common/Popups/LoadingPopup';
@@ -56,6 +57,7 @@ const BasketPage = () => {
     data: basketData,
     isLoading,
     isFetching,
+    isFetched,
   } = useQuery(['basketPage', bid], () => getBasketData(bid), {
     refetchOnWindowFocus: true,
     onError: () => {
@@ -129,7 +131,11 @@ const BasketPage = () => {
     }
   }, [isCoinPriceFetching, coinPrices, graphDataWithGrowthRates]);
 
-  const { data: investments, refetch: refetchInvestments } = useQuery(
+  const {
+    data: investments,
+    isLoading: isInvestmentsLoading,
+    refetch: refetchInvestments
+  } = useQuery(
     ['investment', basketData?.basketDetails[0]?._id, userAddress],
     () => getInvestmentsData(basketData?.basketDetails[0]?._id, userAddress),
     {
@@ -219,15 +225,23 @@ const BasketPage = () => {
         severity: 'error',
         message: 'Please connect your wallet and try again!',
       });
-      setIsInvesting(false);
       return;
     }
 
     if (!(await isValidNetwork())) {
       setNetworkInvalid(true);
-      setIsInvesting(false);
       return;
     }
+
+    if (process.env.NEXT_PUBLIC_ENV !== 'testnet' && amount < 10) {
+      setAlert({
+        open: true,
+        severity: 'error',
+        message: 'Minimum amount to invest is 10 MATIC!',
+      });
+      return;
+    }
+
     setIsInvesting(true);
     const investedCoins = await handleInvest();
     const filterInvestedCoins = Object.values(
@@ -286,6 +300,15 @@ const BasketPage = () => {
       });
     }
   };
+
+  if (
+    isFetched && !basketData ||
+    !(isLoading || isFetching) &&
+    !basketData.basketDetails[0].publishedBasket &&
+    basketData.basketDetails[0].accountId !== userAddress
+  ) {
+    return <BasketNotFound />;
+  }
 
   return (
     <>
@@ -352,6 +375,7 @@ const BasketPage = () => {
               amount={amount}
               setAmount={setAmount}
               investments={investments}
+              isInvestmentsLoading={isInvestmentsLoading}
               refetchInvestments={refetchInvestments}
               handleStoreInvest={handleStoreInvest}
               isCoinsDataLoading={

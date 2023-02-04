@@ -2,24 +2,45 @@ import { useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Table from '../../Common/Table';
 import {
   ethAddEventListener,
   getBalance,
   getNetwork,
 } from '@basketo/web-utils';
 
+const Token = ({token}) => (
+  <Box display="flex" alignItems="center" gap={1.5}>
+    <Avatar
+      src={token.img}
+      alt={token.name + ' logo'}
+      sx={{ width: 28, height: 28 }}
+    />
+    {token.name}
+  </Box>
+);
+
 const BasketInvest = ({ tokensData, amount, setAmount }) => {
   const [balance, setBalance] = useState('');
   const [currencySymbol, setCurrencySymbol] = useState('');
+
+  const columns = {
+    'Token': (token) => (
+      <Token token={token} />
+    ),
+    'Amount': () => (
+      `${amount} ${currencySymbol}`
+    ),
+  };
+
+  const tableData = {
+    headings: Object.keys(columns),
+    rows: tokensData?.map(token =>
+      Object.keys(columns).map(col => columns[col](token))
+    ),
+  };
 
   useEffect(() => {
     function updateBalance() {
@@ -64,7 +85,7 @@ const BasketInvest = ({ tokensData, amount, setAmount }) => {
 
         <TextField
           label="Amount to Invest"
-          type="number"
+          type="numeric"
           value={amount}
           onChange={(e) => {
             const val = e.target.value;
@@ -82,39 +103,11 @@ const BasketInvest = ({ tokensData, amount, setAmount }) => {
         />
 
         {amount && tokensData && (
-          <TableContainer component={Paper} sx={{ maxHeight: 200 }}>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Token</TableCell>
-                  <TableCell align="right">Amount</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tokensData?.map((token) => (
-                  <TableRow
-                    key={token.name}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      <Box display="flex" alignItems="center" gap={1.5}>
-                        <Avatar
-                          src={token.img}
-                          alt={token.name + ' logo'}
-                          sx={{ width: 28, height: 28 }}
-                        />
-                        {token.name}
-                      </Box>
-                    </TableCell>
-
-                    <TableCell align="right">
-                      {token.amount} {currencySymbol}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Table
+            data={tableData}
+            stickyHeader
+            style={{ maxHeight: 200 }}
+          />
         )}
       </Box>
     </>
