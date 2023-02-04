@@ -41,7 +41,7 @@ const Baskets = ({ queryString }) => {
         isLoading={isLoading || isFetching}
         showFollow
         showGrowth
-        // showGraph
+        showGraph
         showDescription
       />
     </>

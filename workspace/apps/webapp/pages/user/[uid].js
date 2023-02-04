@@ -50,9 +50,11 @@ const UserPublishedBaskets = () => {
       <Container maxWidth="lg">
         <YourProfile userAddress={uid} />
         <BasketList
-          basketsData={userPublishedBaskets}
+          basketsData={userPublishedBaskets?.baskets}
           isLoading={isBasketsLoading}
           showDescription
+          showGraph
+          showGrowth
         />
       </Container>
     </>

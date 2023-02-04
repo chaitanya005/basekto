@@ -6,12 +6,13 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Table from '../../Common/Table';
 import {
+  createTableData,
   ethAddEventListener,
   getBalance,
   getNetwork,
 } from '@basketo/web-utils';
 
-const Token = ({token}) => (
+const Token = ({ token }) => (
   <Box display="flex" alignItems="center" gap={1.5}>
     <Avatar
       src={token.img}
@@ -27,20 +28,11 @@ const BasketInvest = ({ tokensData, amount, setAmount }) => {
   const [currencySymbol, setCurrencySymbol] = useState('');
 
   const columns = {
-    'Token': (token) => (
-      <Token token={token} />
-    ),
-    'Amount': () => (
-      `${amount} ${currencySymbol}`
-    ),
+    Token: (token) => <Token token={token} />,
+    Amount: (token) => `${(amount * token.weight) / 100} ${currencySymbol}`,
   };
 
-  const tableData = {
-    headings: Object.keys(columns),
-    rows: tokensData?.map(token =>
-      Object.keys(columns).map(col => columns[col](token))
-    ),
-  };
+  const tableData = createTableData(columns, tokensData);
 
   useEffect(() => {
     function updateBalance() {
@@ -103,11 +95,7 @@ const BasketInvest = ({ tokensData, amount, setAmount }) => {
         />
 
         {amount && tokensData && (
-          <Table
-            data={tableData}
-            stickyHeader
-            style={{ maxHeight: 200 }}
-          />
+          <Table data={tableData} stickyHeader style={{ maxHeight: 200 }} />
         )}
       </Box>
     </>
