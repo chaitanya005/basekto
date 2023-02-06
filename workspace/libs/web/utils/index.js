@@ -180,6 +180,11 @@ const createTableData = (columns, data) => {
   };
 };
 
+const getUserAddressByPublicUrl = async (publicUrl) =>
+  await (
+    await getRequest(`/user?publicUrl=${publicUrl}`)
+  ).data.userAddress;
+
 export {
   ethAddEventListener,
   getBalance,
@@ -201,4 +206,5 @@ export {
   publishBasket,
   getPublishmentRequests,
   createTableData,
+  getUserAddressByPublicUrl,
 };

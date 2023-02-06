@@ -121,13 +121,13 @@ const Navbar = () => {
   }, [userAddress]);
 
   const connectWallet = async () => {
-    if (!(await isValidNetwork())) {
-      setSwitchNetworkPopupOpen(true);
+    if (clientSide && typeof window?.ethereum === 'undefined') {
+      router.push({ hash: 'install-metamask' });
       return;
     }
 
-    if (clientSide && typeof window?.ethereum === 'undefined') {
-      router.push({ hash: 'install-metamask' });
+    if (!(await isValidNetwork())) {
+      setSwitchNetworkPopupOpen(true);
       return;
     }
 
