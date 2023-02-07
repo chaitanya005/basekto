@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import Container from '@mui/material/Container';
 import AlertBox from 'apps/webapp/Components/Common/AlertBox';
 import BasketList from '../../Components/Common/BasketList';
+import PageNotFound from 'apps/webapp/Components/Common/PageNotFound';
 import YourProfile from '../../Components/Profile';
 import {
   getPublishedBasketsByUser,
@@ -20,7 +21,10 @@ const UserPublishedBaskets = () => {
     message: '',
   });
 
-  const { data: userAddress } = useQuery(
+  const {
+    data: userAddress,
+    isFetched,
+  } = useQuery(
     ['userAddress', publicUrl],
     () => getUserAddressByPublicUrl(publicUrl),
     { enabled: !!publicUrl }
@@ -48,6 +52,16 @@ const UserPublishedBaskets = () => {
   );
 
   if (isBasketsStale) refetchBaskets();
+
+  if (isFetched && !userAddress) {
+    return (
+      <PageNotFound
+        heading="404 - User Not Found"
+        redirectionLink="/"
+        redirectionText="Go to Home page"
+      />
+    );
+  }
 
   return (
     <>

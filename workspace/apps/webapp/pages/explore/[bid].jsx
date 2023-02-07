@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -10,11 +11,12 @@ import Grid from '@mui/material/Grid';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AlertBox from 'apps/webapp/Components/Common/AlertBox';
 import Explore from '../../Components/Common/Explore';
-import BasketNotFound from '../../Components/Explore/BasketNotFound';
+import LoadingPopup from '../../Components/Common/Popups/LoadingPopup';
+import PageNotFound from 'apps/webapp/Components/Common/PageNotFound';
 import SideSection from '../../Components/Explore/SideSection';
 import SwitchNetworkPopup from '../../Components/Common/Popups/SwitchNetworkPopup';
-import LoadingPopup from '../../Components/Common/Popups/LoadingPopup';
 import {
   getBasketData,
   getGraphDataWithGrowthRates,
@@ -25,8 +27,6 @@ import {
 } from '@basketo/web-utils';
 import { useSelector } from 'react-redux';
 import { getUserAddress } from 'apps/webapp/features/userAddress';
-import Head from 'next/head';
-import AlertBox from 'apps/webapp/Components/Common/AlertBox';
 
 const BasketPage = () => {
   const mdDown = useMediaQuery(useTheme().breakpoints.down('md'));
@@ -314,7 +314,13 @@ const BasketPage = () => {
     !basketData.basketDetails[0].publishedBasket &&
     basketData.basketDetails[0].accountId !== userAddress
   ) {
-    return <BasketNotFound />;
+    return (
+      <PageNotFound
+        heading="404 - Basket Not Found"
+        redirectionLink="/explore"
+        redirectionText="Go to Explore page"
+      />
+    );
   }
 
   return (
