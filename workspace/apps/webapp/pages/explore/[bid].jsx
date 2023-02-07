@@ -167,6 +167,7 @@ const BasketPage = () => {
     // const LINK_TEST_NET = '0x326C977E6efc84E512bB9C30f76E30c160eD06FB';
     // const testCoins = [LINK_TEST_NET, WETHMUMBAI_NET];
     const userInvestedCoins = [];
+    const txHashes = [];
     const testNet = 'https://mumbai.api.0x.org/';
     const mainNet = 'https://polygon.api.0x.org/';
     // need to check the user's network and change according to the test net or main net
@@ -201,6 +202,7 @@ const BasketPage = () => {
           web3.eth.sendTransaction.request(quotes[i], (error, data) => {
             if (data) {
               console.log(data);
+              txHashes.push(data);
               // userInvestedCoins.push(testCoins[i]);
               userInvestedCoins.push(buyTokens[i]);
             } else {
@@ -214,7 +216,7 @@ const BasketPage = () => {
       batch.execute();
     });
     setIsInvesting(false);
-    return userInvestedCoins;
+    return { userInvestedCoins, txHashes };
   };
 
   const handleStoreInvest = async () => {
@@ -243,10 +245,15 @@ const BasketPage = () => {
     }
 
     setIsInvesting(true);
-    const investedCoins = await handleInvest();
+    const {
+      userInvestedCoins: investedCoins,
+      txHashes
+    } = await handleInvest();
     const filterInvestedCoins = Object.values(
       basketData?.basketDetails?.[0]?.coins
-    ).filter((coin) => investedCoins?.includes(coin.coinAddress));
+    ).filter((coin) =>
+      investedCoins?.includes(coin.coinAddress)
+    ).map((coin, i) => ({ ...coin, txHash: txHashes[i] }));
 
     if (filterInvestedCoins.length > 0) {
       const data = {

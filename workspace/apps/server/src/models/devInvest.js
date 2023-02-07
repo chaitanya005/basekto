@@ -40,6 +40,10 @@ const DevInvestSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      txHash: {
+        type: String,
+        required: true,
+      },
     },
   ],
   createdAt: { type: Date, default: Date.now },

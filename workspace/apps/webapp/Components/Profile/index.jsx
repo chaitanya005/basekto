@@ -154,7 +154,8 @@ const YourProfile = ({ userAddress }) => {
                       gap: '0.25rem',
                     }}
                   >
-                    <LinkIcon /> {user.publicUrl}
+                    <LinkIcon sx={{ transform: 'rotate(45deg)' }} />
+                    {user.publicUrl}
                   </Typography>
                 </Card>
               </a>

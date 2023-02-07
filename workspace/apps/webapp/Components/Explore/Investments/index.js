@@ -1,10 +1,15 @@
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import InfoIcon from '@mui/icons-material/Info';
+import FormatDate from '../../Common/FormatDate';
 import LoadingAnimation, { LoadingText } from '../../Common/LoadingAnimation';
 import Table from '../../Common/Table';
-import FormatDate from '../../Common/FormatDate';
+import PolyscanPopup from './PolyscanPopup';
 import { createTableData } from '@basketo/web-utils';
 
 const TokenGroup = ({ tokens, isLoading }) => (
@@ -43,9 +48,32 @@ const Investments = ({ investments, isLoading }) => {
   const smDown = useMediaQuery(useTheme().breakpoints.down('sm'));
   const textAlign = smDown ? 'end' : 'center';
 
+  const [investmentIndex, setInvestmentIndex] = useState(-1);
+
   const columns = {
-    Tokens: (investment) => (
-      <TokenGroup tokens={investment?.coins} isLoading={isLoading} />
+    Tokens: (investment, i) => (
+      <Box
+        display="flex"
+        alignItems="center"
+        gap={0.25}
+      >
+        <TokenGroup tokens={investment?.coins} isLoading={isLoading} />
+
+        <IconButton
+          color="primary"
+          size="small"
+          onClick={() => { setInvestmentIndex(i) }}
+        >
+          <InfoIcon fontSize="0.5rem" />
+        </IconButton>
+
+        <PolyscanPopup
+          open={investmentIndex === i}
+          tokens={investment.coins}
+          amount={investment.amount}
+          onClose={() => setInvestmentIndex(-1)}
+        />
+      </Box>
     ),
     Amount: (investment) => (
       <LoadingText textAlign={textAlign} isLoading={isLoading}>
