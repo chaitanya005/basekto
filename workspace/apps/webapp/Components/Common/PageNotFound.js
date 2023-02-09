@@ -4,12 +4,12 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const BasketNotFound = () => (
+const PageNotFound = ({ heading, redirectionLink, redirectionText }) => (
 
     <>
         <Head>
             <title>
-                {[`Basketo | 404 - Basket Not Found`]}
+                {[`Basketo | ${ heading }`]}
             </title>
         </Head>
 
@@ -18,17 +18,17 @@ const BasketNotFound = () => (
             textAlign="center"
             sx={{ mt: 10, mb: 4 }}
         >
-            404 - Basket Not Found
+            { heading }
         </Typography>
 
         <Box sx={{ textAlign: 'center' }}>
-            <Link href="/explore">
+            <Link href={ redirectionLink }>
                 <a>
                     <Button
                         variant="contained"
                         size="large"
                     >
-                        Go to Explore page
+                        { redirectionText }
                     </Button>
                 </a>
             </Link>
@@ -36,4 +36,4 @@ const BasketNotFound = () => (
     </>
 );
 
-export default BasketNotFound;
+export default PageNotFound;

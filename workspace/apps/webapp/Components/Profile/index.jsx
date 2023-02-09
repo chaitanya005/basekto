@@ -1,8 +1,11 @@
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -11,8 +14,11 @@ import parse from 'html-react-parser';
 import ProfileEditDialog from './ProfileEditDialog';
 import { useSelector } from 'react-redux';
 import { getUserAddress } from 'apps/webapp/features/userAddress';
+import LinkIcon from '@mui/icons-material/Link';
 
 const YourProfile = ({ userAddress }) => {
+  const router = useRouter();
+
   const sm = useMediaQuery(useTheme().breakpoints.down('sm'));
   const { userAddress: loggedInUserAddres } = useSelector(getUserAddress);
 
@@ -30,11 +36,18 @@ const YourProfile = ({ userAddress }) => {
           setUser({ ...newData });
           onSuccess();
           setEditDialogOpen(false);
+          if (router.pathname.includes('/user/') && router.query.uid !== newData.publicUrl) {
+            router.push('/user/' + newData.publicUrl);
+          }
         }
       })
       .catch((err) => {
         console.log(err);
-        onError();
+        if (err.response.status === 400) {
+          onError('Public URL already exists!');
+        } else {
+          onError('Something went wrong!');
+        }
       })
       .finally(onCompletion);
   };
@@ -113,7 +126,40 @@ const YourProfile = ({ userAddress }) => {
 
             <Typography>{user.email}</Typography>
 
-            <Typography>{user.userAddress}</Typography>
+            <Typography
+              sx={{ mb: 1.5 }}
+            >
+              {user.userAddress}
+            </Typography>
+
+            <Link href={ '/user/' + user.publicUrl }>
+              <a>
+                <Card
+                  component="span"
+                  sx={{
+                    display: 'inline-block',
+                    px: 0.5,
+                    border: '1px solid #bbb5',
+                    transition: '200ms',
+                    '&:hover': {
+                      transform: 'translate(0px,-1.5px)',
+                    },
+                  }}
+                >
+                  <Typography
+                    color="primary"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                    }}
+                  >
+                    <LinkIcon sx={{ transform: 'rotate(45deg)' }} />
+                    {user.publicUrl}
+                  </Typography>
+                </Card>
+              </a>
+            </Link>
           </Box>
         </Box>
 

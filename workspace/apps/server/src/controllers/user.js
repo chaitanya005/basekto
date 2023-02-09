@@ -9,6 +9,7 @@ const createUser = async (req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
+        publicUrl: req.body.publicUrl,
       });
       await user.save();
       res.send(user);
@@ -30,6 +31,16 @@ const getUser = async (req, res) => {
   }
 };
 
+const getUserAddressByPublicUrl = async (req, res) => {
+  try {
+    const user = await User.findOne({ publicUrl: req.query.publicUrl });
+    res.send({ userAddress: user.userAddress });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
+};
+
 const updateUser = async (req, res) => {
   try {
     const filter = { userAddress: req.params.id };
@@ -39,6 +50,7 @@ const updateUser = async (req, res) => {
         lastName: req.body.lastName,
         email: req.body.email,
         description: req.body.description,
+        publicUrl: req.body.publicUrl,
       },
     };
     const result = await User.updateOne(filter, updates);
@@ -63,6 +75,7 @@ const isExist = async (req, res) => {
 module.exports = {
   createUser,
   getUser,
+  getUserAddressByPublicUrl,
   updateUser,
   isExist,
 };

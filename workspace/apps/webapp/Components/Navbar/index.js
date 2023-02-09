@@ -121,13 +121,13 @@ const Navbar = () => {
   }, [userAddress]);
 
   const connectWallet = async () => {
-    if (!(await isValidNetwork())) {
-      setSwitchNetworkPopupOpen(true);
+    if (clientSide && typeof window?.ethereum === 'undefined') {
+      router.push({ hash: 'install-metamask' });
       return;
     }
 
-    if (clientSide && typeof window?.ethereum === 'undefined') {
-      router.push({ hash: 'install-metamask' });
+    if (!(await isValidNetwork())) {
+      setSwitchNetworkPopupOpen(true);
       return;
     }
 
@@ -197,6 +197,7 @@ const Navbar = () => {
             onClose={() => setIsDrawerOpen(false)}
           >
             <Box
+              onClick={() => setIsDrawerOpen(false)}
               sx={{
                 fontSize: { xs: '14px', md: '20px' },
                 display: 'flex',
@@ -228,6 +229,7 @@ const Navbar = () => {
                       variant="text"
                       color="primary"
                       startIcon={page.icon}
+                      onClick={() => setIsDrawerOpen(false)}
                     >
                       {page.title}
                     </Button>

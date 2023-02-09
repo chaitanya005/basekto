@@ -174,11 +174,16 @@ const getPublishmentRequests = async (bid) =>
 const createTableData = (columns, data) => {
   return {
     headings: Object.keys(columns),
-    rows: data?.map((item) =>
-      Object.keys(columns).map((col) => columns[col](item))
+    rows: data?.map((item, i) =>
+      Object.keys(columns).map((col) => columns[col](item, i))
     ),
   };
 };
+
+const getUserAddressByPublicUrl = async (publicUrl) =>
+  await (
+    await getRequest(`/user?publicUrl=${publicUrl}`)
+  ).data.userAddress;
 
 export {
   ethAddEventListener,
@@ -201,4 +206,5 @@ export {
   publishBasket,
   getPublishmentRequests,
   createTableData,
+  getUserAddressByPublicUrl,
 };
