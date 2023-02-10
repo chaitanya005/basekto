@@ -139,6 +139,7 @@ const YourProfile = ({ userAddress }) => {
                   sx={{
                     display: 'inline-block',
                     px: 0.5,
+                    py: 0.3,
                     border: '1px solid #bbb5',
                     transition: '200ms',
                     '&:hover': {
@@ -148,14 +149,20 @@ const YourProfile = ({ userAddress }) => {
                 >
                   <Typography
                     color="primary"
+                    fontSize="0.9rem"
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.25rem',
                     }}
                   >
-                    <LinkIcon sx={{ transform: 'rotate(45deg)' }} />
-                    {user.publicUrl}
+                    <LinkIcon
+                      fontSize="small"
+                      sx={{ transform: 'rotate(45deg)' }}
+                    />
+
+                    {typeof window !== 'undefined' && window.location.origin}
+                    /user/{user.publicUrl}
                   </Typography>
                 </Card>
               </a>
