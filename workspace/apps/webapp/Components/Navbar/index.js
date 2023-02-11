@@ -35,11 +35,17 @@ import {
   addUserAddress,
   getUserAddress,
 } from 'apps/webapp/features/userAddress';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 const pages = [
   { title: 'Explore', path: '/explore', icon: <ExploreIcon /> },
   { title: 'Create', path: '/create', icon: <AddCircleOutlineIcon /> },
-  { title: 'Learn', path: '#', icon: <LightbulbIcon /> },
+  {
+    title: 'Docs',
+    path: 'https://docs.basketofinance.com/',
+    icon: <DescriptionIcon />,
+  },
+  // { title: 'Learn', path: '#', icon: <LightbulbIcon /> },
   // {
   //   title: 'Early Access',
   //   path: 'https://t.me/basketofinance',
