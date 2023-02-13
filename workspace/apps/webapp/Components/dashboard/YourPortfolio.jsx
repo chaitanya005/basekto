@@ -6,10 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import InfoRounded from '@mui/icons-material/InfoRounded';
 import BasketList from '../Common/BasketList';
-import MiniGraph from '../Common/MiniGraph';
-import { demoData as graphData } from '../../mocks/demoData';
 import { getCreatedBaskets, getInvestedBaskets } from '@basketo/web-utils';
-import Overview from './Overview';
 import CommonTabs from '../Common/CommonTabs';
 import AlertBox from '../Common/AlertBox';
 

@@ -22,6 +22,7 @@ import {
   getInvestmentsData,
   isValidNetwork,
   publishBasketRequest,
+  getGraphDataPts,
 } from '@basketo/web-utils';
 import { useSelector } from 'react-redux';
 import { getUserAddress } from 'apps/webapp/features/userAddress';
@@ -84,8 +85,7 @@ const BasketPage = () => {
     isFetching: isGraphFetching,
   } = useQuery(
     ['basketGraph', bid, days],
-    () =>
-      getGraphDataWithGrowthRates(basketData?.basketDetails?.[0]?.coins, days),
+    () => getGraphDataPts(basketData?.basketDetails?.[0]?.coins, days),
     {
       staleTime: 300000,
       onError: () => {
@@ -134,7 +134,7 @@ const BasketPage = () => {
   const {
     data: investments,
     isLoading: isInvestmentsLoading,
-    refetch: refetchInvestments
+    refetch: refetchInvestments,
   } = useQuery(
     ['investment', basketData?.basketDetails[0]?._id, userAddress],
     () => getInvestmentsData(basketData?.basketDetails[0]?._id, userAddress),
@@ -302,10 +302,10 @@ const BasketPage = () => {
   };
 
   if (
-    isFetched && !basketData ||
-    !(isLoading || isFetching) &&
-    !basketData.basketDetails[0].publishedBasket &&
-    basketData.basketDetails[0].accountId !== userAddress
+    (isFetched && !basketData) ||
+    (!(isLoading || isFetching) &&
+      !basketData.basketDetails[0].publishedBasket &&
+      basketData.basketDetails[0].accountId !== userAddress)
   ) {
     return <BasketNotFound />;
   }
