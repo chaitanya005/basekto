@@ -2,10 +2,9 @@ import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import InfoIcon from '@mui/icons-material/Info';
 import FormatDate from '../../Common/FormatDate';
 import LoadingAnimation, { LoadingText } from '../../Common/LoadingAnimation';
 import Table from '../../Common/Table';
@@ -58,21 +57,6 @@ const Investments = ({ investments, isLoading }) => {
         gap={0.25}
       >
         <TokenGroup tokens={investment?.coins} isLoading={isLoading} />
-
-        <IconButton
-          color="primary"
-          size="small"
-          onClick={() => { setInvestmentIndex(i) }}
-        >
-          <InfoIcon fontSize="0.5rem" />
-        </IconButton>
-
-        <PolyscanPopup
-          open={investmentIndex === i}
-          tokens={investment.coins}
-          amount={investment.amount}
-          onClose={() => setInvestmentIndex(-1)}
-        />
       </Box>
     ),
     Amount: (investment) => (
@@ -88,6 +72,29 @@ const Investments = ({ investments, isLoading }) => {
         />
       </LoadingText>
     ),
+    'Transaction Details': (investment, i) => investment?.coins[0].txHash && (
+      <>
+        <Button
+          onClick={() => setInvestmentIndex(i)}
+          sx={{
+            background: '#8247e519',
+            color: '#8247e5',
+            '&:hover': {
+              background: '#8247e525',
+            },
+          }}
+        >
+          Check in PolyScan
+        </Button>
+
+        <PolyscanPopup
+          open={investmentIndex === i}
+          tokens={investment.coins}
+          amount={investment.amount}
+          onClose={() => setInvestmentIndex(-1)}
+        />
+      </>
+    ),
   };
 
   const tableData = createTableData(columns, investments);
@@ -96,7 +103,7 @@ const Investments = ({ investments, isLoading }) => {
     <Table
       title="Investments"
       data={tableData}
-      defaultColumnIndex="1"
+      defaultColumnIndex="3"
       style={{ minWidth: { sm: 650 } }}
     />
   );
