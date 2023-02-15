@@ -180,6 +180,74 @@ const createTableData = (columns, data) => {
   };
 };
 
+const getCoinPricesAndTimeStamps = (graphData, coin) => {
+  let coinsObj = {
+    [coin.name]: graphData?.data.map((item) => ({ ...item })),
+  };
+  const singleCoinClosePrices = coinsObj[coin.name]?.map(
+    (item) => (item['4'] * coin.weight) / 100
+  );
+  let timeStamp = coinsObj[coin.name]?.map((item) => item['0']);
+  return { singleCoinClosePrices, timeStamp };
+};
+
+const formatPricesWithTimeStamps = (coinPrices, timeStamps) => {
+  let sumOfPrices = (r, a) =>
+    r.map((b, i) => {
+      let num = a[i] + b;
+      return Number(num.toFixed(5));
+    });
+  let totalBasketPrices = coinPrices.reduce(sumOfPrices);
+  let formattedBasketPricesWithTimeStamp = [];
+  const formatPricesWithTime = (coinPrices, timeStamps) => {
+    coinPrices.map((coinPrice, i) => {
+      let obj = {
+        price: coinPrice,
+        timeStamp: timeStamps[i],
+      };
+      formattedBasketPricesWithTimeStamp.push(obj);
+    });
+  };
+  formatPricesWithTime(totalBasketPrices, timeStamps);
+  formattedBasketPricesWithTimeStamp.pop();
+  const currPoint =
+    formattedBasketPricesWithTimeStamp[
+      formattedBasketPricesWithTimeStamp.length - 1
+    ].price;
+  const pastPoint = formattedBasketPricesWithTimeStamp[0].price;
+  const totalGrowthRateOfbasket = ((currPoint - pastPoint) / pastPoint) * 100;
+  return { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket };
+};
+
+const getGraphDataPts = async (coinData, days) => {
+  const coinPricesPromises = coinData.map(({ id }) => {
+    return axios.get(
+      `https://api.coingecko.com/api/v3/coins/${id}/ohlc?vs_currency=usd&days=${days}`
+    );
+  });
+
+  const graphDataArray = await Promise.all(coinPricesPromises);
+
+  const coinPrices = [],
+    timeStamps = [];
+
+  graphDataArray.forEach((graphData, i) => {
+    const { singleCoinClosePrices, timeStamp } = getCoinPricesAndTimeStamps(
+      graphData,
+      coinData[i]
+    );
+    coinPrices.push(singleCoinClosePrices);
+    timeStamps.push(timeStamp);
+  });
+
+  const { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket } =
+    formatPricesWithTimeStamps(coinPrices, timeStamps);
+  return {
+    graphData: formattedBasketPricesWithTimeStamp,
+    growthRateOfbasket: totalGrowthRateOfbasket,
+  };
+};
+
 const getUserAddressByPublicUrl = async (publicUrl) =>
   await (
     await getRequest(`/user?publicUrl=${publicUrl}`)
@@ -206,5 +274,8 @@ export {
   publishBasket,
   getPublishmentRequests,
   createTableData,
+  getGraphDataPts,
+  getCoinPricesAndTimeStamps,
+  formatPricesWithTimeStamps,
   getUserAddressByPublicUrl,
 };

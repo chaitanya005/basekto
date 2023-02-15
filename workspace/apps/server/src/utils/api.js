@@ -1,48 +1,26 @@
 const { default: axios } = require('axios');
 const Ohlc = require('../models/ohlcData');
+const {
+  getCoinPricesAndTimeStamps,
+  formatPricesWithTimeStamps,
+} = require('@basketo/web-utils');
 
 const getGraphDataPts = async (basketData, days, isDBdata) => {
   let coinPrices = [],
     timeStamps;
   for (let i = 0; i < basketData.length; i++) {
-    const graphData = isDBdata
-      ? await Ohlc.findOne({ coin: basketData[i].id })
-      : await getOhlcData(basketData[i], days);
-    let coinsObj = {
-      [basketData[i].name]: graphData.data.map((item) => ({ ...item })),
-    };
-    const singleCoinClosePrices = coinsObj[basketData[i].name].map(
-      (item) => (item['4'] * basketData[i].weight) / 100
+    const graphData = await Ohlc.findOne({ coin: basketData[i].id });
+    const { singleCoinClosePrices, timeStamp } = getCoinPricesAndTimeStamps(
+      graphData,
+      basketData[i]
     );
+
     coinPrices.push(singleCoinClosePrices);
-    let timeStamp = coinsObj[basketData[i].name].map((item) => item['0']);
     timeStamps = timeStamp;
   }
-  let sumOfPrices = (r, a) =>
-    r.map((b, i) => {
-      let num = a[i] + b;
-      return Number(num.toFixed(5));
-    });
-  let totalBasketPrices = coinPrices.reduce(sumOfPrices);
-  let formattedBasketPricesWithTimeStamp = [];
-  const formatPricesWithTime = (coinPrices, timeStamps) => {
-    coinPrices.map((coinPrice, i) => {
-      let obj = {
-        price: coinPrice,
-        timeStamp: timeStamps[i],
-      };
-      formattedBasketPricesWithTimeStamp.push(obj);
-    });
-  };
-  formatPricesWithTime(totalBasketPrices, timeStamps);
-  formattedBasketPricesWithTimeStamp.pop();
-  const currPoint =
-    formattedBasketPricesWithTimeStamp[
-      formattedBasketPricesWithTimeStamp.length - 1
-    ].price;
-  const pastPoint = formattedBasketPricesWithTimeStamp[0].price;
-  const totalGrowthRateOfbasket = ((currPoint - pastPoint) / pastPoint) * 100;
 
+  const { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket } =
+    formatPricesWithTimeStamps(coinPrices, timeStamps);
   return { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket };
 };
 

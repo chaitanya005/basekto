@@ -1,8 +1,7 @@
 const { default: axios } = require('axios');
-const moment = require('moment');
 const { coinsData } = require('../coins');
 const Ohlc = require('../models/ohlcData');
-const { getOhlcData, getGraphDataPts } = require('../utils/api');
+const { getGraphDataPts } = require('@basketo/web-utils');
 
 // async function getDataPoints(req, res) {
 //   try {
@@ -122,6 +121,11 @@ async function storeOHLCDataToDB(req, res) {
     res?.json(data);
   } catch (err) {
     console.log('/store-coins', err);
+    if (err.response.status === 429) {
+      const retryAfter = err.response.headers['retry-after'];
+      console.log(`Exceeded rate limit, waiting for ${retryAfter} seconds`);
+      setTimeout(storeOHLCDataToDB, retryAfter * 1000);
+    }
     res?.status(400).json({ err });
   }
 }
