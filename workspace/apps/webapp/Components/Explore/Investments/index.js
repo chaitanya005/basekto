@@ -1,10 +1,14 @@
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import FormatDate from '../../Common/FormatDate';
 import LoadingAnimation, { LoadingText } from '../../Common/LoadingAnimation';
 import Table from '../../Common/Table';
-import FormatDate from '../../Common/FormatDate';
+import PolyscanPopup from './PolyscanPopup';
 import { createTableData } from '@basketo/web-utils';
 
 const TokenGroup = ({ tokens, isLoading }) => (
@@ -43,9 +47,17 @@ const Investments = ({ investments, isLoading }) => {
   const smDown = useMediaQuery(useTheme().breakpoints.down('sm'));
   const textAlign = smDown ? 'end' : 'center';
 
+  const [investmentIndex, setInvestmentIndex] = useState(-1);
+
   const columns = {
-    Tokens: (investment) => (
-      <TokenGroup tokens={investment?.coins} isLoading={isLoading} />
+    Tokens: (investment, i) => (
+      <Box
+        display="flex"
+        alignItems="center"
+        gap={0.25}
+      >
+        <TokenGroup tokens={investment?.coins} isLoading={isLoading} />
+      </Box>
     ),
     Amount: (investment) => (
       <LoadingText textAlign={textAlign} isLoading={isLoading}>
@@ -60,6 +72,29 @@ const Investments = ({ investments, isLoading }) => {
         />
       </LoadingText>
     ),
+    'Transaction Details': (investment, i) => investment?.coins[0].txHash && (
+      <>
+        <Button
+          onClick={() => setInvestmentIndex(i)}
+          sx={{
+            background: '#8247e519',
+            color: '#8247e5',
+            '&:hover': {
+              background: '#8247e525',
+            },
+          }}
+        >
+          Check in PolyScan
+        </Button>
+
+        <PolyscanPopup
+          open={investmentIndex === i}
+          tokens={investment.coins}
+          amount={investment.amount}
+          onClose={() => setInvestmentIndex(-1)}
+        />
+      </>
+    ),
   };
 
   const tableData = createTableData(columns, investments);
@@ -68,7 +103,7 @@ const Investments = ({ investments, isLoading }) => {
     <Table
       title="Investments"
       data={tableData}
-      defaultColumnIndex="1"
+      defaultColumnIndex="3"
       style={{ minWidth: { sm: 650 } }}
     />
   );
