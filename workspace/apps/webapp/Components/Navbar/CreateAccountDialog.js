@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material';
 import axios from 'axios';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import InputAdornment from '@mui/material/InputAdornment';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 const CreateAccountDialog = ({
   isOpen,
@@ -30,7 +29,9 @@ const CreateAccountDialog = ({
     firstName: '',
     lastName: '',
     email: '',
+    publicUrl: '',
   });
+  const [error, setError] = useState('');
 
   const onChange = (e, key) => {
     setAccountDetails({
@@ -45,10 +46,17 @@ const CreateAccountDialog = ({
   };
 
   useEffect(() => {
-    if (mutation.data?.status == 200) {
+
+    if (mutation.isError) {
+      if (mutation.error.response.status === 400) {
+        setError('Public URL already exists!');
+      } else {
+        setError('Account creation failed!');
+      }
+    }else if (mutation.data?.status == 200) {
       onAccountCreation();
     }
-  }, [mutation.data]);
+  }, [mutation.status]);
 
   return (
     <Dialog maxWidth="sm" open={isOpen}>
@@ -71,7 +79,7 @@ const CreateAccountDialog = ({
               sx={{ mb: 2 }}
               onClick={() => mutation.reset()}
             >
-              Account creation failed!
+              { error }
             </Typography>
           )}
 
@@ -105,6 +113,41 @@ const CreateAccountDialog = ({
               onChange={(e) => onChange(e, 'email')}
               required
               sx={{ mb: 2 }}
+            />
+
+            <TextField
+              fullWidth
+              variant="standard"
+              label="Public URL"
+              inputProps={{
+                pattern: '[\\w|-]{3,10}'
+              }}
+              helperText={
+                <ul
+                  style={{
+                    margin: 0,
+                    paddingLeft: '1rem',
+                  }}
+                >
+                  <li>
+                    Should be of 3-10 characters in length
+                  </li>
+                  <li>
+                    No special characters other than hyphens and underscores are allowed
+                  </li>
+                </ul>
+              }
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    basketofinance.com/user/
+                  </InputAdornment>
+                ),
+                sx: { mb: 1 },
+              }}
+              value={accountDetails.publicUrl}
+              onChange={(e) => onChange(e, 'publicUrl')}
+              required
             />
           </Paper>
         </DialogContent>

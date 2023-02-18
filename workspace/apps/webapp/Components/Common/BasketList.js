@@ -33,7 +33,7 @@ const BasketList = ({ basketsData, isLoading, ...props }) => {
                     data={{
                       title: basket?.name,
                       symbol: basket?.symbol,
-                      basketeer: basket?.accountId,
+                      basketeer: basket?.creator?.publicUrl,
                       description: basket?.description,
                       basketGrowth: basket?.growthRate,
                       coins: basket?.coins,

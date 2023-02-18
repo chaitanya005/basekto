@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DialogBox from '../Common/DialogBox';
@@ -16,7 +17,7 @@ const ProfileEditModal = ({ isOpen, onClose, user, handleSave }) => {
 
     const [newData, setNewData] = useState({ ...user });
     const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (field, value) => {
 
@@ -30,8 +31,8 @@ const ProfileEditModal = ({ isOpen, onClose, user, handleSave }) => {
 
         e.preventDefault();
         setIsLoading(true);
-        const onSuccess = () => setIsError(false);
-        const onError = () => setIsError(true);
+        const onSuccess = () => setError(false);
+        const onError = (errMsg) => setError(errMsg);
         const onCompletion = () => setIsLoading(false);
         handleSave(newData, onSuccess, onError, onCompletion);
     };
@@ -44,6 +45,16 @@ const ProfileEditModal = ({ isOpen, onClose, user, handleSave }) => {
             dividers
             onClose={ onClose }
         >
+            <Typography
+                color="error"
+                fontSize="small"
+                textAlign="center"
+                sx={{ mt: -1.5 }}
+                marginBottom={ 1 }
+            >
+                { error }
+            </Typography>
+
             <form onSubmit={ onSubmit }>
                 { fields.map(({ label, name }) => (
 
@@ -61,7 +72,42 @@ const ProfileEditModal = ({ isOpen, onClose, user, handleSave }) => {
                     />
                 ))}
 
-                <Box sx={{ mt: 0.5, mb: 2.5 }}>
+                <TextField
+                    fullWidth
+                    variant="standard"
+                    label="Public URL"
+                    inputProps={{
+                        pattern: '[\\w|-]{3,10}'
+                    }}
+                    helperText={
+                        <ul
+                        style={{
+                            margin: 0,
+                            paddingLeft: '1rem',
+                        }}
+                        >
+                        <li>
+                            Should be of 3-10 characters in length
+                        </li>
+                        <li>
+                            No special characters other than hyphens and underscores are allowed
+                        </li>
+                        </ul>
+                    }
+                    InputProps={{
+                        startAdornment: (
+                        <InputAdornment position="start">
+                            basketofinance.com/user/
+                        </InputAdornment>
+                        ),
+                        sx: { mb: 1 },
+                    }}
+                    value={newData.publicUrl}
+                    onChange={(e) => handleChange('publicUrl', e.target.value)}
+                    required
+                />
+
+                <Box sx={{ mt: 2, mb: 2.5 }}>
                     <TextEditor
                         placeholder="Write your bio/description"
                         value={ newData.description }
@@ -70,15 +116,6 @@ const ProfileEditModal = ({ isOpen, onClose, user, handleSave }) => {
                         }
                     />
                 </Box>
-
-                <Typography
-                    color="error"
-                    fontSize="small"
-                    textAlign="center"
-                    marginBottom={ 2 }
-                >
-                    { isError && 'Something went wrong' }
-                </Typography>
 
                 <Button
                     variant="contained"
