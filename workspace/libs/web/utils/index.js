@@ -241,7 +241,7 @@ const getGraphDataPts = async (coinData, days) => {
   });
 
   const { formattedBasketPricesWithTimeStamp, totalGrowthRateOfbasket } =
-    formatPricesWithTimeStamps(coinPrices, timeStamps);
+    formatPricesWithTimeStamps(coinPrices, timeStamps[0]);
   return {
     graphData: formattedBasketPricesWithTimeStamp,
     growthRateOfbasket: totalGrowthRateOfbasket,

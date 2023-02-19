@@ -10,13 +10,19 @@ import StepThree from './StepThree';
 import { useSelector } from 'react-redux';
 import { getTokens } from 'apps/webapp/features/selectTokens';
 import { useQuery } from 'react-query';
-import { getGraphDataWithGrowthRates } from '@basketo/web-utils';
+import { getGraphDataPts } from '@basketo/web-utils';
 import { Divider } from '@mui/material';
+import AlertBox from '../Common/AlertBox';
 
 const Create = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [days, setDays] = useState(1);
   const { selectedTokens } = useSelector(getTokens);
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: 'success',
+    message: '',
+  });
 
   const steps = ['Choose Tokens', 'Details', 'Review'];
 
@@ -28,10 +34,15 @@ const Create = () => {
     refetch: refetchGraphData,
   } = useQuery(
     ['createBasketGraph', selectedTokens, days],
-    () => getGraphDataWithGrowthRates(selectedTokens, days),
+    () => getGraphDataPts(selectedTokens, days),
     {
       staleTime: 300000,
-      onError: () => console.log("Couldn't fetch Graph data."),
+      onError: () =>
+        setAlert({
+          open: true,
+          severity: 'error',
+          message: "Couldn't fetch Graph Data",
+        }),
       enabled: false,
     }
   );
@@ -84,6 +95,7 @@ const Create = () => {
         justifyContent: 'center',
       }}
     >
+      <AlertBox alert={alert} setAlert={setAlert} />
       <Box sx={{ maxWidth: 'md', width: '100%', padding: '15px' }}>
         <Typography variant="h3" sx={{ fontFamily: 'Cinzel' }}>
           Create a Basket
